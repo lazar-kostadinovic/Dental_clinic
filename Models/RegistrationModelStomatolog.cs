@@ -10,6 +10,8 @@ namespace StomatoloskaOrdinacija.Models
         [Required]
         public string Prezime { get; set; }
         [Required]
+        public string? Slika { get; set; }
+        [Required]
         public string Adresa { get; set; }
         [Required]
         public string BrojTelefona { get; set; }

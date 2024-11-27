@@ -78,6 +78,7 @@ namespace StomatoloskaOrdinacija.Services
             {
                 Ime = resource.Ime,
                 Prezime = resource.Prezime,
+                Slika = "default.jpg",
                 Adresa = resource.Adresa,
                 BrojTelefona = resource.BrojTelefona,
                 Role = UserRole.Stomatolog,

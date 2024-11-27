@@ -209,7 +209,7 @@ public class StomatologController : ControllerBase
         {
             return NotFound($"Pacijent with Id = {id} not found.");
         }
-    
+
         var fileName = $"{Guid.NewGuid()}_{file.FileName}";
         var filePath = Path.Combine("wwwroot", "assets", fileName);
 

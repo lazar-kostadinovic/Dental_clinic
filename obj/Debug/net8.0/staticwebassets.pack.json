@@ -69,6 +69,10 @@
       "PackagePath": "staticwebassets\\assets\\ce971022-53e8-47ff-adf7-41544f589111_admin.jpg"
     },
     {
+      "Id": "C:\\Users\\Lazar\\Desktop\\StomatoloskaOrdinacija\\wwwroot\\assets\\default.jpg",
+      "PackagePath": "staticwebassets\\assets\\default.jpg"
+    },
+    {
       "Id": "C:\\Users\\Lazar\\Desktop\\StomatoloskaOrdinacija\\wwwroot\\assets\\df2ab8f2-d1c4-4823-83bd-3578e06f6df6_slika3.jpeg",
       "PackagePath": "staticwebassets\\assets\\df2ab8f2-d1c4-4823-83bd-3578e06f6df6_slika3.jpeg"
     },
