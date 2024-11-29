@@ -1,0 +1,35 @@
+<div class="profile-container" *ngIf="showProfile">
+  <h2>Profil stomatologa</h2>
+  <div class="profile-image" *ngIf="dentist">
+    <div *ngIf="dentist.slika">
+      <img (click)="triggerFileInput()" [src]="getImageUrl(dentist.slika)" alt="Profilna slika" class="dentist-image" />
+      <!-- <button (click)="triggerFileInput()">Promeni sliku</button> -->
+    </div>
+    <div *ngIf="!dentist.slika">
+      <p>Nema dostupne slike.</p>
+      <button (click)="triggerFileInput()">Dodaj sliku</button>
+    </div>
+    <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" style="display: none;" />
+  </div>
+  <div *ngIf="dentist">
+    <p><strong>Ime:</strong> {{ dentist.ime }}</p>
+    <p><strong>Prezime:</strong> {{ dentist.prezime }}</p>
+    <p><strong>Adresa:</strong> {{ dentist.adresa }}</p>
+    <p><strong>Broj Telefona:</strong> {{ dentist.brojTelefona }}</p>
+    <p><strong>Email:</strong> {{ dentist.email }}</p>
+  </div>
+
+  <button (click)="toggleAppointmentForm()">Zakazi pregled</button>
+  <button (click)="toggleAppointmentsHistory()">Prikaži preglede</button>
+
+</div>
+
+<div *ngIf="showAppointmentForm">
+  <app-dentist-schedule [dentistId]="dentist.id" [patients]="patients"
+    (appointmentScheduled)="onAppointmentScheduled()"></app-dentist-schedule>
+</div>
+
+<div *ngIf="showAppointments">
+  <button (click)="toggleAppointmentsHistory()">Vrati se na profil</button>
+  <app-dentist-appointment [appointmentIds]="dentist.predstojeciPregledi"  (appointmentsUpdated)="onAppointmentsUpdated($event)"></app-dentist-appointment>
+</div>

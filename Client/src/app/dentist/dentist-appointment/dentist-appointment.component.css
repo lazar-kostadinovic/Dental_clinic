@@ -1,0 +1,45 @@
+.appointments-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.appointment {
+  flex: 0 1 calc(13%);
+  box-sizing: border-box;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #fafafa;
+  transition: background-color 0.3s;
+}
+
+.appointment:hover {
+  background-color: #f1f1f1;
+}
+
+.appointment p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.appointment strong {
+  color: #333;
+}

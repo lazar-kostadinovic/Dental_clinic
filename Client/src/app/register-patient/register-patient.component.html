@@ -1,0 +1,48 @@
+  <div class="register-container">
+    <h2>Registracija</h2>
+    <form #registerForm="ngForm" (ngSubmit)="onRegister(registerForm)">
+      <label for="ime">Ime:</label>
+      <input type="text" id="ime" [(ngModel)]="registrationModel.ime" name="ime" required />
+      <div *ngIf="registerForm.submitted && !registerForm.controls['ime'].valid" class="error">
+        Ime je obavezno.
+      </div>
+  
+      <label for="prezime">Prezime:</label>
+      <input type="text" id="prezime" [(ngModel)]="registrationModel.prezime" name="prezime" required />
+      <div *ngIf="registerForm.submitted && !registerForm.controls['prezime'].valid" class="error">
+        Prezime je obavezno.
+      </div>
+  
+      <label for="adresa">Adresa:</label>
+      <input type="text" id="adresa" [(ngModel)]="registrationModel.adresa" name="adresa" required />
+      <div *ngIf="registerForm.submitted && !registerForm.controls['adresa'].valid" class="error">
+        Adresa je obavezna.
+      </div>
+  
+      <label for="brojTelefona">Broj telefona:</label>
+      <input type="number" id="brojTelefona" [(ngModel)]="registrationModel.brojTelefona" name="brojTelefona" required />
+      <div *ngIf="
+          registerForm.submitted && !registerForm.controls['brojTelefona'].valid
+        " class="error">
+        Broj telefona je obavezan.
+      </div>
+  
+      <label for="email">Email:</label>
+      <input type="email" id="email" [(ngModel)]="registrationModel.email" name="email" required email />
+      <div *ngIf="registerForm.submitted && !registerForm.controls['email'].valid" class="error">
+        Unesite ispravnu email adresu.
+      </div>
+  
+      <label for="password">Password:</label>
+      <input type="password" id="password" [(ngModel)]="registrationModel.password" name="password" required
+        minlength="6" />
+      <div *ngIf="
+          registerForm.submitted && !registerForm.controls['password'].valid
+        " class="error">
+        Lozinka mora imati najmanje 6 karaktera.
+      </div>
+  
+      <button type="submit">Registracija</button>
+    </form>
+    </div>
+  

@@ -1,0 +1,74 @@
+:host{
+  display: flex;
+}
+.profile-container {
+  width: 400px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  margin: 20px;
+}
+
+.profile-container h2 {
+  text-align: center;
+}
+
+.profile-container p {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.profile-container h3 {
+  margin-top: 20px;
+}
+
+.loading {
+  text-align: center;
+  font-size: 18px;
+  padding: 20px;
+}
+
+.dentist-profile {
+  margin: 0 auto;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 15px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+button:active {
+  background-color: #3e8e41;
+  transform: scale(0.98);
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.profile-image {
+  margin-bottom: 15px;
+}
+
+.dentist-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+}

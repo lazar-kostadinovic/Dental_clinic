@@ -1,0 +1,24 @@
+<div class="appointments-container">
+  <h3>Prošli pregledi</h3>
+  <div class="row">
+    <ng-container *ngFor="let pregled of pregledList">
+      <div *ngIf="pregled.status === 1" class="appointment">
+        <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
+        <p><strong>Opis:</strong> {{ pregled.opis }}</p>
+        <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
+        <button (click)="deletePregled(pregled.id)">Obriši pregled</button>
+      </div>
+    </ng-container>
+  </div>
+  <h3>Predstojeći pregledi</h3>
+  <div class="row">
+    <ng-container *ngFor="let pregled of pregledList">
+      <div *ngIf="pregled.status === 0" class="appointment">
+        <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
+        <p><strong>Opis:</strong> {{ pregled.opis }}</p>
+        <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
+        <button (click)="deletePregled(pregled.id)">Otkaži pregled</button>
+      </div>
+    </ng-container>
+  </div>
+</div>

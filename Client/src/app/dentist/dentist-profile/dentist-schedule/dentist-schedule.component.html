@@ -1,0 +1,28 @@
+<div class="appointment-form">
+  <h3>Zakazivanje pregleda</h3>
+  <form (ngSubmit)="submitAppointment()">
+    <label for="patient">Pacijent:</label>
+    <select id="patient" [(ngModel)]="selectedPatient" name="patient" required>
+      <option *ngFor="let patient of patients" [value]="patient.id">
+        {{ patient.name }}
+      </option>
+    </select>
+
+    <label for="datum">Datum:</label>
+    <input id="datum" type="date" [(ngModel)]="newAppointment.datum" name="datum" required [min]="tomorrow"
+      (change)="loadAvailableTimeSlots(dentistId, newAppointment.datum)" />
+
+    <label for="vreme">Vreme:</label>
+    <select id="vreme" [(ngModel)]="newAppointment.vreme" name="vreme" required>
+      <option *ngFor="let timeSlot of availableTimeSlots" [value]="timeSlot">
+        {{ timeSlot }}
+      </option>
+    </select>
+
+    <label for="opis">Opis:</label>
+    <textarea id="opis" [(ngModel)]="newAppointment.opis" name="opis" required></textarea>
+
+    <button type="submit">Zakazi</button>
+    <button type="button" (click)="resetForm()">Odustani</button>
+  </form>
+</div>

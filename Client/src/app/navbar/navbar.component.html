@@ -1,0 +1,9 @@
+<nav class="navbar">
+  <h3>STOMATOLOSKA ORDINACIJA</h3>
+  <a routerLink="/home" class="navbar-link">Početna</a>
+  <a *ngIf="isLoggedIn()" [routerLink]="getProfileLink()" class="navbar-link">Moj Profil</a>
+  <a *ngIf="!isLoggedIn()" routerLink="/login" class="navbar-link">Prijava</a>
+  <a *ngIf="isLoggedIn()" routerLink="/home" (click)="logout()" class="navbar-link">Logout</a>
+  <a *ngIf="!isLoggedIn()" routerLink="/register-patient" class="navbar-link">Registracija </a>
+  <!-- <a routerLink="/register-dentist" class="navbar-link">Registracija stomatologa</a> -->
+</nav>
