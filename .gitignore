@@ -1,0 +1,51 @@
+# Ignoriši node_modules direktorijum (Angular)
+node_modules/
+
+# Ignoriši Angular build direktorijum
+dist/
+out-tsc/
+
+# Ignoriši fajlove specifične za IDE-ove
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Ignoriši privremene fajlove
+*.log
+*.tmp
+*.lock
+*.pid
+
+# Ignoriši Angular environment fajlove (ako sadrže poverljive podatke)
+src/environments/environment.prod.ts
+src/environments/environment.ts
+
+# Ignoriši .NET build direktorijume
+bin/
+obj/
+
+# Ignoriši publish folder za .NET aplikacije
+publish/
+
+# Ignoriši fajlove sa poverljivim informacijama
+*.env
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
+
+# Ignoriši operativni sistem fajlove
+.DS_Store
+Thumbs.db
+
+# Ignoriši git hooks i cache
+.husky/
+.git/hooks/
+.git/refs/
+.git/index.lock
+
+# Ignoriši eventualne fajlove iz testiranja
+coverage/
+*.coverage
