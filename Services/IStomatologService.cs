@@ -16,5 +16,6 @@ namespace StomatoloskaOrdinacija.Services
         void Remove(ObjectId id);
         bool RemoveAppointment(ObjectId stomatologId, ObjectId appointmentId);
         Task<bool> Register(RegistrationModelStomatolog resource);
+        bool SetDayOff(ObjectId stomatologId,DateTime day);
     }
 }

@@ -272,4 +272,32 @@ public class StomatologController : ControllerBase
             return BadRequest(new { ErrorMessage = e.Message });
         }
     }
+
+    [AllowAnonymous]
+    [HttpPost("addFreeDay/{idStomatologa}/{datum}")]
+    public IActionResult AddFreeDay(ObjectId idStomatologa, DateTime datum)
+    {
+        try
+        {
+            var stomatolog = stomatologService.Get(idStomatologa);
+            if (stomatolog == null)
+            {
+                return NotFound($"Stomatolog with Id = {idStomatologa} not found");
+            }
+
+            datum = DateTime.SpecifyKind(datum.Date, DateTimeKind.Utc);
+
+            if (!stomatologService.SetDayOff(idStomatologa, datum))
+            {
+                return BadRequest($"Unable to add day off for stomatolog with Id = {idStomatologa}.");
+            }
+
+            return Ok(new { message = $"Day off on {datum.ToShortDateString()} added for stomatolog with Id = {idStomatologa}." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+
 }

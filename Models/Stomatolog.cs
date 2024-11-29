@@ -28,6 +28,8 @@ namespace StomatoloskaOrdinacija.Models
         public UserRole Role { get; set; }
         [BsonElement("Specijalizacija")]
         public Specijalizacija Specijalizacija { get; set; }
+        [BsonElement("SlobodniDani")]
+        public List<DateTime> SlobodniDani {get; set;}
         [BsonElement("PredstojeciPregledi")]
         public List<ObjectId> PredstojeciPregledi { get; set; } = new List<ObjectId>();
         public List<ObjectId> KomentariStomatologa { get; set; } = new List<ObjectId>();

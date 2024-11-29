@@ -102,5 +102,14 @@ namespace StomatoloskaOrdinacija.Services
 
             return result.ModifiedCount > 0;
         }
+
+        public bool SetDayOff(ObjectId stomatologId,DateTime dayOff)
+        {
+            var filter = Builders<Stomatolog>.Filter.Eq(s=>s.Id,stomatologId);
+            var update = Builders<Stomatolog>.Update.AddToSet(s=>s.SlobodniDani,dayOff.Date);
+
+            var result = _stomatolozi.UpdateOne(filter,update);
+            return result.ModifiedCount>0;
+        }
     }
 }
