@@ -30,17 +30,17 @@
   <button (click)="toggleDayOffForm()">Odustani</button>
 
   <button (click)="fetchAllDaysOff()">Prikaži sve slobodne dane</button>
-  <div *ngIf="freeDays.length > 0" class="day-off-list">
+  <div *ngIf="daysOff.length > 0" class="day-off-list">
     <h3>Slobodni dani:</h3>
     <ul>
-      <li *ngFor="let day of freeDays">{{ day }}</li>
+      <li *ngFor="let day of daysOff">{{ day }}</li>
     </ul>
   </div>
 </div>
 
 <div *ngIf="showAppointmentForm">
-  <app-dentist-schedule [dentistId]="dentist.id" [patients]="patients"
-    (appointmentScheduled)="onAppointmentScheduled()"></app-dentist-schedule>
+  <app-dentist-schedule [dentistId]="dentist.id" [patients]="patients">
+    (appointmentScheduled)="onAppointmentScheduled()" ></app-dentist-schedule>
 </div>
 
 <div *ngIf="showAppointments">

@@ -52,33 +52,12 @@ export class DentistAppointmentComponent {
       });
     }
   }
-
-  // deletePregled(id: string) {
-  //   this.http.delete(`http://localhost:5001/Pregled/${id}`).subscribe({
-  //     next: () => {
-  //       this.pregledList = this.pregledList.filter((pregled) => pregled.id !== id);
-  
-  //       this.appointmentIds = this.appointmentIds.filter((appId) => appId !== id);
-  
-  //       alert('Pregled je uspešno obrisan.');
-
-  //       console.log(this.pregledList);
-  //       console.log(this.appointmentIds);
-  //       this.fetchPatientHistory();
-  //     },
-  //     error: (error) => {
-  //       console.error('Greška pri brisanju pregleda:', error);
-  //     },
-  //   });
-  // }
   deletePregled(id: string) {
     this.http.delete(`http://localhost:5001/Pregled/${id}`).subscribe({
       next: () => {
-        // Ažuriraj lokalne podatke
         this.pregledList = this.pregledList.filter((pregled) => pregled.id !== id);
         this.appointmentIds = this.appointmentIds.filter((appId) => appId !== id);
 
-        // Emituj ažuriranu listu ka roditelju
         this.appointmentsUpdated.emit(this.appointmentIds);
 
         alert('Pregled je uspešno obrisan.');
@@ -89,8 +68,6 @@ export class DentistAppointmentComponent {
     });
   }
   
-  
-
   getStatusLabel(status: string | number): string {
     const statusMap: { '0': string, '1': string, '2': string } = {
       '0': 'Predstojeći',

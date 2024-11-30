@@ -33,7 +33,7 @@ li {
   gap: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s;
-  width: calc(33% - 15px);
+  width: calc(33% - 20px);
   box-sizing: border-box;
 }
 
@@ -129,4 +129,16 @@ strong {
 
 .star.selected {
   color: gold;
+}
+.day-off-form label {
+  font-size: 14px;
+  margin-bottom: 10px;
+  display: block;
+  color: #555;
+}
+
+.disabled-day {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
 }

@@ -1,5 +1,5 @@
 .appointment-form {
-    width: 80%;
+    width: 100%;
     margin: 20px auto;
     padding: 20px;
     background-color: #ffffff;
@@ -66,3 +66,29 @@
     margin-bottom: 10px;
   }
   
+  input[type='date'].disabled-day {
+    background-color: #ffe6e6;
+    color: #ff0000;
+    border: 1px solid #ff0000;
+  }
+  
+  .day-off {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+  }
+  
+button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  border: 1px solid #aaa;
+  opacity: 0.7;
+}
+
+.disabled-day {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
+

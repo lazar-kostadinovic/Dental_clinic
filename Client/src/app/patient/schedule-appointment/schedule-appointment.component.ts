@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +20,7 @@ export class ScheduleAppointmentComponent implements OnInit {
   selectedStomatologForAppointment: string | null = null;
   selectedStomatologForComments: string | null = null;
   availableTimeSlots: string[] = [];
+  daysOff: string[] = [];
   today: string = '';
   imePacijenata: { [key: string]: string } = {};
   selectedSpecijalizacija: string = '';
@@ -61,7 +62,9 @@ export class ScheduleAppointmentComponent implements OnInit {
     } else {
       this.selectedStomatologForAppointment = idStomatologa;
       this.availableTimeSlots = [];
+      this.fetchAllDaysOff(idStomatologa);
     }
+
   }
 
   loadAvailableTimeSlots(idStomatologa: string, datum: string): void {
@@ -75,6 +78,40 @@ export class ScheduleAppointmentComponent implements OnInit {
         console.error('Greška pri učitavanju slobodnih termina:', error);
       }
     );
+  }
+
+  fetchAllDaysOff(idStomatologa: string): void {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http
+      .get<string[]>(
+        `http://localhost:5001/Stomatolog/GetAllDaysOff/${idStomatologa}`,
+        { headers }
+      )
+      .subscribe({
+        next: (daysOff) => {
+          this.daysOff = daysOff
+
+            .filter((day) => new Date(day).getTime() > new Date().getTime())
+            .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+        },
+        error: (error) => {
+          console.error('Greška prilikom preuzimanja slobodnih dana:', error);
+          alert(
+            error.error?.message ||
+              'Došlo je do greške prilikom preuzimanja slobodnih dana.'
+          );
+        },
+      });
+
+      console.log(this.daysOff);
+  }
+
+  isDayDisabled(date: string): boolean {
+    console.log('Days off:', this.daysOff);
+    console.log(this.daysOff.includes(date));
+    return this.daysOff.includes(date);
   }
 
   scheduleAppointment(): void {
@@ -109,7 +146,7 @@ export class ScheduleAppointmentComponent implements OnInit {
     const apiUrl = 'http://localhost:5001/Stomatolog/getDTOs';
     this.http.get<StomatologDTO[]>(apiUrl).subscribe(
       (data) => {
-        this.stomatolozi = data.filter(s => s.email !== "admin@gmail.com");
+        this.stomatolozi = data.filter((s) => s.email !== 'admin@gmail.com');
         console.log('Učitali smo stomatologe:', this.stomatolozi);
       },
       (error) => {

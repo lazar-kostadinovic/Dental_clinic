@@ -26,7 +26,7 @@ export class DentistProfileComponent {
   selectedDate: string | null = null; 
   patients: Array<{ id: string; name: string }> = [];
   selectedPatient: string | null = null;
-  freeDays: string[] = []; 
+  daysOff: string[] = []; 
   newAppointment = {
     datum: '',
     vreme: '',
@@ -177,7 +177,7 @@ export class DentistProfileComponent {
       )
       .subscribe({
         next: (daysOff) => {
-          this.freeDays = daysOff.map((day) =>
+          this.daysOff = daysOff.map((day) =>
             new Date(day).toLocaleDateString('sr-RS')
           );
         },
