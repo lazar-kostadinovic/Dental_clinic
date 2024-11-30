@@ -19,11 +19,14 @@ export class DentistProfileComponent {
   email: string | null = null;
   showAppointments = false;
   showProfile = true;
-  availableTimeSlots: string[] = [];
-
+  showDayOffForm =false;
   showAppointmentForm = false;
+
+  availableTimeSlots: string[] = [];
+  selectedDate: string | null = null; 
   patients: Array<{ id: string; name: string }> = [];
   selectedPatient: string | null = null;
+  freeDays: string[] = []; 
   newAppointment = {
     datum: '',
     vreme: '',
@@ -94,6 +97,7 @@ export class DentistProfileComponent {
 
   toggleAppointmentForm() {
     this.showAppointmentForm = !this.showAppointmentForm;
+    this.showDayOffForm=false;
     if (this.showAppointmentForm) {
       this.fetchPatients();
     }
@@ -124,9 +128,67 @@ export class DentistProfileComponent {
     this.showAppointments = !this.showAppointments;
     this.showProfile = !this.showProfile;
     this.showAppointmentForm = false;
+    this.showDayOffForm=false;
   }
   closeForm(): void {
     this.newAppointment = { datum: '', vreme: '', opis: '' };
     this.availableTimeSlots = [];
   }
+
+  toggleDayOffForm(){
+    this.showDayOffForm=!this.showDayOffForm;
+    this.showAppointmentForm=false;
+  }
+
+  submitDayOff(): void {
+    if (!this.selectedDate) {
+      alert('Molimo odaberite datum.');
+      return;
+    }
+  
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    console.log(token);
+  
+    this.http.post(`http://localhost:5001/Stomatolog/addDayOff/${this.dentist.id}/${this.selectedDate}`,null, { headers })
+      .subscribe({
+        next: (response: any) => {
+          console.log('Slobodan dan uspešno dodat:', response);
+          alert(`Slobodan dan za ${this.selectedDate} je dodat.`);
+          this.selectedDate = null;
+          this.showDayOffForm = false;
+          this.fetchDentistProfile();
+        },
+        error: (err) => {
+          console.error('Greška prilikom dodavanja slobodnog dana:', err.error);
+          alert(`Vec ste postavili ovaj dan za slobodan.`);
+        },
+      });
+  }
+
+  fetchAllDaysOff(): void {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http
+      .get<string[]>(
+        `http://localhost:5001/Stomatolog/GetAllDaysOff/${this.dentist.id}`,
+        { headers }
+      )
+      .subscribe({
+        next: (daysOff) => {
+          this.freeDays = daysOff.map((day) =>
+            new Date(day).toLocaleDateString('sr-RS')
+          );
+        },
+        error: (error) => {
+          console.error('Greška prilikom preuzimanja slobodnih dana:', error);
+          alert(
+            error.error?.message ||
+              'Došlo je do greške prilikom preuzimanja slobodnih dana.'
+          );
+        },
+      });
+  }
+  
 }

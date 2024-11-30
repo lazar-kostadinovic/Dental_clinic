@@ -9,7 +9,7 @@
       <p>Nema dostupne slike.</p>
       <button (click)="triggerFileInput()">Dodaj sliku</button>
     </div>
-    <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" style="display: none;" />
+    <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" style="display: none" />
   </div>
   <div *ngIf="dentist">
     <p><strong>Ime:</strong> {{ dentist.ime }}</p>
@@ -21,7 +21,21 @@
 
   <button (click)="toggleAppointmentForm()">Zakazi pregled</button>
   <button (click)="toggleAppointmentsHistory()">Prikaži preglede</button>
+  <button (click)="toggleDayOffForm()">Dodaj slobodan dan</button>
+</div>
+<div *ngIf="showDayOffForm" class="day-off-form">
+  <label for="datum">Datum:</label>
+  <input type="date" id="datum" [(ngModel)]="selectedDate" />
+  <button (click)="submitDayOff()">Dodaj slobodan dan</button>
+  <button (click)="toggleDayOffForm()">Odustani</button>
 
+  <button (click)="fetchAllDaysOff()">Prikaži sve slobodne dane</button>
+  <div *ngIf="freeDays.length > 0" class="day-off-list">
+    <h3>Slobodni dani:</h3>
+    <ul>
+      <li *ngFor="let day of freeDays">{{ day }}</li>
+    </ul>
+  </div>
 </div>
 
 <div *ngIf="showAppointmentForm">
@@ -31,5 +45,6 @@
 
 <div *ngIf="showAppointments">
   <button (click)="toggleAppointmentsHistory()">Vrati se na profil</button>
-  <app-dentist-appointment [appointmentIds]="dentist.predstojeciPregledi"  (appointmentsUpdated)="onAppointmentsUpdated($event)"></app-dentist-appointment>
+  <app-dentist-appointment [appointmentIds]="dentist.predstojeciPregledi"
+    (appointmentsUpdated)="onAppointmentsUpdated($event)"></app-dentist-appointment>
 </div>

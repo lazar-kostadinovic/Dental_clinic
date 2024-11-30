@@ -273,8 +273,7 @@ public class StomatologController : ControllerBase
         }
     }
 
-    [AllowAnonymous]
-    [HttpPost("addFreeDay/{idStomatologa}/{datum}")]
+    [HttpPost("addDayOff/{idStomatologa}/{datum}")]
     public IActionResult AddFreeDay(ObjectId idStomatologa, DateTime datum)
     {
         try
@@ -286,6 +285,11 @@ public class StomatologController : ControllerBase
             }
 
             datum = DateTime.SpecifyKind(datum.Date, DateTimeKind.Utc);
+
+            if (stomatolog.SlobodniDani.Contains(datum))
+            {
+                return BadRequest("You already set this day off");
+            }
 
             if (!stomatologService.SetDayOff(idStomatologa, datum))
             {
@@ -299,5 +303,32 @@ public class StomatologController : ControllerBase
             return StatusCode(500, ex.Message);
         }
     }
+
+    [AllowAnonymous]
+    [HttpGet("GetAllDaysOff/{idStomatologa}")]
+    public IActionResult GetAllDaysOff(ObjectId idStomatologa)
+    {
+        try
+        {
+            var stomatolog = stomatologService.Get(idStomatologa);
+
+            if (stomatolog == null)
+            {
+                return NotFound($"Stomatolog sa ID = {idStomatologa} nije pronađen.");
+            }
+
+            var slobodniDani = stomatolog.SlobodniDani
+                .Select(d => DateTime.SpecifyKind(d, DateTimeKind.Utc).ToString("yyyy-MM-dd"))
+                .ToList();
+
+            return Ok(slobodniDani);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Greška: {ex.Message}");
+        }
+    }
+
+
 
 }
