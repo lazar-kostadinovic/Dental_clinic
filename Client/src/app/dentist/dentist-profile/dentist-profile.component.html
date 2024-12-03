@@ -1,4 +1,4 @@
-<div class="profile-container" *ngIf="showProfile">
+<div class="profile-container">
   <h2>Profil stomatologa</h2>
   <div class="profile-image" *ngIf="dentist">
     <div *ngIf="dentist.slika">
@@ -18,10 +18,10 @@
     <p><strong>Broj Telefona:</strong> {{ dentist.brojTelefona }}</p>
     <p><strong>Email:</strong> {{ dentist.email }}</p>
   </div>
-
+  <button (click)="toggleDayOffForm()">Dodaj slobodan dan</button> <br/>
   <button (click)="toggleAppointmentForm()">Zakazi pregled</button>
-  <button (click)="toggleAppointmentsHistory()">Prikaži preglede</button>
-  <button (click)="toggleDayOffForm()">Dodaj slobodan dan</button>
+  <!-- <button (click)="toggleAppointmentsHistory()">Prikaži preglede</button> -->
+
 </div>
 <div *ngIf="showDayOffForm" class="day-off-form">
   <label for="datum">Datum:</label>
@@ -31,7 +31,7 @@
 
   <button (click)="fetchAllDaysOff()">Prikaži sve slobodne dane</button>
   <div *ngIf="daysOff.length > 0" class="day-off-list">
-    <h3>Slobodni dani:</h3>
+    <h3>Neradni dani:</h3>
     <ul>
       <li *ngFor="let day of daysOff">{{ day }}</li>
     </ul>
@@ -39,12 +39,12 @@
 </div>
 
 <div *ngIf="showAppointmentForm">
-  <app-dentist-schedule [dentistId]="dentist.id" [patients]="patients">
-    (appointmentScheduled)="onAppointmentScheduled()" ></app-dentist-schedule>
+  <app-dentist-schedule [dentistId]="dentist.id" [patients]="patients" (appointmentScheduled)="onAppointmentScheduled()" ></app-dentist-schedule>
 </div>
 
-<div *ngIf="showAppointments">
-  <button (click)="toggleAppointmentsHistory()">Vrati se na profil</button>
-  <app-dentist-appointment [appointmentIds]="dentist.predstojeciPregledi"
+<!-- <div *ngIf="showAppointments" class="showAppointments"> -->
+  <div *ngIf="!showAppointmentForm&&!showDayOffForm" class="showAppointments">
+  <!-- <button (click)="toggleAppointmentsHistory()">Vrati se na profil</button> -->
+  <app-dentist-appointment *ngIf="dentist" [appointmentIds]="dentist.predstojeciPregledi"
     (appointmentsUpdated)="onAppointmentsUpdated($event)"></app-dentist-appointment>
 </div>

@@ -81,10 +81,12 @@ public class PregledController : ControllerBase
             {
                 return NotFound($"Stomatolog with Id = {idStomatologa} not found");
             }
-            var allTimeSlots = new List<string> { "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00" };
+            var prvaSmenaTimeSlots = new List<string> { "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00" };
+            var drugaSmenaTimeSlots = new List<string> { "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00" };
+
+            var allTimeSlots = stomatolog.PrvaSmena ? prvaSmenaTimeSlots : drugaSmenaTimeSlots;
             var existingAppointments = pregledService.GetStomatologAppointmentsInDateRange(idStomatologa, datum, datum.AddDays(1));
             var availableTimeSlots = allTimeSlots.Except(existingAppointments.Select(appointment => appointment.Datum.ToUniversalTime().ToString("HH:mm")));
-            // var availableTimeSlots = allTimeSlots.Except(existingAppointments.Select(appointment => appointment.Datum.ToString("HH:mm")));
 
             return Ok(availableTimeSlots);
         }
@@ -93,6 +95,7 @@ public class PregledController : ControllerBase
             return StatusCode(500, ex.Message);
         }
     }
+
 
     [HttpPost]
     public ActionResult<Pregled> Post([FromBody] Pregled pregled)
@@ -194,7 +197,7 @@ public class PregledController : ControllerBase
     }
 
     [HttpPut("updateStatus/{id}/{status}")]
-    public ActionResult updateStatus(ObjectId id, int status)
+    public ActionResult UpdateStatus(ObjectId id, int status)
     {
         var existingPregled = pregledService.Get(id);
 

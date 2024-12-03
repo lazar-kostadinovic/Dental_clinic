@@ -129,5 +129,8 @@ export class PatientProfileComponent {
           console.error('Greska prilikom birsanja profila:', error);
         },
       });
+      localStorage.removeItem('token');
+      localStorage.removeItem('email');
+      localStorage.removeItem('role');
   }
 }

@@ -9,6 +9,7 @@
         Email: {{ stomatolog.email }}<br />
         Telefon: {{ stomatolog.brojTelefona }}<br />
         <button (click)="deleteDentist(stomatolog.id)">Obrisi </button>
+        <button (click)="changeShift(stomatolog.id)">Promeni smenu </button>
       </li>
     </ul>
     <button (click)="navigateToRegisterDentist()">Dodaj novog stomatologa</button>

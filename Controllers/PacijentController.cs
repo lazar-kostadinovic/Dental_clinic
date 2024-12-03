@@ -81,7 +81,8 @@ public class PacijentController : ControllerBase
         .Select(p => new
         {
             Id = p.Id.ToString(),
-            Name = $"{p.Ime} {p.Prezime}"
+            Name = $"{p.Ime} {p.Prezime}",
+            Email = p.Email
         }).ToList();
         return Ok(patients);
     }

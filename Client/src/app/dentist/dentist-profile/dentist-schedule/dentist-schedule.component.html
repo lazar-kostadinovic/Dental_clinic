@@ -13,7 +13,6 @@
       [ngClass]="{ 'disabled-day': isDayDisabled(newAppointment.datum) }"
       (change)="loadAvailableTimeSlots(dentistId, newAppointment.datum)" />
 
-    <!-- ovde bi bilo bolje da koristim angular materials i da u kalendaru dani budu crveni -->
     <label for="vreme">Vreme:</label>
 
     <select id="vreme" [(ngModel)]="newAppointment.vreme" name="vreme" required>
@@ -28,10 +27,10 @@
     <button type="submit" [disabled]="isDayDisabled(newAppointment.datum)">Zakazi</button>
     <button type="button" (click)="resetForm()">Odustani</button>
   </form>
-  <div *ngIf="daysOff.length > 0" class="day-off-list">
-    <h3>Slobodni dani:</h3>
+  <!-- <div *ngIf="daysOff.length > 0" class="day-off-list">
+    <h3>Neradni dani:</h3>
     <ul>
       <li *ngFor="let day of daysOff">{{ day }}</li>
     </ul>
-  </div>
+  </div> -->
 </div>

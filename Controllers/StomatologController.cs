@@ -329,6 +329,36 @@ public class StomatologController : ControllerBase
         }
     }
 
+    [AllowAnonymous]
+    [HttpPut("changeShift/{idStomatologa}")]
+    public IActionResult ChangeShift(string idStomatologa)
+    {
+        if (!ObjectId.TryParse(idStomatologa, out var objectId))
+        {
+            return BadRequest("Invalid ObjectId format.");
+        }
 
+        try
+        {
+            var stomatolog = stomatologService.Get(objectId);
 
+            if (stomatolog == null)
+            {
+                return NotFound($"Stomatolog with ID = {idStomatologa} not found.");
+            }
+
+            var changed = stomatologService.ChangeShift(objectId);
+
+            if (!changed)
+            {
+                return BadRequest($"Unable to change shift for stomatolog with ID = {idStomatologa}.");
+            }
+
+            return Ok(new { message = $"Shift change for stomatolog with ID = {idStomatologa}. New shift: {(!stomatolog.PrvaSmena ? "prva" : "druga")}." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error: {ex.Message}");
+        }
+    }
 }

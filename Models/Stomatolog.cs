@@ -10,7 +10,7 @@ namespace StomatoloskaOrdinacija.Models
         [BsonId]
         public ObjectId Id { get; set; }
         [BsonElement("Slika")]
-        public string Slika { get; set; }
+        public string Slika { get; set; } 
         [BsonElement("Ime")]
         public string Ime { get; set; }
         [BsonElement("Prezime")]
@@ -28,8 +28,11 @@ namespace StomatoloskaOrdinacija.Models
         public UserRole Role { get; set; }
         [BsonElement("Specijalizacija")]
         public Specijalizacija Specijalizacija { get; set; }
+        [BsonElement("PrvaSmena")]
+        public bool PrvaSmena { get; set; } = true;
+
         [BsonElement("SlobodniDani")]
-        public List<DateTime> SlobodniDani {get; set;} = new List<DateTime>();
+        public List<DateTime> SlobodniDani { get; set; } = new List<DateTime>();
         [BsonElement("PredstojeciPregledi")]
         public List<ObjectId> PredstojeciPregledi { get; set; } = new List<ObjectId>();
         public List<ObjectId> KomentariStomatologa { get; set; } = new List<ObjectId>();

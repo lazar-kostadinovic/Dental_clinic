@@ -1,3 +1,6 @@
+:host{
+  flex-grow: 1;
+}
 .appointments-container {
   display: flex;
   flex-direction: column;
@@ -9,6 +12,7 @@
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 200%;
+  flex-grow: 1;
 }
 
 .row {
@@ -30,7 +34,7 @@
 }
 
 .row div {
-  flex: 0 1 calc(14%);
+  width: auto;
   margin-bottom: 15px;
   padding: 15px;
   border: 1px solid #eee;
@@ -56,6 +60,7 @@
 .row div:last-child {
   margin-bottom: 0;
 }
+
 button {
   padding: 10px 15px;
   margin-top: 10px;
@@ -84,4 +89,9 @@ strong {
   color: #555;
   font-size: 18px;
   text-align: center;
+}
+
+.allAppoitnments {
+  display: flex;
+  flex-direction: row;
 }

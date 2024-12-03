@@ -35,26 +35,26 @@ namespace StomatoloskaOrdinacija.Services
         {
             return _stomatolozi.Find(stomatolog => stomatolog.Id == id).FirstOrDefault();
         }
-        
+
         public async Task<Stomatolog> GetStomatologByEmailAsync(string email)
         {
             return await _stomatolozi.Find(stomatolog => stomatolog.Email == email).FirstOrDefaultAsync();
         }
         public List<Stomatolog> GetBySpecijalizacija(Specijalizacija specijalizacija)
         {
-            return _stomatolozi.Find(d => d.Specijalizacija == specijalizacija).ToList();
+            return _stomatolozi.Find(s => s.Specijalizacija == specijalizacija).ToList();
         }
         public Stomatolog GetAndUpdate(ObjectId stomatologId, ObjectId pregledId)
         {
             return _stomatolozi.FindOneAndUpdate(
-            Builders<Stomatolog>.Filter.Eq(d => d.Id, stomatologId),
-            Builders<Stomatolog>.Update.AddToSet(d => d.PredstojeciPregledi, pregledId));
+            Builders<Stomatolog>.Filter.Eq(s => s.Id, stomatologId),
+            Builders<Stomatolog>.Update.AddToSet(s => s.PredstojeciPregledi, pregledId));
         }
         public Stomatolog GetAndAddReview(ObjectId stomatologId, ObjectId pregledId)
         {
             return _stomatolozi.FindOneAndUpdate(
-            Builders<Stomatolog>.Filter.Eq(d => d.Id, stomatologId),
-            Builders<Stomatolog>.Update.AddToSet(d => d.KomentariStomatologa, pregledId));
+            Builders<Stomatolog>.Filter.Eq(s => s.Id, stomatologId),
+            Builders<Stomatolog>.Update.AddToSet(s => s.KomentariStomatologa, pregledId));
         }
 
         public void Remove(ObjectId id)
@@ -103,13 +103,31 @@ namespace StomatoloskaOrdinacija.Services
             return result.ModifiedCount > 0;
         }
 
-        public bool SetDayOff(ObjectId stomatologId,DateTime dayOff)
+        public bool SetDayOff(ObjectId stomatologId, DateTime dayOff)
         {
-            var filter = Builders<Stomatolog>.Filter.Eq(s=>s.Id,stomatologId);
-            var update = Builders<Stomatolog>.Update.AddToSet(s=>s.SlobodniDani,dayOff.Date);
+            var filter = Builders<Stomatolog>.Filter.Eq(s => s.Id, stomatologId);
+            var update = Builders<Stomatolog>.Update.AddToSet(s => s.SlobodniDani, dayOff.Date);
 
-            var result = _stomatolozi.UpdateOne(filter,update);
-            return result.ModifiedCount>0;
+            var result = _stomatolozi.UpdateOne(filter, update);
+            return result.ModifiedCount > 0;
         }
+        public bool ChangeShift(ObjectId stomatologId)
+        {
+            var filter = Builders<Stomatolog>.Filter.Eq(s => s.Id, stomatologId);
+
+            var stomatolog = _stomatolozi.Find(filter).FirstOrDefault();
+            if (stomatolog == null)
+            {
+                throw new InvalidOperationException("Stomatolog sa datim ID-jem ne postoji.");
+            }
+
+            var novaSmena = !stomatolog.PrvaSmena;
+
+            var update = Builders<Stomatolog>.Update.Set(s => s.PrvaSmena, novaSmena);
+            var result = _stomatolozi.UpdateOne(filter, update);
+
+            return result.ModifiedCount > 0;
+        }
+
     }
 }

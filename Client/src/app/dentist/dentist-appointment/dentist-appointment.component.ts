@@ -4,23 +4,32 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, map, switchMap } from 'rxjs';
 import { DateService } from '../../shared/date.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-dentist-appointment',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,FormsModule],
   templateUrl: './dentist-appointment.component.html',
   styleUrl: './dentist-appointment.component.css'
 })
 export class DentistAppointmentComponent {
   @Input() appointmentIds: string[] = [];
   @Output() appointmentsUpdated = new EventEmitter<string[]>(); 
-  pregledList: PregledDTO[] = [];
+  appointmentList : PregledDTO[] = [];
+  filteredAppointmentList : PregledDTO[] = [];
+  filteredAppointmentListForToday : PregledDTO[] = [];
+  pacijentList: { id: string; name: string; email: string}[] = [];
+  selectedPatientId: string = '';
+  hasPastAppointments: boolean = false;
+  hasUpcomingAppointments: boolean = false; 
+  appointmentsForToday=false;
+
   constructor(private http: HttpClient, private dateService: DateService) {}
 
   ngOnInit() {
     this.fetchPatientHistory();
-    console.log(this.appointmentIds);
+    this.fetchAllPatients();
   }
 
   formatDate(utcDate: Date): string {
@@ -43,23 +52,62 @@ export class DentistAppointmentComponent {
 
     if (pregledRequests.length > 0) {
       forkJoin(pregledRequests).subscribe({
-        next: (pregledi) => {
-          this.pregledList = pregledi;
+        next: (appointments) => {
+          this.appointmentList  = appointments;
+          this.filteredAppointmentList  = appointments;
+          this.updateAppointmentIndicators();
         },
         error: (error) => {
-          console.error('Error fetching pregledi or patients:', error);
+          console.error('Error fetching appointments or patients:', error);
         },
       });
     }
   }
+
+  filterAppointmentsForToday() {
+    const today = new Date().setHours(0, 0, 0, 0);
+    this.filteredAppointmentListForToday = this.appointmentList.filter((pregled) => {
+      const pregledDate = new Date(pregled.datum).setHours(0, 0, 0, 0);
+      return pregledDate === today;
+      
+    });
+    this.updateAppointmentIndicators();
+    this.appointmentsForToday=true;
+  }
+  
+
+  fetchAllPatients() {
+    this.http.get<{ id: string;name: string; email:string}[]>(
+      'http://localhost:5001/Pacijent/basic'
+    ).subscribe({
+      next: (patients) => {
+        this.pacijentList = patients;
+        console.log(this.pacijentList)
+      },
+      error: (error) => {
+        console.error('Error fetching patients:', error);
+      },
+    });
+  }
+
+  filterAppointmentsByPatient() {
+    if (this.selectedPatientId) {
+      this.filteredAppointmentList  = this.appointmentList .filter(
+        (pregled) => pregled.idPacijenta === this.selectedPatientId
+      );
+    } else {
+      this.filteredAppointmentList  = [...this.appointmentList ];
+    }
+    this.updateAppointmentIndicators();
+  }
+
   deletePregled(id: string) {
     this.http.delete(`http://localhost:5001/Pregled/${id}`).subscribe({
       next: () => {
-        this.pregledList = this.pregledList.filter((pregled) => pregled.id !== id);
+        this.appointmentList  = this.appointmentList .filter((pregled) => pregled.id !== id);
         this.appointmentIds = this.appointmentIds.filter((appId) => appId !== id);
-
+        this.filterAppointmentsByPatient();
         this.appointmentsUpdated.emit(this.appointmentIds);
-
         alert('Pregled je uspešno obrisan.');
       },
       error: (error) => {
@@ -67,15 +115,9 @@ export class DentistAppointmentComponent {
       },
     });
   }
-  
-  // getStatusLabel(status: string | number): string {
-  //   const statusMap: { '0': string, '1': string, '2': string } = {
-  //     '0': 'Predstojeći',
-  //     '1': 'Prošli',
-  //     '2': 'Otkazan',
-  //   };
 
-  //   return statusMap[status.toString() as '0' | '1' | '2'] || 'Nepoznat status';
-  // }
-
+  updateAppointmentIndicators() {
+    this.hasPastAppointments = this.filteredAppointmentList.some((pregled) => pregled.status === 1);
+    this.hasUpcomingAppointments = this.filteredAppointmentList.some((pregled) => pregled.status === 0);
+  }
 }

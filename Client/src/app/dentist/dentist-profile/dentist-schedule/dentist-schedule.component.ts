@@ -96,7 +96,7 @@ export class DentistScheduleComponent {
     this.http.post(apiUrl, {}).subscribe({
       next: () => {
         alert('Pregled je uspešno zakazan!');
-        this.appointmentScheduled.emit(); // Obavesti roditeljsku komponentu
+        this.appointmentScheduled.emit();
         this.resetForm();
       },
       error: (error) => {
@@ -109,5 +109,6 @@ export class DentistScheduleComponent {
     this.newAppointment = { datum: '', vreme: '', opis: '' };
     this.availableTimeSlots = [];
     this.selectedPatient = null;
+    this.appointmentScheduled.emit();
   }
 }

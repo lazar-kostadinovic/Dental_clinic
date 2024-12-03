@@ -15,10 +15,8 @@ import { DentistScheduleComponent } from './dentist-schedule/dentist-schedule.co
 })
 export class DentistProfileComponent {
   dentist!: StomatologDTO;
-  showHistory = false;
   email: string | null = null;
-  showAppointments = false;
-  showProfile = true;
+  showAppointments = true;
   showDayOffForm =false;
   showAppointmentForm = false;
 
@@ -97,6 +95,7 @@ export class DentistProfileComponent {
 
   toggleAppointmentForm() {
     this.showAppointmentForm = !this.showAppointmentForm;
+    this.showAppointments=!this.showAppointments;
     this.showDayOffForm=false;
     if (this.showAppointmentForm) {
       this.fetchPatients();
@@ -126,7 +125,6 @@ export class DentistProfileComponent {
   
   toggleAppointmentsHistory() {
     this.showAppointments = !this.showAppointments;
-    this.showProfile = !this.showProfile;
     this.showAppointmentForm = false;
     this.showDayOffForm=false;
   }
@@ -138,9 +136,12 @@ export class DentistProfileComponent {
   toggleDayOffForm(){
     this.showDayOffForm=!this.showDayOffForm;
     this.showAppointmentForm=false;
+    this.showAppointments=!this.showAppointments;
   }
 
   submitDayOff(): void {
+
+
     if (!this.selectedDate) {
       alert('Molimo odaberite datum.');
       return;

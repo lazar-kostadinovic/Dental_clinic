@@ -1,24 +1,50 @@
-<div class="appointments-container">
-  <h3>Prošli pregledi</h3>
-  <div class="row">
-    <ng-container *ngFor="let pregled of pregledList">
-      <div *ngIf="pregled.status === 1" class="appointment">
-        <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
-        <p><strong>Opis:</strong> {{ pregled.opis }}</p>
-        <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
-        <button (click)="deletePregled(pregled.id)">Obriši pregled</button>
-      </div>
-    </ng-container>
+<div class="allAppoitnments">
+  <div class="todayAppointments">
+    <button (click)="filterAppointmentsForToday()">Prikaži preglede za danas</button>
+    <h3>Danasnji pregledi</h3>
+    <div class="row" *ngIf="hasPastAppointments">
+      <ng-container *ngFor="let pregled of filteredAppointmentListForToday">
+        <div *ngIf="pregled.status === 1" class="appointment">
+          <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
+          <p><strong>Opis:</strong> {{ pregled.opis }}</p>
+          <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
+          <button (click)="deletePregled(pregled.id)">Obriši pregled</button>
+        </div>
+      </ng-container>
+    </div>
   </div>
-  <h3>Predstojeći pregledi</h3>
-  <div class="row">
-    <ng-container *ngFor="let pregled of pregledList">
-      <div *ngIf="pregled.status === 0" class="appointment">
-        <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
-        <p><strong>Opis:</strong> {{ pregled.opis }}</p>
-        <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
-        <button (click)="deletePregled(pregled.id)">Otkaži pregled</button>
-      </div>
-    </ng-container>
+  <div class="appointments-container">
+    <h3>Filtriraj po pacijentu</h3>
+    <select [(ngModel)]="selectedPatientId" (change)="filterAppointmentsByPatient()">
+      <option value="">Svi pacijenti</option>
+      <option *ngFor="let pacijent of pacijentList" [value]="pacijent.id">
+        {{ pacijent.name }} {{ pacijent.email }}
+      </option>
+    </select>
+
+    <h3>Prošli pregledi</h3>
+    <p *ngIf="!hasPastAppointments">Ovaj pacijent nema prošlih pregleda</p>
+    <div class="row" *ngIf="hasPastAppointments">
+      <ng-container *ngFor="let pregled of filteredAppointmentList">
+        <div *ngIf="pregled.status === 1" class="appointment">
+          <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
+          <p><strong>Opis:</strong> {{ pregled.opis }}</p>
+          <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
+          <button (click)="deletePregled(pregled.id)">Obriši pregled</button>
+        </div>
+      </ng-container>
+    </div>
+    <h3>Predstojeći pregledi</h3>
+    <p *ngIf="!hasUpcomingAppointments">Nema predstojećih pregleda za danas</p>
+    <div class="row" *ngIf="hasUpcomingAppointments">
+      <ng-container *ngFor="let pregled of filteredAppointmentList">
+        <div *ngIf="pregled.status === 0" class="appointment">
+          <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
+          <p><strong>Opis:</strong> {{ pregled.opis }}</p>
+          <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
+          <button (click)="deletePregled(pregled.id)">Otkaži pregled</button>
+        </div>
+      </ng-container>
+    </div>
   </div>
 </div>
