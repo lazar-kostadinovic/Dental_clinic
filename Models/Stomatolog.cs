@@ -29,7 +29,7 @@ namespace StomatoloskaOrdinacija.Models
         [BsonElement("Specijalizacija")]
         public Specijalizacija Specijalizacija { get; set; }
         [BsonElement("SlobodniDani")]
-        public List<DateTime> SlobodniDani {get; set;}
+        public List<DateTime> SlobodniDani {get; set;} = new List<DateTime>();
         [BsonElement("PredstojeciPregledi")]
         public List<ObjectId> PredstojeciPregledi { get; set; } = new List<ObjectId>();
         public List<ObjectId> KomentariStomatologa { get; set; } = new List<ObjectId>();

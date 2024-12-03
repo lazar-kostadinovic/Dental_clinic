@@ -76,7 +76,7 @@ export class PatientAppointmentsComponent implements OnInit {
     );
   }
 
-  deletePregled(id: string) {
+  deleteAppointment(id: string) {
     this.http.delete(`http://localhost:5001/Pregled/${id}`).subscribe({
       next: () => {
         this.pregledList = this.pregledList.filter(
@@ -94,7 +94,7 @@ export class PatientAppointmentsComponent implements OnInit {
     });
   }
 
-  cancelPregled(id: string) {
+  cancelAppointment(id: string) {
     this.http.delete(`http://localhost:5001/Pregled/${id}`).subscribe({
       next: () => {
         this.pregledList = this.pregledList.filter(
@@ -164,7 +164,7 @@ export class PatientAppointmentsComponent implements OnInit {
   }
 
   refreshPregledList() {
-    console.log('Probaaaa osvežavanja liste pregleda');
+    console.log('Proba osvežavanja liste pregleda');
     this.fetchPatientHistory();
   }
 }

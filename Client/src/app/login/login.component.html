@@ -1,16 +1,25 @@
 <div class="login-container">
-    <h2>Prijava</h2> <!-- Added a title for the login form -->
-    <form (ngSubmit)="onLogin()">
-      <label for="email">Email:</label>
-      <input type="email" id="email" [(ngModel)]="loginModel.email" name="email" required />
-      
-      <label for="password">Password:</label>
-      <input type="password" id="password" [(ngModel)]="loginModel.password" name="password" required />
-      
-      <button type="submit">Prijava</button>
-    </form>
-    
-    <div class="register-prompt">
-      <p>Nemate nalog? <a routerLink="/register-patient">Registrujte se ovde</a></p>
+  <h2>Prijava</h2>
+  <form #loginForm="ngForm" (ngSubmit)="onLogin()">
+    <label for="email">Email:</label>
+    <input type="email" id="email" [(ngModel)]="loginModel.email" name="email" required />
+    <div *ngIf="loginForm.submitted && !loginForm.controls['email'].valid" class="error">
+      Email je obavezan.
     </div>
+    <label for="password">Password:</label>
+    <input type="password" id="password" [(ngModel)]="loginModel.password" name="password" required />
+    <div *ngIf="loginForm.submitted && !loginForm.controls['password'].valid" class="error">
+      Password je obavezan.
+    </div>
+
+    <button type="submit">Prijava</button>
+  </form>
+
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <div class="register-prompt">
+    <p>Nemate nalog? <a (click)=" registerPatientFetch()">Registrujte se ovde</a></p>
+  </div>
 </div>

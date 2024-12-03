@@ -1,3 +1,7 @@
+.prvi{
+  display: flex;
+  flex-direction: row;
+}
 .profile-container {
   width: 400px;
   padding: 20px;
@@ -44,10 +48,13 @@ button {
   font-size: 14px;
   transition: background-color 0.3s ease;
 }
-
-button:hover {
-  background-color: #45a049;
+.error{
+  background-color: red;
 }
+
+/* button:hover {
+  background-color: #45a049;
+} */
 
 button:active {
   background-color: #3e8e41;

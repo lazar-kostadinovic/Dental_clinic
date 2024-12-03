@@ -156,7 +156,8 @@ export class DentistProfileComponent {
           console.log('Slobodan dan uspešno dodat:', response);
           alert(`Slobodan dan za ${this.selectedDate} je dodat.`);
           this.selectedDate = null;
-          this.showDayOffForm = false;
+          // this.showDayOffForm = false;
+          this.fetchAllDaysOff()
           this.fetchDentistProfile();
         },
         error: (err) => {

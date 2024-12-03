@@ -7,7 +7,7 @@
         <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
         <p><strong>Opis:</strong> {{ pregled.opis }}</p>
         <p><strong>Stomatolog:</strong> {{ pregled.imeStomatologa }}</p>
-        <button (click)="deletePregled(pregled.id)">Obriši pregled</button>
+        <button (click)="deleteAppointment(pregled.id)">Obriši pregled</button>
         <button (click)="openUpdateForm(pregled.id, pregled.status)">Izmeni opis</button>
       </div>
     </ng-container>
@@ -39,7 +39,7 @@
         <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
         <p><strong>Opis:</strong> {{ pregled.opis }}</p>
         <p><strong>Stomatolog:</strong> {{ pregled.imeStomatologa }}</p>
-        <button (click)="cancelPregled(pregled.id)">Otkaži pregled</button>
+        <button (click)="cancelAppointment(pregled.id)">Otkaži pregled</button>
         <button (click)="openUpdateForm(pregled.id, pregled.status)">Izmeni opis</button>
       </div>
     </ng-container>

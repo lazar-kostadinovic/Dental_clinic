@@ -12,12 +12,16 @@ namespace StomatoloskaOrdinacija.Controllers;
 public class PacijentController : ControllerBase
 {
     private readonly IPacijentService pacijentService;
+    private readonly IStomatologService stomatologService;
+    private readonly IPregledService pregledService;
     private readonly string _pepper;
     private readonly int _iteration;
 
-    public PacijentController(IPacijentService pacijentService, IConfiguration config)
+    public PacijentController(IPacijentService pacijentService, IStomatologService stomatologService, IPregledService pregledService, IConfiguration config)
     {
         this.pacijentService = pacijentService;
+        this.stomatologService = stomatologService;
+        this.pregledService = pregledService;
         _pepper = config["PasswordHasher:Pepper"];
         _iteration = config.GetValue<int>("PasswordHasher:Iteration");
     }
@@ -74,9 +78,9 @@ public class PacijentController : ControllerBase
     public IActionResult GetBasicPatientInfo()
     {
         var patients = pacijentService.Get()
-        .Select(p=> new
+        .Select(p => new
         {
-            Id=p.Id.ToString(),
+            Id = p.Id.ToString(),
             Name = $"{p.Ime} {p.Prezime}"
         }).ToList();
         return Ok(patients);
@@ -165,7 +169,7 @@ public class PacijentController : ControllerBase
         {
             return NotFound($"Pacijent with Id = {id} not found.");
         }
-    
+
         var fileName = $"{Guid.NewGuid()}_{file.FileName}";
         var filePath = Path.Combine("wwwroot", "assets", fileName);
 
@@ -217,13 +221,31 @@ public class PacijentController : ControllerBase
 
         if (pacijent == null)
         {
-            return NotFound($"Pacijent with Id = {id} not found");
+            return NotFound(new { message = $"Pacijent with Id = {id} not found" });
         }
+        var pregledi = pregledService.GetByStomatologId(id);
 
+        foreach (var pregled in pregledi)
+        {
+            var patientId = pregled.IdPacijenta;
+
+            if (!pacijentService.RemoveAppointment(patientId, pregled.Id))
+            {
+                return NotFound(new { message = $"Failed to remove appointment with Id = {pregled.Id} from patient with Id = {patientId}" });
+            }
+
+            if (!stomatologService.RemoveAppointment(id, pregled.Id))
+            {
+                return NotFound(new { message = $"Failed to remove appointment with Id = {pregled.Id} from stomatolog with Id = {id}" });
+            }
+
+            pregledService.Remove(pregled.Id);
+        }
         pacijentService.Remove(pacijent.Id);
 
-        return Ok($"Pacijent with Id = {id} deleted");
+        return Ok(new { message = $"Pacijent with Id = {id} and all associated appointments deleted" });
     }
+
 
     [HttpPost("register")]
     [AllowAnonymous]

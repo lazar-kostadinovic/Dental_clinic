@@ -15,5 +15,6 @@ namespace StomatoloskaOrdinacija.DTOs
         public Specijalizacija Specijalizacija { get; set; }
         public List<string> PredstojeciPregledi { get; set; }
         public List<string> KomentariStomatologa { get; set; }
+        public List<DateTime> SlobodniDani { get; set; }
     }
 }

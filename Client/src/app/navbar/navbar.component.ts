@@ -20,6 +20,7 @@ export class NavbarComponent {
     const token = localStorage.getItem('token');
     const email = localStorage.getItem('email');
     const role = localStorage.getItem('role');
+    
     if(email ==="admin@gmail.com"){
       return '/admin-profile';
     }

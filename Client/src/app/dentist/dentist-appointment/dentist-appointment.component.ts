@@ -68,14 +68,14 @@ export class DentistAppointmentComponent {
     });
   }
   
-  getStatusLabel(status: string | number): string {
-    const statusMap: { '0': string, '1': string, '2': string } = {
-      '0': 'Predstojeći',
-      '1': 'Prošli',
-      '2': 'Otkazan',
-    };
+  // getStatusLabel(status: string | number): string {
+  //   const statusMap: { '0': string, '1': string, '2': string } = {
+  //     '0': 'Predstojeći',
+  //     '1': 'Prošli',
+  //     '2': 'Otkazan',
+  //   };
 
-    return statusMap[status.toString() as '0' | '1' | '2'] || 'Nepoznat status';
-  }
+  //   return statusMap[status.toString() as '0' | '1' | '2'] || 'Nepoznat status';
+  // }
 
 }
