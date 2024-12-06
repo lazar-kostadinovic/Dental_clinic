@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { PregledDTO } from '../../models/pregledDTO.model';
+import { PregledDTO } from '../../../models/pregledDTO.model';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, map, switchMap } from 'rxjs';
-import { DateService } from '../../shared/date.service';
+import { DateService } from '../../../shared/date.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -60,6 +60,7 @@ export class DentistAppointmentComponent {
           this.filteredAppointmentList  = appointments;
           this.updateAppointmentIndicators();
           this.filterAppointmentsForToday();
+          this.sortAppointmentsByDate();
         },
         error: (error) => {
           console.error('Error fetching appointments or patients:', error);
@@ -78,6 +79,7 @@ export class DentistAppointmentComponent {
     this.updateAppointmentIndicators();
     this.appointmentsForToday=true;
     console.log(this.filteredAppointmentListForToday);
+    this.sortAppointmentsByDate();
   }
   
 
@@ -97,14 +99,31 @@ export class DentistAppointmentComponent {
 
   filterAppointmentsByPatient() {
     if (this.selectedPatientId) {
-      this.filteredAppointmentList  = this.appointmentList .filter(
+      this.filteredAppointmentList = this.appointmentList.filter(
         (pregled) => pregled.idPacijenta === this.selectedPatientId
       );
     } else {
-      this.filteredAppointmentList  = [...this.appointmentList ];
+      this.filteredAppointmentList = [...this.appointmentList];
     }
     this.updateAppointmentIndicators();
+  }  
+
+  onPatientSelected() {
+    const selectedPatient = this.pacijentList.find(
+      (pacijent) =>
+        `${pacijent.name} - ${pacijent.email}`.toLowerCase() === this.selectedPatientName.toLowerCase()
+    );
+  
+    if (selectedPatient) {
+      this.selectedPatientId = selectedPatient.id; // Postavite ID pacijenta za filtriranje
+      this.filterAppointmentsByPatient(); // Filtrirajte preglede
+    } else {
+      this.selectedPatientId = ''; // Resetujte ID ako nema odgovarajućeg pacijenta
+      this.filteredAppointmentList = [...this.appointmentList];
+      this.updateAppointmentIndicators();
+    }
   }
+  
 
   deletePregled(id: string) {
     const pregled = this.appointmentList.find((p) => p.id === id);
@@ -155,16 +174,20 @@ export class DentistAppointmentComponent {
     this.hasUpcomingAppointments = this.filteredAppointmentList.some((pregled) => pregled.status === 0);
   }
 
-  filterAppointmentsByPatientName() {
-    const name = this.selectedPatientName.toLowerCase();
-    if (name) {
-      this.filteredAppointmentList = this.appointmentList.filter(
-        (pregled) => pregled.imePacijenta && pregled.imePacijenta.toLowerCase().includes(name)
-      );
-    } else {
-      this.filteredAppointmentList = [...this.appointmentList];
-    }
-    this.updateAppointmentIndicators();
-
+  // filterAppointmentsByPatientName() {
+  //   const name = this.selectedPatientName.toLowerCase();
+  //   if (name) {
+  //     this.filteredAppointmentList = this.appointmentList.filter(
+  //       (pregled) => pregled.imePacijenta && pregled.imePacijenta.toLowerCase().includes(name)
+  //     );
+  //   } else {
+  //     this.filteredAppointmentList = [...this.appointmentList];
+  //   }
+  //   this.updateAppointmentIndicators();
+  // }
+  sortAppointmentsByDate(): void {
+    this.filteredAppointmentList.sort((a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime());
+    this.filteredAppointmentListForToday.sort((a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime());
   }
+  
 }

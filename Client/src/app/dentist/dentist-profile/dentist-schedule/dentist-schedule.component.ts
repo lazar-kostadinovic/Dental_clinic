@@ -15,7 +15,8 @@ export class DentistScheduleComponent {
   @Input() patients: Array<{ id: string; name: string }> = [];
   daysOff: string[] = [];
 
-  @Output() appointmentScheduled = new EventEmitter<void>();
+  @Output() appointmentScheduled = new EventEmitter<string>();
+  @Output() appointmentCanceled = new EventEmitter<void>();
 
   availableTimeSlots: string[] = [];
   newAppointment = {
@@ -80,6 +81,33 @@ export class DentistScheduleComponent {
     );
   }
 
+  // submitAppointment(): void {
+  //   if (
+  //     !this.selectedPatient ||
+  //     !this.newAppointment.datum ||
+  //     !this.newAppointment.vreme
+  //   ) {
+  //     alert('Molimo popunite sva polja.');
+  //     return;
+  //   }
+
+  //   const dateTimeString = `${this.newAppointment.datum}T${this.newAppointment.vreme}`;
+  //   const apiUrl = `http://localhost:5001/Pregled/schedule/${this.dentistId}/${this.selectedPatient}/${dateTimeString}/${this.newAppointment.opis}`;
+
+  //   this.http.post(apiUrl, {}).subscribe({
+  //     next: () => {
+  //       alert('Pregled je uspešno zakazan!');
+  //       console.log(this.newAppointment);
+  //       this.appointmentScheduled.emit();
+  //       this.resetForm();
+  //     },
+  //     error: (error) => {
+  //       console.error('Error scheduling appointment:', error);
+  //     },
+  //   });
+  // }
+
+
   submitAppointment(): void {
     if (
       !this.selectedPatient ||
@@ -89,18 +117,25 @@ export class DentistScheduleComponent {
       alert('Molimo popunite sva polja.');
       return;
     }
-
+  
     const dateTimeString = `${this.newAppointment.datum}T${this.newAppointment.vreme}`;
     const apiUrl = `http://localhost:5001/Pregled/schedule/${this.dentistId}/${this.selectedPatient}/${dateTimeString}/${this.newAppointment.opis}`;
-
+  
     this.http.post(apiUrl, {}).subscribe({
-      next: () => {
-        alert('Pregled je uspešno zakazan!');
-        this.appointmentScheduled.emit();
-        this.resetForm();
+      next: (response: any) => {
+        if (response && response.id) {
+          alert(`Pregled je uspešno zakazan! ID: ${response.id}`);
+          const newAppointmentId = response.id; // Preuzimanje ID-a pregleda
+         
+          console.log('Zakazani pregled:', response); // Log celog objekta za proveru
+          this.appointmentScheduled.emit(newAppointmentId); // Emitovanje ID-a
+          this.resetForm();
+        } else {
+          alert('Zakazivanje uspešno, ali ID nije vraćen.');
+        }
       },
       error: (error) => {
-        console.error('Error scheduling appointment:', error);
+        console.error('Greška pri zakazivanju pregleda:', error);
       },
     });
   }
@@ -109,6 +144,7 @@ export class DentistScheduleComponent {
     this.newAppointment = { datum: '', vreme: '', opis: '' };
     this.availableTimeSlots = [];
     this.selectedPatient = null;
-    this.appointmentScheduled.emit();
+    this.appointmentCanceled.emit();
   }
+  
 }

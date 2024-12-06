@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { StomatologDTO } from '../../models/stomatologDTO.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { DentistAppointmentComponent} from '../dentist-appointment/dentist-appointment.component';
+import { DentistAppointmentComponent} from './dentist-appointment/dentist-appointment.component';
 import { FormsModule } from '@angular/forms';
 import { DentistScheduleComponent } from './dentist-schedule/dentist-schedule.component';
 
@@ -44,7 +44,19 @@ export class DentistProfileComponent {
     this.dentist.predstojeciPregledi = updatedIds; 
     console.log('Roditelj dobio ažuriranu listu ID-ova:', this.dentist.predstojeciPregledi);
   }
-
+  onApointmentCanceled(): void {
+    this.showAppointmentForm = false; 
+    this.fetchDentistProfile(); 
+  }
+  onAppointmentScheduled(newAppointmentId: string): void {
+    this.showAppointmentForm = false; 
+    this.dentist.predstojeciPregledi = [newAppointmentId, ...this.dentist.predstojeciPregledi];
+    this.fetchDentistProfile();
+  }
+ 
+  
+  
+  
   fetchDentistProfile() {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -113,11 +125,6 @@ export class DentistProfileComponent {
         }
       });
   }
-  onAppointmentScheduled(): void {
-    this.showAppointmentForm = false; 
-    this.fetchDentistProfile(); 
-  }
-  
   
   getImageUrl(imageName: string): string {
     return `http://localhost:5001/assets/${imageName}`;

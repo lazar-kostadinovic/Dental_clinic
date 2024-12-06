@@ -143,8 +143,17 @@ public class PregledController : ControllerBase
         pregledService.Create(pregled);
         pacijentService.GetAndUpdate(pregled.IdPacijenta, pregled.Id);
         stomatologService.GetAndUpdate(pregled.IdStomatologa, pregled.Id);
+        var response = new
+        {
+            Id = pregled.Id.ToString(),
+            IdStomatologa = pregled.IdStomatologa,
+            IdPacijenta = pregled.IdPacijenta,
+            Datum = pregled.Datum,
+            Opis = pregled.Opis,
+            Status = pregled.Status
+        };
 
-        return CreatedAtAction(nameof(pregledService.Get), new { id = pregled.Id }, pregled);
+        return CreatedAtAction(nameof(pregledService.Get), new { id = response.Id }, response);
     }
 
     [HttpPut("{id}/{datum}/{opis}")]

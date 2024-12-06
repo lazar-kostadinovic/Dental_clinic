@@ -39,7 +39,7 @@
 </div>
 
 <div *ngIf="showAppointmentForm">
-  <app-dentist-schedule [dentistId]="dentist.id" [patients]="patients" (appointmentScheduled)="onAppointmentScheduled()" ></app-dentist-schedule>
+  <app-dentist-schedule [dentistId]="dentist.id" [patients]="patients" (appointmentScheduled)="onAppointmentScheduled($event)"  (appointmentCanceled)="onApointmentCanceled()"></app-dentist-schedule>
 </div>
 
 <!-- <div *ngIf="showAppointments" class="showAppointments"> -->
