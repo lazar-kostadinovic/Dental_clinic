@@ -63,8 +63,8 @@ export class DentistScheduleComponent {
   }
 
   isDayDisabled(date: string): boolean {
-    console.log('Days off:', this.daysOff);
-    console.log(this.daysOff.includes(date));
+    // console.log('Days off:', this.daysOff);
+    // console.log(this.daysOff.includes(date));
     return this.daysOff.includes(date);
   }
 

@@ -24,6 +24,8 @@ export class DentistAppointmentComponent {
   hasPastAppointments: boolean = false;
   hasUpcomingAppointments: boolean = false; 
   appointmentsForToday=false;
+  selectedPatientName: string = '';
+
 
   constructor(private http: HttpClient, private dateService: DateService) {}
 
@@ -151,5 +153,18 @@ export class DentistAppointmentComponent {
   updateAppointmentIndicators() {
     this.hasPastAppointments = this.filteredAppointmentList.some((pregled) => pregled.status === 1);
     this.hasUpcomingAppointments = this.filteredAppointmentList.some((pregled) => pregled.status === 0);
+  }
+
+  filterAppointmentsByPatientName() {
+    const name = this.selectedPatientName.toLowerCase();
+    if (name) {
+      this.filteredAppointmentList = this.appointmentList.filter(
+        (pregled) => pregled.imePacijenta && pregled.imePacijenta.toLowerCase().includes(name)
+      );
+    } else {
+      this.filteredAppointmentList = [...this.appointmentList];
+    }
+    this.updateAppointmentIndicators();
+
   }
 }

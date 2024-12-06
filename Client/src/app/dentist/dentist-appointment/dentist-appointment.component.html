@@ -14,13 +14,16 @@
     </div>
   </div>
   <div class="appointments-container">
-    <h3>Filtriraj po pacijentu</h3>
-    <select [(ngModel)]="selectedPatientId" (change)="filterAppointmentsByPatient()">
-      <option value="">Svi pacijenti</option>
-      <option *ngFor="let pacijent of pacijentList" [value]="pacijent.id">
-        {{ pacijent.name }} {{ pacijent.email }} {{pacijent.totalSpent}} {{pacijent.debt}}
-      </option>
-    </select>
+    <input
+  list="pacijenti"
+  [(ngModel)]="selectedPatientName"
+  (input)="filterAppointmentsByPatientName()"
+  placeholder="Izaberite ili unesite ime pacijenta"/>
+<datalist id="pacijenti">
+  <option *ngFor="let pacijent of pacijentList" [value]="pacijent.name ">{{pacijent.email}}</option>
+</datalist>
+
+    
     <h3>Prošli pregledi</h3>
     <p *ngIf="!hasPastAppointments">Ovaj pacijent nema prošlih pregleda</p>
     <div class="row" *ngIf="hasPastAppointments">
