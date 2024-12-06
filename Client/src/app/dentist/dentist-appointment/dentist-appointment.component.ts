@@ -19,7 +19,7 @@ export class DentistAppointmentComponent {
   appointmentList : PregledDTO[] = [];
   filteredAppointmentList : PregledDTO[] = [];
   filteredAppointmentListForToday : PregledDTO[] = [];
-  pacijentList: { id: string; name: string; email: string}[] = [];
+  pacijentList: { id: string; name: string; email: string; totalSpent:number; debt:number;}[] = [];
   selectedPatientId: string = '';
   hasPastAppointments: boolean = false;
   hasUpcomingAppointments: boolean = false; 
@@ -30,6 +30,7 @@ export class DentistAppointmentComponent {
   ngOnInit() {
     this.fetchPatientHistory();
     this.fetchAllPatients();
+    //this.filterAppointmentsForToday()
   }
 
   formatDate(utcDate: Date): string {
@@ -56,6 +57,7 @@ export class DentistAppointmentComponent {
           this.appointmentList  = appointments;
           this.filteredAppointmentList  = appointments;
           this.updateAppointmentIndicators();
+          this.filterAppointmentsForToday();
         },
         error: (error) => {
           console.error('Error fetching appointments or patients:', error);
@@ -73,11 +75,12 @@ export class DentistAppointmentComponent {
     });
     this.updateAppointmentIndicators();
     this.appointmentsForToday=true;
+    console.log(this.filteredAppointmentListForToday);
   }
   
 
   fetchAllPatients() {
-    this.http.get<{ id: string;name: string; email:string}[]>(
+    this.http.get<{ id: string;name: string; email:string; totalSpent:number; debt:number;}[]>(
       'http://localhost:5001/Pacijent/basic'
     ).subscribe({
       next: (patients) => {
@@ -102,18 +105,47 @@ export class DentistAppointmentComponent {
   }
 
   deletePregled(id: string) {
-    this.http.delete(`http://localhost:5001/Pregled/${id}`).subscribe({
-      next: () => {
-        this.appointmentList  = this.appointmentList .filter((pregled) => pregled.id !== id);
-        this.appointmentIds = this.appointmentIds.filter((appId) => appId !== id);
-        this.filterAppointmentsByPatient();
-        this.appointmentsUpdated.emit(this.appointmentIds);
-        alert('Pregled je uspešno obrisan.');
-      },
-      error: (error) => {
-        console.error('Greška pri brisanju pregleda:', error);
-      },
-    });
+    const pregled = this.appointmentList.find((p) => p.id === id);
+    if (!pregled) return;
+  
+    const token = localStorage.getItem('token') || '';
+    console.log(token);
+  
+    this.http
+      .delete(`http://localhost:5001/Pregled/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .subscribe({
+        next: () => {
+          this.appointmentList = this.appointmentList.filter((pregled) => pregled.id !== id);
+          this.appointmentIds = this.appointmentIds.filter((appId) => appId !== id);
+          this.filterAppointmentsByPatient();
+          this.appointmentsUpdated.emit(this.appointmentIds);
+  
+          const emailPayload = {
+            toEmail: 'kostadinovicl999@gmail.com',
+            patientName: pregled.imePacijenta,
+            appointmentDate: this.formatDate(pregled.datum),
+          };
+  
+          console.log(emailPayload);
+          this.http
+            .post('http://localhost:5001/api/EmailControler/sendCancellationEmail', emailPayload, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .subscribe({
+              next: () => alert('Pregled je uspešno obrisan i email je poslat pacijentu.'),
+              error: (error) => console.error('Greška pri slanju emaila:', error),
+            });
+        },
+        error: (error) => {
+          console.error('Greška pri brisanju pregleda:', error);
+        },
+      });
   }
 
   updateAppointmentIndicators() {

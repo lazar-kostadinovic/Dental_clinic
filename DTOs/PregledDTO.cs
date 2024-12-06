@@ -5,6 +5,7 @@ namespace StomatoloskaOrdinacija.DTOs
         public string Id { get; set; }
         public string IdStomatologa { get; set; }
         public string IdPacijenta { get; set; }
+        public string PacijentEmail { get; set; } 
         public DateTime Datum { get; set; }
         public string Opis { get; set; }
         public StatusPregleda Status { get; set; }

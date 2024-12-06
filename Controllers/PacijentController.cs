@@ -70,6 +70,8 @@ public class PacijentController : ControllerBase
             BrojTelefona = pacijent.BrojTelefona,
             Email = pacijent.Email,
             Role = pacijent.Role,
+            UkupnoPotroseno = pacijent.UkupnoPotroseno,
+            Dugovanje = pacijent.Dugovanje,
             IstorijaPregleda = pacijent.IstorijaPregleda.Select(id => id.ToString()).ToList()
         };
         return pacijentDTO;
@@ -82,7 +84,9 @@ public class PacijentController : ControllerBase
         {
             Id = p.Id.ToString(),
             Name = $"{p.Ime} {p.Prezime}",
-            Email = p.Email
+            Email = p.Email,
+            totalSpent = p.UkupnoPotroseno,
+            debt = p.Dugovanje,
         }).ToList();
         return Ok(patients);
     }

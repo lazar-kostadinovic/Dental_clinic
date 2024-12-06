@@ -1,7 +1,4 @@
 <div class="prvi">
-
-
-  <div *ngIf="showProfile">
     <div class="profile-container" *ngIf="patient">
       <h2>Profil pacijenta</h2>
       <div class="profile-image">
@@ -29,14 +26,11 @@
       <button (click)="toggleUpdateForm()">Promeni podatke</button>
       <button (click)="deleteAccount()" class="error">Obrisi profil</button>
     </div>
-  </div>
   <div *ngIf="showHistory">
-    <button (click)="toggleHistory()">Prikaži profil</button>
     <app-patient-appointments [appointmentIds]="patient.istorijaPregleda"
       (appointmentsUpdated)="onAppointmentsUpdated($event)"></app-patient-appointments>
   </div>
   <div *ngIf="showDentists">
-    <button (click)="toggleDentists()">Prikaži profil</button>
     <app-schedule-appointment *ngIf="patient?.id" [patientId]="patient!.id"
       (appointmentScheduled)="refreshPregledList()"></app-schedule-appointment>
   </div>

@@ -63,6 +63,7 @@ export class ScheduleAppointmentComponent implements OnInit {
       this.selectedStomatologForAppointment = idStomatologa;
       this.availableTimeSlots = [];
       this.fetchAllDaysOff(idStomatologa);
+      this.selectedStomatologForComments = null;
     }
 
   }
@@ -186,6 +187,7 @@ export class ScheduleAppointmentComponent implements OnInit {
         });
       }
     }
+    this.closeForm();
   }
 
   addComment(stomatologId: string): void {
@@ -279,4 +281,13 @@ export class ScheduleAppointmentComponent implements OnInit {
     this.newAppointment = { datum: '', vreme: '', opis: '' };
     this.availableTimeSlots = [];
   }
+  get formattedDaysOff(): string {
+    return this.daysOff
+      .map((day) => {
+        const date = new Date(day);
+        return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
+      })
+      .join(', ');
+  }
+  
 }

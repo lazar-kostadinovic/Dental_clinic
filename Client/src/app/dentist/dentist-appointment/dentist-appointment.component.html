@@ -1,14 +1,14 @@
 <div class="allAppoitnments">
-  <div class="todayAppointments">
-    <button (click)="filterAppointmentsForToday()">Prikaži preglede za danas</button>
+  <div class="appointmentsForToday">
+    <!-- <button (click)="filterAppointmentsForToday()">Prikaži preglede za danas</button> -->
     <h3>Danasnji pregledi</h3>
-    <div class="row" *ngIf="hasPastAppointments">
+    <div class="row">
       <ng-container *ngFor="let pregled of filteredAppointmentListForToday">
-        <div *ngIf="pregled.status === 1" class="appointment">
+        <div class="appointment">
           <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
           <p><strong>Opis:</strong> {{ pregled.opis }}</p>
           <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
-          <button (click)="deletePregled(pregled.id)">Obriši pregled</button>
+          <button (click)="deletePregled(pregled.id)">Otkazi pregled</button>
         </div>
       </ng-container>
     </div>
@@ -18,10 +18,9 @@
     <select [(ngModel)]="selectedPatientId" (change)="filterAppointmentsByPatient()">
       <option value="">Svi pacijenti</option>
       <option *ngFor="let pacijent of pacijentList" [value]="pacijent.id">
-        {{ pacijent.name }} {{ pacijent.email }}
+        {{ pacijent.name }} {{ pacijent.email }} {{pacijent.totalSpent}} {{pacijent.debt}}
       </option>
     </select>
-
     <h3>Prošli pregledi</h3>
     <p *ngIf="!hasPastAppointments">Ovaj pacijent nema prošlih pregleda</p>
     <div class="row" *ngIf="hasPastAppointments">

@@ -30,6 +30,7 @@ builder.Services.AddScoped<IStomatologService, StomatologService>();
 builder.Services.AddScoped<IPacijentService, PacijentService>();
 builder.Services.AddScoped<IPregledService, PregledService>();
 builder.Services.AddScoped<IOcenaStomatologaService, OcenaStomatologaService>();
+builder.Services.AddScoped<EmailService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

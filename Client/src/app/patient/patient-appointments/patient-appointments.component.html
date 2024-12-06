@@ -3,7 +3,6 @@
   <div class="row">
     <ng-container *ngFor="let pregled of pregledList">
       <div *ngIf="pregled.status === 1" class="appointment">
-        <!-- <p><strong>Datum:</strong> {{ pregled.datum | date : "short" }}</p> -->
         <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
         <p><strong>Opis:</strong> {{ pregled.opis }}</p>
         <p><strong>Stomatolog:</strong> {{ pregled.imeStomatologa }}</p>
@@ -35,7 +34,6 @@
     <ng-container *ngFor="let pregled of pregledList">
       <div *ngIf="!pregled">Nemate zakazanih pregleda</div>
       <div *ngIf="pregled.status === 0" class="appointment">
-        <!-- <p><strong>Datum:</strong> {{ pregled.datum | date : "short" }}</p> -->
         <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
         <p><strong>Opis:</strong> {{ pregled.opis }}</p>
         <p><strong>Stomatolog:</strong> {{ pregled.imeStomatologa }}</p>
@@ -74,6 +72,4 @@
     </ng-container>
   </div>
 </div> -->
-
-
 </div>

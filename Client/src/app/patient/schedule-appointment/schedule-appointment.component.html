@@ -1,5 +1,6 @@
 <div class="home-container">
   <h3>Naši Stomatolozi</h3>
+  
   <div class="filter-container">
     <label for="specijalizacija">Filter po specijalizaciji:</label>
     <select id="specijalizacija" [(ngModel)]="selectedSpecijalizacija" (change)="filterBySpecijalizacija()">
@@ -14,24 +15,18 @@
     <li *ngFor="let stomatolog of stomatolozi">
       <strong>{{ stomatolog.ime }} {{ stomatolog.prezime }}</strong><br />
       <img [src]="getImageUrl(stomatolog.slika)" alt="Profilna slika" class="dentist-image" />
-      Specijalizacija: {{ getSpecijalizacijaLabel(stomatolog.specijalizacija)
-      }}<br />
+      Specijalizacija: {{ getSpecijalizacijaLabel(stomatolog.specijalizacija)}}<br />
       Adresa: {{ stomatolog.adresa }}<br />
       Email: {{ stomatolog.email }}<br />
       Telefon: {{ stomatolog.brojTelefona }}<br />
       <button (click)="openForm(stomatolog.id)">Zakaži pregled</button>
-      <button (click)="showReviews(stomatolog.komentariStomatologa, stomatolog.id)">
-        Prikaži utiske ostalih korisnika
+      <button (click)="showReviews(stomatolog.komentariStomatologa, stomatolog.id)">Prikaži utiske ostalih korisnika
       </button>
 
       <div *ngIf="selectedStomatologForComments === stomatolog.id">
         <h4>Komentari za {{ stomatolog.ime }} {{ stomatolog.prezime }}</h4>
         <ul>
           <li *ngFor="let komentar of komentariStomatologa">
-            <!-- <strong>Pacijent:</strong>{{imePacijenata[komentar.idPacijenta]}}<br />
-            <strong>Komentar:</strong> {{ komentar.komentar }}<br />
-            <strong>Ocena:</strong> {{ komentar.ocena }} / 5<br />
-            <strong>Datum:</strong> {{ komentar.datum | date }} -->
             <strong>{{ imePacijenata[komentar.idPacijenta] }}
               {{ komentar.ocena }}/5<br /></strong>
             {{ komentar.komentar }} <br />
@@ -77,10 +72,7 @@
           <button type="button" (click)="closeForm()">Otkaži</button>
         </form>
         <div *ngIf="daysOff.length > 0" class="day-off-list">
-          <h3>Slobodni dani:</h3>
-          <ul>
-            <li *ngFor="let day of daysOff">{{ day }}</li>
-          </ul>
+          <p class="error">Neradni dani stomatologa: {{ formattedDaysOff }}</p>
         </div>
       </div>
     </li>

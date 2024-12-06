@@ -4,6 +4,7 @@ using StomatoloskaOrdinacija.Services;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using StomatoloskaOrdinacija.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StomatoloskaOrdinacija.Controllers;
 
@@ -221,6 +222,7 @@ public class PregledController : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public ActionResult Delete(ObjectId id)
     {

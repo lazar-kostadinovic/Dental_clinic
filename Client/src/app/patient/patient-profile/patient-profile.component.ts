@@ -23,9 +23,8 @@ import { UpdateProfileComponent } from '../update-profile/update-profile.compone
 export class PatientProfileComponent {
   patient!: PacijentDTO;
   email: string | null = null;
-  showHistory = false;
+  showHistory = true;
   showDentists = false;
-  showProfile = true;
   showUpdateForm = false;
 
   @ViewChild(PatientAppointmentsComponent)
@@ -60,16 +59,18 @@ export class PatientProfileComponent {
 
   toggleHistory() {
     this.showHistory = !this.showHistory;
-    this.showProfile = !this.showProfile;
+    this.showDentists = false;
     this.showUpdateForm = false;
   }
   toggleDentists() {
     this.showDentists = !this.showDentists;
-    this.showProfile = !this.showProfile;
+    this.showHistory = false;
     this.showUpdateForm = false;
   }
   toggleUpdateForm() {
     this.showUpdateForm = !this.showUpdateForm;
+    this.showHistory = false;
+    this.showDentists = false;
   }
 
   triggerFileInput(): void {

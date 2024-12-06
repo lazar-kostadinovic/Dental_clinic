@@ -24,6 +24,12 @@ namespace StomatoloskaOrdinacija.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public string PasswordSalt { get; set; }
+        [BsonElement("UkupnoPotroseno")]
+        public decimal UkupnoPotroseno { get; set; } = 0;
+
+        [BsonElement("Dugovanje")]
+        public decimal Dugovanje { get; set; } = 0;
+
         [BsonElement("Role")]
         public UserRole Role { get; set; }
 
