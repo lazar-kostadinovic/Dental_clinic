@@ -77,3 +77,72 @@ button:disabled {
   border-radius: 50%;
   border: 2px solid #ccc;
 }
+
+#card-element {
+  border: 1px solid #ccc; /* Lagani okvir oko elementa */
+  border-radius: 4px; /* Zaobljeni uglovi */
+  padding: 10px; /* Unutrašnji razmak */
+  font-size: 16px; /* Povećajte font za bolju čitljivost */
+  line-height: 1.5; /* Razmak između redova teksta */
+  background-color: #fff; /* Pozadina treba biti bela */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); /* Meka senka oko elementa */
+  transition: box-shadow 0.3s ease-in-out; /* Glatki prelaz za senku */
+}
+
+/* Kada je fokusiran (kada korisnik unosi podatke) */
+#card-element:focus {
+  border-color: #4caf50; /* Promenite boju okvira na zelenu kada je fokusirano */
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Zeleni svetli okvir */
+}
+
+/* Za greške ili nevalidan unos */
+.StripeElement--invalid {
+  border-color: #f44336; /* Crveni okvir u slučaju greške */
+  background-color: #fff1f1; /* Pozadina se može promeniti u svetlo crvenu */
+}
+
+/* Kada je unos uspešan */
+.StripeElement--valid {
+  border-color: #4caf50; /* Zeleni okvir kada je unos ispravan */
+  background-color: #f1fff1; /* Pozadina se može promeniti u svetlo zelenu */
+}
+.payment-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.payment-modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button.error {
+  background-color: #dc3545;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

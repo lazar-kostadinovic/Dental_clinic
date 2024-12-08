@@ -7,6 +7,8 @@ export interface PacijentDTO {
     brojTelefona: string;
     email: string;
     role: string;
+    ukupnoPotroseno: number;
+    dugovanje: number;
     istorijaPregleda: string[];
   }
   

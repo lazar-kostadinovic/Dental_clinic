@@ -122,3 +122,9 @@ C:\Users\Lazar\Desktop\Dental clinic\obj\Debug\net8.0\refint\StomatoloskaOrdinac
 C:\Users\Lazar\Desktop\Dental clinic\obj\Debug\net8.0\StomatoloskaOrdinacija.pdb
 C:\Users\Lazar\Desktop\Dental clinic\obj\Debug\net8.0\StomatoloskaOrdinacija.genruntimeconfig.cache
 C:\Users\Lazar\Desktop\Dental clinic\obj\Debug\net8.0\ref\StomatoloskaOrdinacija.dll
+C:\Users\Lazar\Desktop\Dental clinic\bin\Debug\net8.0\RestSharp.dll
+C:\Users\Lazar\Desktop\Dental clinic\bin\Debug\net8.0\Stripe.dll
+C:\Users\Lazar\Desktop\Dental clinic\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Users\Lazar\Desktop\Dental clinic\bin\Debug\net8.0\Stripe.net.dll
+C:\Users\Lazar\Desktop\Dental clinic\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+C:\Users\Lazar\Desktop\Dental clinic\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll

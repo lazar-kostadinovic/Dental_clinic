@@ -6,6 +6,9 @@ import { ScheduleAppointmentComponent } from '../schedule-appointment/schedule-a
 import { PatientAppointmentsComponent } from '../patient-appointments/patient-appointments.component';
 import { Router } from '@angular/router';
 import { UpdateProfileComponent } from '../update-profile/update-profile.component';
+import { StripeService } from '../../services/stripe.service';
+import { loadStripe, Stripe } from '@stripe/stripe-js';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-patient-profile',
@@ -16,6 +19,7 @@ import { UpdateProfileComponent } from '../update-profile/update-profile.compone
     ScheduleAppointmentComponent,
     PatientAppointmentsComponent,
     UpdateProfileComponent,
+    FormsModule
   ],
   templateUrl: './patient-profile.component.html',
   styleUrls: ['./patient-profile.component.css'],
@@ -26,16 +30,100 @@ export class PatientProfileComponent {
   showHistory = true;
   showDentists = false;
   showUpdateForm = false;
+  isPaymentFormVisible = false;
+  isPaymentProcessing =false;
+  stripe!: Stripe ;
+  card: any = null; 
+  cardMounted = false;  
+  paymentAmount: number = 0; 
 
   @ViewChild(PatientAppointmentsComponent)
   patientAppointmentsComponent?: PatientAppointmentsComponent;
   @ViewChild('fileInput') fileInput!: ElementRef;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private stripeService: StripeService) {}
   ngOnInit() {
     this.email = localStorage.getItem('email');
     console.log(this.email);
     this.fetchPatientProfile();
+  }
+
+  ngAfterViewInit() {
+    loadStripe('pk_test_51QTXIkG3cGPJ8wzKPtQCYQ5GT5MShiYx6YSxgKz2TWJ5MSWEXfeMlXcBUFvjnGjx73ct443JR2Q9hPOmCuNdlMVt00IuWYFTZW').then(
+      (stripe) => {
+        if (!stripe) {
+          alert('Stripe nije učitan.');
+          return;
+        }
+        this.stripe = stripe;
+      }
+    );
+  }
+
+  handlePayment() {
+    this.isPaymentFormVisible = true;
+    this.isPaymentProcessing = false;
+    this.loadStripeCardElement();
+  }
+
+  loadStripeCardElement() {
+    if (!this.stripe || this.cardMounted) {
+      return;
+    }
+
+    const elements = this.stripe.elements();
+    this.card = elements.create('card');
+    this.card.mount('#card-element');
+    this.cardMounted = true;
+  }
+
+  payNow() {
+    if (!this.stripe || !this.card || this.paymentAmount <= 0) {
+      alert('Molimo vas unesite validan iznos.');
+      return;
+    }
+
+    this.isPaymentProcessing = true;
+
+    this.stripeService.createPaymentIntent(this.paymentAmount).then(
+      (response: { clientSecret: string }) => {
+        this.stripe.confirmCardPayment(response.clientSecret, {
+          payment_method: {
+            card: this.card,
+            billing_details: {
+              name: `${this.patient.ime} ${this.patient.prezime}`,
+            },
+          },
+        }).then((result) => {
+          this.isPaymentProcessing = false;
+
+          if (result.error) {
+            alert(`Došlo je do greške: ${result.error.message}`);
+          } else if (result.paymentIntent?.status === 'succeeded') {
+            alert('Plaćanje uspešno izvršeno!');
+            this.reducePatientDebt(this.patient.id, this.paymentAmount);
+          }
+        });
+      }
+    ).catch((err) => {
+      console.error('Greška prilikom kreiranja Payment Intenta:', err);
+      alert('Došlo je do greške prilikom plaćanja.');
+      this.isPaymentProcessing = false;
+    });
+  }
+
+  reducePatientDebt(patientId: string, amount: number) {
+    this.http.put(`http://localhost:5001/Pacijent/reduceDebt/${patientId}/${amount}`, {}).subscribe({
+      next: (response: any) => {
+        this.patient.dugovanje -= amount;
+        console.log("proba"); 
+        alert(response.message);
+      },
+      error: (err) => {
+        console.error('Greška prilikom smanjenja dugovanja:', err);
+        alert('Došlo je do greške prilikom ažuriranja dugovanja.');
+      }
+    });
   }
 
   onAppointmentsUpdated(updatedIds: string[]) {

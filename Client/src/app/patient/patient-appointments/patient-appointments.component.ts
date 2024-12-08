@@ -77,7 +77,15 @@ export class PatientAppointmentsComponent implements OnInit {
   }
 
   deleteAppointment(id: string) {
-    this.http.delete(`http://localhost:5001/Pregled/${id}`).subscribe({
+   const token = localStorage.getItem('token') || '';
+    console.log(token);
+  
+    this.http
+      .delete(`http://localhost:5001/Pregled/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).subscribe({
       next: () => {
         this.pregledList = this.pregledList.filter(
           (pregled) => pregled.id !== id
@@ -95,7 +103,15 @@ export class PatientAppointmentsComponent implements OnInit {
   }
 
   cancelAppointment(id: string) {
-    this.http.delete(`http://localhost:5001/Pregled/${id}`).subscribe({
+    const token = localStorage.getItem('token') || '';
+    console.log(token);
+  
+    this.http
+      .delete(`http://localhost:5001/Pregled/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).subscribe({
       next: () => {
         this.pregledList = this.pregledList.filter(
           (pregled) => pregled.id !== id

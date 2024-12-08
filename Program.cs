@@ -26,6 +26,9 @@ builder.Services.AddSingleton<IOrdinacijaDatabaseSettings>(sp =>
 builder.Services.AddSingleton<IMongoClient>(s =>
         new MongoClient(builder.Configuration.GetValue<string>("OrdinacijaDatabaseSettings:ConnectionString")));
 
+builder.Services.Configure<StripeSettings>(
+    builder.Configuration.GetSection("Stripe"));
+
 builder.Services.AddScoped<IStomatologService, StomatologService>();
 builder.Services.AddScoped<IPacijentService, PacijentService>();
 builder.Services.AddScoped<IPregledService, PregledService>();

@@ -1,33 +1,48 @@
 <div class="prvi">
-    <div class="profile-container" *ngIf="patient">
-      <h2>Profil pacijenta</h2>
-      <div class="profile-image">
-        <div *ngIf="patient.slika">
-          <img (click)="triggerFileInput()" [src]="getImageUrl(patient.slika)" alt="Profilna slika"
-            class="patient-image" />
+  <div class="profile-container" *ngIf="patient">
+    <h2>Profil pacijenta</h2>
+    <div class="profile-image">
+      <div *ngIf="patient.slika">
+        <img (click)="triggerFileInput()" [src]="getImageUrl(patient.slika)" alt="Profilna slika"
+          class="patient-image" />
 
-          <!-- <button (click)="triggerFileInput()">Promeni sliku</button> -->
-        </div>
-        <div *ngIf="!patient.slika">
-          <p>Nema dostupne slike.</p>
-          <button (click)="triggerFileInput()">Dodaj sliku</button>
-        </div>
-        <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" style="display: none;" />
+        <!-- <button (click)="triggerFileInput()">Promeni sliku</button> -->
       </div>
-
-      <p><strong>Ime:</strong> {{ patient.ime }}</p>
-      <p><strong>Prezime:</strong> {{ patient.prezime }}</p>
-      <p><strong>Adresa:</strong> {{ patient.adresa }}</p>
-      <p><strong>Broj Telefona:</strong> {{ patient.brojTelefona }}</p>
-      <p><strong>Email:</strong> {{ patient.email }}</p>
-
-      <button (click)="toggleHistory()">Prikaži Istoriju Pregleda</button>
-      <button (click)="toggleDentists()">Zakazi pregled</button>
-      <button (click)="toggleUpdateForm()">Promeni podatke</button>
-      <button (click)="deleteAccount()" class="error">Obrisi profil</button>
+      <div *ngIf="!patient.slika">
+        <p>Nema dostupne slike.</p>
+        <button (click)="triggerFileInput()">Dodaj sliku</button>
+      </div>
+      <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" style="display: none;" />
     </div>
+
+    <p><strong>Ime:</strong> {{ patient.ime }}</p>
+    <p><strong>Prezime:</strong> {{ patient.prezime }}</p>
+    <p><strong>Adresa:</strong> {{ patient.adresa }}</p>
+    <p><strong>Broj Telefona:</strong> {{ patient.brojTelefona }}</p>
+    <p><strong>Email:</strong> {{ patient.email }}</p>
+
+    <button (click)="toggleHistory()">Prikaži Istoriju Pregleda</button>
+    <button (click)="toggleDentists()">Zakazi pregled</button>
+    <button (click)="toggleUpdateForm()">Promeni podatke</button>
+
+    <p><strong>Vase dugovanje: {{patient.dugovanje}}</strong></p>
+    <div *ngIf="patient.dugovanje > 0">
+      <button class="error" (click)="handlePayment()">Izmiri dugovanje</button>
+      <!-- <div *ngIf="isPaymentFormVisible"> -->
+
+
+      <label for="paymentAmount">Unesite iznos za plaćanje:</label>
+      <input type="number" id="paymentAmount" [(ngModel)]="paymentAmount" min="1" [max]="patient.dugovanje"
+        placeholder="Unesite iznos" />
+      <div id="card-element"></div>
+      <button (click)="payNow()" [disabled]="isPaymentProcessing">Plati</button>
+    <!-- </div> -->
+    </div>
+    <p *ngIf="patient.dugovanje == 0"><strong>Hvala Vam sto na vreme izmirujete Vasa dugovanja.</strong></p>
+  </div>
+
   <div *ngIf="showHistory">
-    <app-patient-appointments [appointmentIds]="patient.istorijaPregleda"
+    <app-patient-appointments *ngIf="patient" [appointmentIds]="patient.istorijaPregleda"
       (appointmentsUpdated)="onAppointmentsUpdated($event)"></app-patient-appointments>
   </div>
   <div *ngIf="showDentists">
@@ -38,4 +53,6 @@
     <app-update-profile></app-update-profile>
   </div>
 
+
 </div>
+<button (click)="deleteAccount()" class="error">Obrisi profil</button>

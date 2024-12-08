@@ -110,6 +110,8 @@ public class PacijentController : ControllerBase
             BrojTelefona = pacijent.BrojTelefona,
             Email = pacijent.Email,
             Role = pacijent.Role,
+            UkupnoPotroseno = pacijent.UkupnoPotroseno,
+            Dugovanje = pacijent.Dugovanje,
             IstorijaPregleda = pacijent.IstorijaPregleda.Select(id => id.ToString()).ToList()
         };
         return Ok(pacijentDTO);
@@ -194,29 +196,54 @@ public class PacijentController : ControllerBase
     public async Task<ActionResult> Put(string email, string adresa, string brojTelefona, string newEmail)
     {
         var existingPacijent = await pacijentService.GetPacijentByEmailAsync(email);
-        var id = existingPacijent.Id;
         if (existingPacijent == null)
         {
             return NotFound($"Pacijent with Email = {email} not found");
         }
 
-        var pacijent = new Pacijent
-        {
-            Id = existingPacijent.Id,
-            Ime = existingPacijent.Ime,
-            Prezime = existingPacijent.Prezime,
-            Adresa = adresa,
-            BrojTelefona = brojTelefona,
-            Email = newEmail,
-            Password = existingPacijent.Password,
-            PasswordSalt = existingPacijent.PasswordSalt,
-            Role = existingPacijent.Role,
-            IstorijaPregleda = existingPacijent.IstorijaPregleda
-        };
+        // Ažuriramo samo potrebna polja
+        existingPacijent.Adresa = adresa;
+        existingPacijent.BrojTelefona = brojTelefona;
+        existingPacijent.Email = newEmail;
 
-        pacijentService.Update(id, pacijent);
+        pacijentService.Update(existingPacijent.Id, existingPacijent);
 
         return NoContent();
+    }
+
+
+    [HttpPut("reduceDebt/{id}/{amount}")]
+    public IActionResult ReduceDebt(string id, decimal amount)
+    {
+        if (amount <= 0)
+        {
+            return BadRequest("Iznos mora biti veći od nule.");
+        }
+
+        if (!ObjectId.TryParse(id, out var objectId))
+        {
+            return BadRequest("Invalid ObjectId format.");
+        }
+
+        var pacijent = pacijentService.Get(objectId);
+
+        if (pacijent == null)
+        {
+            return NotFound($"Pacijent with Id = {id} not found.");
+        }
+
+        if (amount > pacijent.Dugovanje)
+        {
+            pacijent.Dugovanje = 0;
+        }
+        else
+        {
+            pacijent.Dugovanje -= amount;
+        }
+
+        pacijentService.Update(pacijent.Id, pacijent);
+
+        return Ok(new { message = $"Dugovanje smanjeno za {amount}. Trenutno dugovanje: {pacijent.Dugovanje}." });
     }
 
     [HttpDelete("{id}")]

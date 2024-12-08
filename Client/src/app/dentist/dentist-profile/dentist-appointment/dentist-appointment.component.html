@@ -8,7 +8,7 @@
           <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
           <p><strong>Opis:</strong> {{ pregled.opis }}</p>
           <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
-          <button (click)="deletePregled(pregled.id)">Otkazi pregled</button>
+          <!-- <button (click)="deletePregled(pregled.id)">Otkazi pregled</button> -->
         </div>
       </ng-container>
     </div>
@@ -20,12 +20,7 @@
       <option *ngFor="let pacijent of pacijentList" [value]="pacijent.id ">{{pacijent.email}}</option>
     </datalist> -->
 
-    <input 
-  list="pacijenti" 
-  [(ngModel)]="selectedPatientName" 
-  (input)="onPatientSelected()" 
-  placeholder="Izaberite ili unesite ime pacijenta"
-/>
+    <input list="pacijenti" [(ngModel)]="selectedPatientName" (input)="onPatientSelected()" placeholder="Izaberite ili unesite ime pacijenta"/>
 <datalist id="pacijenti">
   <option *ngFor="let pacijent of pacijentList" [value]="pacijent.name + ' - ' + pacijent.email">
     {{ pacijent.name }} - {{ pacijent.email }}
@@ -34,7 +29,7 @@
 
 
     <h3>Prošli pregledi</h3>
-    <p *ngIf="!hasPastAppointments">Ovaj pacijent nema prošlih pregleda</p>
+    <p *ngIf="!hasPastAppointments">Ovaj pacijent nema prošlih pregleda kod vas</p>
     <div class="row" *ngIf="hasPastAppointments">
       <ng-container *ngFor="let pregled of filteredAppointmentList">
         <div *ngIf="pregled.status === 1" class="appointment">
@@ -46,7 +41,7 @@
       </ng-container>
     </div>
     <h3>Predstojeći pregledi</h3>
-    <p *ngIf="!hasUpcomingAppointments">Nema predstojećih pregleda za danas</p>
+    <p *ngIf="!hasUpcomingAppointments">Ovaj pacijent nema zakazanih pregleda kod vas</p>
     <div class="row" *ngIf="hasUpcomingAppointments">
       <ng-container *ngFor="let pregled of filteredAppointmentList">
         <div *ngIf="pregled.status === 0" class="appointment">
