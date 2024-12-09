@@ -63,7 +63,10 @@ export class PatientProfileComponent {
   handlePayment() {
     this.isPaymentFormVisible = true;
     this.isPaymentProcessing = false;
-    this.loadStripeCardElement();
+    setTimeout(() => {
+      this.loadStripeCardElement();
+    }, 300);
+  
   }
 
   loadStripeCardElement() {

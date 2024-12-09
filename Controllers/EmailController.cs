@@ -34,7 +34,33 @@ namespace StomatoloskaOrdinacija.Controllers
                     "Pregled otkazan",
                     $"Poštovani {request.PatientName},<br><br>Vaš pregled zakazan za {request.AppointmentDate} je otkazan.<br><br>S poštovanjem,<br>Vaša ordinacija"
                 );
-                return Ok(new{message ="Email sent successfully."});
+                return Ok(new { message = "Email sent successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error sending email: {ex.Message}");
+            }
+        }
+
+        [Authorize]
+        [HttpPost("sendWarningEmail")]
+        public async Task<ActionResult> SendWarningEmail([FromBody] WarningEmailRequest request)
+        {
+            try
+            {
+                string subject = "Obaveštenje o dugovanju";
+                string body = $@"
+            Poštovani {request.PatientName},<br><br>
+            Obaveštavamo Vas da imate dugovanje prema našoj ordinaciji u iznosu od {request.Debt} RSD.<br><br>
+            Molimo Vas da izvršite uplatu što je pre moguće kako bismo izbegli dodatne troškove.<br><br>
+            Za sva pitanja ili dodatne informacije, slobodno nas kontaktirajte.<br><br>
+            S poštovanjem,<br>
+            Vaša ordinacija
+        ";
+
+                await _emailService.SendEmailAsync(request.ToEmail, subject, body);
+
+                return Ok(new { message = "Email upozorenja je uspešno poslat." });
             }
             catch (Exception ex)
             {
@@ -48,5 +74,11 @@ namespace StomatoloskaOrdinacija.Controllers
         public string ToEmail { get; set; }
         public string PatientName { get; set; }
         public string AppointmentDate { get; set; }
+    }
+    public class WarningEmailRequest
+    {
+        public string ToEmail { get; set; }
+        public string PatientName { get; set; }
+        public decimal Debt { get; set; }
     }
 }

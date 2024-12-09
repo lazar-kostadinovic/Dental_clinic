@@ -232,12 +232,14 @@ public class PacijentController : ControllerBase
             return NotFound($"Pacijent with Id = {id} not found.");
         }
 
-        if (amount > pacijent.Dugovanje)
-        {
-            pacijent.Dugovanje = 0;
-        }
+        // if (amount > pacijent.Dugovanje)
+        // {
+        //     pacijent.Dugovanje = 0;
+        //     pacijent.UkupnoPotroseno = 
+        // }
         else
         {
+            pacijent.UkupnoPotroseno += amount;
             pacijent.Dugovanje -= amount;
         }
 

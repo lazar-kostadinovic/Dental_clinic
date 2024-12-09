@@ -1,16 +1,36 @@
-<div class="home-container">
+<div *ngIf="!showPatients" class="home-container">
+  <div class="header">
+    <button (click)="togglePatients()">Prikazi pacijente</button>
     <h3>Naši Stomatolozi</h3>
-    <ul>
-      <li *ngFor="let stomatolog of stomatolozi">
-        <strong>{{ stomatolog.ime }} {{ stomatolog.prezime }}</strong><br />
-        <img [src]="getImageUrl(stomatolog.slika)" alt="Profilna slika" class="dentist-image" />
-        Specijalizacija: {{ getSpecijalizacijaLabel(stomatolog.specijalizacija) }}<br />
-        Adresa: {{ stomatolog.adresa }}<br />
-        Email: {{ stomatolog.email }}<br />
-        Telefon: {{ stomatolog.brojTelefona }}<br />
-        <button (click)="deleteDentist(stomatolog.id)">Obrisi </button>
-        <button (click)="changeShift(stomatolog.id)">Promeni smenu </button>
-      </li>
-    </ul>
     <button (click)="navigateToRegisterDentist()">Dodaj novog stomatologa</button>
   </div>
+  <ul>
+    <li *ngFor="let stomatolog of stomatolozi">
+      <strong>{{ stomatolog.ime }} {{ stomatolog.prezime }}</strong><br />
+      <img [src]="getImageUrl(stomatolog.slika)" alt="Profilna slika" class="dentist-image" />
+      Specijalizacija: {{ getSpecijalizacijaLabel(stomatolog.specijalizacija) }}<br />
+      Adresa: {{ stomatolog.adresa }}<br />
+      Email: {{ stomatolog.email }}<br />
+      Telefon: {{ stomatolog.brojTelefona }}<br />
+      <button (click)="deleteDentist(stomatolog.id)">Obrisi </button>
+      <button (click)="changeShift(stomatolog.id)">Promeni smenu </button>
+    </li>
+  </ul>
+  
+</div>
+<div *ngIf="showPatients" class="home-container">
+  <div class="header">
+  <button (click)="togglePatients()">Vrati se stomatologe</button>
+  <h3>Naši Pacijenti</h3>
+  </div>
+  <ul>
+    <li *ngFor="let pacijent of pacijenti">
+      <strong>{{ pacijent.name }}</strong><br />
+      Email: {{ pacijent.email }}<br />
+      Ukupno potrošeno: {{ pacijent.totalSpent | currency:'RSD' }}<br />
+      <p  [ngClass]="{'error': pacijent.debt > 0}"> Dugovanje: {{ pacijent.debt | currency:'RSD' }} </p>
+      <button (click)="sendWarning(pacijent.email,pacijent.name,pacijent.debt)">Posalji upozorenje</button>
+      <button (click)="deletePatient(pacijent.id)">Obrisi </button>
+    </li>
+  </ul>
+</div>

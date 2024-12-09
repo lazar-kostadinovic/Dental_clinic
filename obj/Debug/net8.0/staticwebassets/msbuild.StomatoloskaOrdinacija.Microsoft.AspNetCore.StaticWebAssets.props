@@ -224,6 +224,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\9912ea00-184c-4d88-b63a-57d210a94e4f_slika2.jpeg))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\a0f7c325-5cd9-4d8b-8451-13f023d934c1_pozadina.png))">
+      <SourceType>Package</SourceType>
+      <SourceId>StomatoloskaOrdinacija</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/StomatoloskaOrdinacija</BasePath>
+      <RelativePath>assets/a0f7c325-5cd9-4d8b-8451-13f023d934c1_pozadina.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\a0f7c325-5cd9-4d8b-8451-13f023d934c1_pozadina.png))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\assets\a296f663-0abb-4a74-b06a-4ace0685ae9a_pozadina.png))">
       <SourceType>Package</SourceType>
       <SourceId>StomatoloskaOrdinacija</SourceId>

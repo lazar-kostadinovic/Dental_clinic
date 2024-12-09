@@ -26,9 +26,10 @@
     <button (click)="toggleUpdateForm()">Promeni podatke</button>
 
     <p><strong>Vase dugovanje: {{patient.dugovanje}}</strong></p>
+    {{patient.ukupnoPotroseno}}
     <div *ngIf="patient.dugovanje > 0">
       <button class="error" (click)="handlePayment()">Izmiri dugovanje</button>
-      <!-- <div *ngIf="isPaymentFormVisible"> -->
+      <div *ngIf="isPaymentFormVisible">
 
 
       <label for="paymentAmount">Unesite iznos za plaćanje:</label>
@@ -36,9 +37,9 @@
         placeholder="Unesite iznos" />
       <div id="card-element"></div>
       <button (click)="payNow()" [disabled]="isPaymentProcessing">Plati</button>
-    <!-- </div> -->
     </div>
-    <p *ngIf="patient.dugovanje == 0"><strong>Hvala Vam sto na vreme izmirujete Vasa dugovanja.</strong></p>
+    </div>
+    <p *ngIf="patient.dugovanje <= 0"><strong>Hvala Vam sto na vreme izmirujete Vasa dugovanja.</strong></p>
   </div>
 
   <div *ngIf="showHistory">

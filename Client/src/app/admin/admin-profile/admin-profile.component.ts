@@ -13,13 +13,20 @@ import { Router } from '@angular/router';
 })
 export class AdminProfileComponent {
   stomatolozi: StomatologDTO[] = [];
+  pacijenti: any[] = []; 
   token = localStorage.getItem('token');
+  showPatients=false;
 
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     this.loadStomatolozi();
+    this.loadPacijenti();
     console.log(this.token);
+  }
+
+  togglePatients(){
+    this.showPatients=!this.showPatients;
   }
 
   loadStomatolozi(): void {
@@ -29,12 +36,47 @@ export class AdminProfileComponent {
         this.stomatolozi = data.filter(
           (stomatolog) => stomatolog.email !== 'admin@gmail.com'
         );
-        console.log('Učitali smo stomatologe (bez admina):', this.stomatolozi);
+        console.log('Učitali smo stomatologe:', this.stomatolozi);
       },
       (error) => {
         console.error('Greška prilikom učitavanja stomatologa:', error);
       }
     );
+  }
+
+  loadPacijenti(): void {
+    const apiUrl = 'http://localhost:5001/Pacijent/basic';
+    this.http.get<any[]>(apiUrl).subscribe(
+      (data) => {
+        this.pacijenti = data;
+        console.log('Učitali smo pacijente:', this.pacijenti);
+      },
+      (error) => {
+        console.error('Greška prilikom učitavanja pacijenata:', error);
+      }
+    );
+  }
+
+  sendWarning(email :string,name:string,debt:number){
+    
+    const emailPayload = {
+      // toEmail: email,
+      toEmail: "kostadinovicl999@gmail.com",
+      patientName: name,
+      debt: debt,
+    };
+
+    console.log(emailPayload);
+    this.http
+      .post('http://localhost:5001/api/EmailControler/sendWarningEmail', emailPayload, {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      })
+      .subscribe({
+        next: () => alert('Upozorednje je uspešno poslato pacijentu.'),
+        error: (error) => console.error('Greška pri slanju emaila:', error),
+      });
   }
 
   getSpecijalizacijaLabel(specijalizacija: number): string {
@@ -80,6 +122,39 @@ export class AdminProfileComponent {
         error: (error) => {
           console.error('Greska pri brisanju stomatologa', error);
           alert('Došlo je do greške pri brisanju stomatologa.');
+        },
+      });
+  }
+
+  deletePatient(pacijentId: string) {
+    if (!this.token) {
+      alert('Token nije pronađen!');
+      return;
+    }
+    const confirmation = window.confirm(
+      'Da li ste sigurni da želite da obrišete ovog pacijenta?'
+    );
+
+    if (!confirmation) {
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.token}`,
+    });
+
+    this.http
+      .delete(`http://localhost:5001/Pacijent/${pacijentId}`, { headers })
+      .subscribe({
+        next: () => {
+          this.pacijenti = this.pacijenti.filter(
+            (pacijent) => pacijent.id !== pacijentId
+          );
+          alert('Pacijent je uspesno obrisan.');
+        },
+        error: (error) => {
+          console.error('Greska pri brisanju pacijenta', error);
+          alert('Došlo je do greške pri brisanju pacijenta.');
         },
       });
   }
