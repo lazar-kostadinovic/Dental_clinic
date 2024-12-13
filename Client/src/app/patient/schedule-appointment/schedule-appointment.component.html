@@ -19,6 +19,7 @@
       Adresa: {{ stomatolog.adresa }}<br />
       Email: {{ stomatolog.email }}<br />
       Telefon: {{ stomatolog.brojTelefona }}<br />
+      <button (click)="scheduleNextAppointment(stomatolog.id)">Zakazi prvi sledeci termin</button>
       <button (click)="openForm(stomatolog.id)">Zakaži pregled</button>
       <button (click)="showReviews(stomatolog.komentariStomatologa, stomatolog.id)">Prikaži utiske ostalih korisnika
       </button>

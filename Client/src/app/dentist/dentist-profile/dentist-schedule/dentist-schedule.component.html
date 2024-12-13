@@ -2,11 +2,19 @@
   <h3>Zakazivanje pregleda</h3>
   <form (ngSubmit)="submitAppointment()">
     <label for="patient">Pacijent:</label>
-    <select id="patient" [(ngModel)]="selectedPatient" name="patient" required>
-      <option *ngFor="let patient of patients" [value]="patient.id">
-        {{ patient.name }}
+
+    <input id="patient" list="pacijenti" [(ngModel)]="selectedPatientName" name="patientName"
+      (input)="onPatientSelected()" placeholder="Izaberite ili unesite ime pacijenta" required />
+    <datalist id="pacijenti">
+      <option *ngFor="let patient of patients" [value]="patient.name + ' - ' + patient.email">
+        {{ patient.name }} - {{ patient.email }} 
+        <div *ngIf="patient.debt>0">
+          Ovaj pacijent ima dugovanje od {{patient.debt}}
+  
+        </div>
       </option>
-    </select>
+  
+    </datalist>
 
     <label for="datum">Datum:</label>
     <input id="datum" type="date" [(ngModel)]="newAppointment.datum" name="datum" required [min]="tomorrow"

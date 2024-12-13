@@ -125,6 +125,7 @@ public class StomatologController : ControllerBase
             BrojTelefona = stomatolog.BrojTelefona,
             Email = stomatolog.Email,
             Role = stomatolog.Role,
+            PrvaSmena = stomatolog.PrvaSmena,
             Specijalizacija = stomatolog.Specijalizacija,
             KomentariStomatologa = stomatolog.KomentariStomatologa.Select(id => id.ToString()).ToList(),
             PredstojeciPregledi = stomatolog.PredstojeciPregledi.Select(id => id.ToString()).ToList(),
@@ -175,22 +176,11 @@ public class StomatologController : ControllerBase
             return NotFound($"Stomatolog sa Email = {email} nije pronadjen");
         }
 
-        var stomatolog = new Stomatolog
-        {
-            Id = existingStomatolog.Id,
-            Ime = existingStomatolog.Ime,
-            Prezime = existingStomatolog.Prezime,
-            Adresa = adresa,
-            Email = newEmail,
-            Password = existingStomatolog.Password,
-            PasswordSalt = existingStomatolog.PasswordSalt,
-            BrojTelefona = brojTelefona,
-            Role = existingStomatolog.Role,
-            Specijalizacija = specijalizacija,
-            PredstojeciPregledi = existingStomatolog.PredstojeciPregledi
-        };
-
-        stomatologService.Update(id, stomatolog);
+        existingStomatolog.Adresa = adresa;
+        existingStomatolog.Email = newEmail;
+        existingStomatolog.BrojTelefona = brojTelefona;
+        existingStomatolog.Specijalizacija = specijalizacija;
+        stomatologService.Update(id, existingStomatolog);
 
         return NoContent();
     }
@@ -346,15 +336,17 @@ public class StomatologController : ControllerBase
             {
                 return NotFound($"Stomatolog with ID = {idStomatologa} not found.");
             }
+            stomatolog.PrvaSmena = !stomatolog.PrvaSmena;
 
-            var changed = stomatologService.ChangeShift(objectId);
+            stomatologService.Update(objectId, stomatolog);
+            // var changed = stomatologService.ChangeShift(objectId);
 
-            if (!changed)
-            {
-                return BadRequest($"Unable to change shift for stomatolog with ID = {idStomatologa}.");
-            }
+            // if (!changed)
+            // {
+            //     return BadRequest($"Unable to change shift for stomatolog with ID = {idStomatologa}.");
+            // } New shift: {(!stomatolog.PrvaSmena ? "prva" : "druga")}.
 
-            return Ok(new { message = $"Shift change for stomatolog with ID = {idStomatologa}. New shift: {(!stomatolog.PrvaSmena ? "prva" : "druga")}." });
+            return Ok(new { message = $"Shift change for stomatolog with ID = {idStomatologa}." });
         }
         catch (Exception ex)
         {

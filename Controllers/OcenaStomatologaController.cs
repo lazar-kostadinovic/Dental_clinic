@@ -120,16 +120,10 @@ public class OcenaStomatologaController : ControllerBase
             return NotFound($"Pregled with Id = {id} not found");
         }
 
-        var novaOcena = new OcenaStomatologa
-        {
-            Id = existingReview.Id,
-            IdStomatologa = existingReview.IdStomatologa,
-            IdPacijenta = existingReview.IdPacijenta,
-            Komentar = komentar,
-            Ocena = ocena
-        };
+        existingReview.Komentar = komentar;
+        existingReview.Ocena = ocena;
 
-        ocenaStomatologaService.Update(id, novaOcena);
+        ocenaStomatologaService.Update(id, existingReview);
 
         return NoContent();
     }

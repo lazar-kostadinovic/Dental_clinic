@@ -3,11 +3,12 @@ import { StomatologDTO } from '../../models/stomatologDTO.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './admin-profile.component.html',
   styleUrl: './admin-profile.component.css',
 })
@@ -16,6 +17,9 @@ export class AdminProfileComponent {
   pacijenti: any[] = []; 
   token = localStorage.getItem('token');
   showPatients=false;
+  selectedPatientName: string = '';
+  selectedPatientId: string = '';
+  filteredPatients: any[] = [];
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -49,11 +53,18 @@ export class AdminProfileComponent {
     this.http.get<any[]>(apiUrl).subscribe(
       (data) => {
         this.pacijenti = data;
-        console.log('Učitali smo pacijente:', this.pacijenti);
+        this.filteredPatients = data; 
       },
       (error) => {
         console.error('Greška prilikom učitavanja pacijenata:', error);
       }
+    );
+  }
+  
+  filterPacijenti(): void {
+    const searchValue = this.selectedPatientName.toLowerCase();
+    this.filteredPatients = this.pacijenti.filter((pacijent) =>
+      `${pacijent.name} - ${pacijent.email}`.toLowerCase().includes(searchValue)
     );
   }
 

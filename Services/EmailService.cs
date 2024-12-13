@@ -6,8 +6,8 @@ public class EmailService
 {
     private readonly string _smtpServer = "smtp.gmail.com"; 
     private readonly int _smtpPort = 587; 
-    private readonly string _emailFrom = "lazarpro19@gmail.com";
-    private readonly string _emailPassword = "jojl zymq tvre qhdz";
+    private readonly string _emailFrom = "kostadinovicl999@gmail.com";
+    private readonly string _emailPassword = "zjse qzes zdin eymj";
 
     public async Task SendEmailAsync(string toEmail, string subject, string body)
     {

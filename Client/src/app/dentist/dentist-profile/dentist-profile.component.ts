@@ -22,7 +22,7 @@ export class DentistProfileComponent {
 
   availableTimeSlots: string[] = [];
   selectedDate: string | null = null; 
-  patients: Array<{ id: string; name: string }> = [];
+  patients: Array<{ id: string; name: string; email: string; totalSpent: number; debt:number }> = [];
   selectedPatient: string | null = null;
   daysOff: string[] = []; 
   newAppointment = {
@@ -30,6 +30,7 @@ export class DentistProfileComponent {
     vreme: '',
     opis: '',
   };
+  token = localStorage.getItem('token');
 
   @ViewChild('fileInput') fileInput!: ElementRef;
 
@@ -53,10 +54,12 @@ export class DentistProfileComponent {
     this.dentist.predstojeciPregledi = [newAppointmentId, ...this.dentist.predstojeciPregledi];
     this.fetchDentistProfile();
   }
+
+  getDentistShift(shift:boolean)
+  {
+    return shift===true?" prva":" druga";
+  }
  
-  
-  
-  
   fetchDentistProfile() {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -69,6 +72,7 @@ export class DentistProfileComponent {
       .subscribe({
         next: (dentistData) => {
           this.dentist = dentistData;
+          console.log(this.dentist);
         },
         error: (error) => {
           console.error('Error fetching dentist profile:', error);
@@ -115,7 +119,7 @@ export class DentistProfileComponent {
   }
   
   fetchPatients() {
-    this.http.get<{ id: string; name: string }[]>(`http://localhost:5001/Pacijent/basic`)
+    this.http.get<{id: string; name: string; email: string; totalSpent: number; debt:number}[]>(`http://localhost:5001/Pacijent/basic`)
       .subscribe({
         next: (patientList) => {
           this.patients = patientList;
@@ -196,6 +200,28 @@ export class DentistProfileComponent {
             error.error?.message ||
               'Došlo je do greške prilikom preuzimanja slobodnih dana.'
           );
+        },
+      });
+  }
+
+  changeShift(stomatologId: string) {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.token}`,
+    });
+    this.http
+      .put(
+        `http://localhost:5001/Stomatolog/changeShift/${stomatologId}`,
+        {},
+        { headers }
+      )
+      .subscribe({
+        next: () => {
+          alert('Promenjena smena stomatologa');
+          console.log(this.dentist.prvaSmena);
+          this.fetchDentistProfile();
+        },
+        error: (error) => {
+          alert('Greska prilikom menjanja smene');
         },
       });
   }

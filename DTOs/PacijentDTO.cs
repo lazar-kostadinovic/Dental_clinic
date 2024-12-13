@@ -8,6 +8,7 @@ namespace StomatoloskaOrdinacija.DTOs
         public string Slika { get; set; }
         public string Ime { get; set; }
         public string Prezime { get; set; }
+        public int Godine { get; set; }
         public string Adresa { get; set; }
         public string BrojTelefona { get; set; }
         public string Email { get; set; }

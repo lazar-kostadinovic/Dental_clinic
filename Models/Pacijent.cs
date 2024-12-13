@@ -16,6 +16,9 @@ namespace StomatoloskaOrdinacija.Models
         public string Ime { get; set; }
         [BsonElement("Prezime")]
         public string Prezime { get; set; }
+
+        [BsonElement("Godine")]
+        public int Godine { get; set; }
         [BsonElement("Adresa")]
         public string Adresa { get; set; }
         [BsonElement("BrojTelefona")]

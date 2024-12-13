@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, input } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { PacijentDTO } from '../../../models/pacijentDTO.model';
 
 @Component({
   selector: 'app-dentist-schedule',
@@ -12,7 +13,7 @@ import { CommonModule } from '@angular/common';
 })
 export class DentistScheduleComponent {
   @Input() dentistId!: string;
-  @Input() patients: Array<{ id: string; name: string }> = [];
+  @Input() patients: Array<{ id: string; name: string; email: string; totalSpent: number; debt:number}> = [];
   daysOff: string[] = [];
 
   @Output() appointmentScheduled = new EventEmitter<string>();
@@ -26,6 +27,8 @@ export class DentistScheduleComponent {
   };
   selectedPatient: string | null = null;
   tomorrow: string = '';
+  selectedPatientName: string = '';
+  selectedPatientId: string = '';
 
   constructor(private http: HttpClient) {}
 
@@ -81,36 +84,8 @@ export class DentistScheduleComponent {
     );
   }
 
-  // submitAppointment(): void {
-  //   if (
-  //     !this.selectedPatient ||
-  //     !this.newAppointment.datum ||
-  //     !this.newAppointment.vreme
-  //   ) {
-  //     alert('Molimo popunite sva polja.');
-  //     return;
-  //   }
-
-  //   const dateTimeString = `${this.newAppointment.datum}T${this.newAppointment.vreme}`;
-  //   const apiUrl = `http://localhost:5001/Pregled/schedule/${this.dentistId}/${this.selectedPatient}/${dateTimeString}/${this.newAppointment.opis}`;
-
-  //   this.http.post(apiUrl, {}).subscribe({
-  //     next: () => {
-  //       alert('Pregled je uspešno zakazan!');
-  //       console.log(this.newAppointment);
-  //       this.appointmentScheduled.emit();
-  //       this.resetForm();
-  //     },
-  //     error: (error) => {
-  //       console.error('Error scheduling appointment:', error);
-  //     },
-  //   });
-  // }
-
-
   submitAppointment(): void {
     if (
-      !this.selectedPatient ||
       !this.newAppointment.datum ||
       !this.newAppointment.vreme
     ) {
@@ -119,16 +94,18 @@ export class DentistScheduleComponent {
     }
   
     const dateTimeString = `${this.newAppointment.datum}T${this.newAppointment.vreme}`;
-    const apiUrl = `http://localhost:5001/Pregled/schedule/${this.dentistId}/${this.selectedPatient}/${dateTimeString}/${this.newAppointment.opis}`;
+    // const apiUrl = `http://localhost:5001/Pregled/schedule/${this.dentistId}/${this.selectedPatient}/${dateTimeString}/${this.newAppointment.opis}`;
+    const apiUrl = `http://localhost:5001/Pregled/schedule/${this.dentistId}/${this.selectedPatientId}/${dateTimeString}/${this.newAppointment.opis}`;
+    console.log(apiUrl);
   
     this.http.post(apiUrl, {}).subscribe({
       next: (response: any) => {
         if (response && response.id) {
           alert(`Pregled je uspešno zakazan! ID: ${response.id}`);
-          const newAppointmentId = response.id; // Preuzimanje ID-a pregleda
+          const newAppointmentId = response.id; 
          
-          console.log('Zakazani pregled:', response); // Log celog objekta za proveru
-          this.appointmentScheduled.emit(newAppointmentId); // Emitovanje ID-a
+          console.log('Zakazani pregled:', response);
+          this.appointmentScheduled.emit(newAppointmentId);
           this.resetForm();
         } else {
           alert('Zakazivanje uspešno, ali ID nije vraćen.');
@@ -139,6 +116,21 @@ export class DentistScheduleComponent {
       },
     });
   }
+
+  onPatientSelected() {
+    const selectedPatient = this.patients.find(
+      (pacijent) =>
+        `${pacijent.name} - ${pacijent.email}`.toLowerCase() === this.selectedPatientName.toLowerCase()
+    );
+  
+    if (selectedPatient) {
+      this.selectedPatientId = selectedPatient.id; 
+    
+    } else {
+      this.selectedPatientId = '';
+    }
+  }
+
 
   resetForm(): void {
     this.newAppointment = { datum: '', vreme: '', opis: '' };

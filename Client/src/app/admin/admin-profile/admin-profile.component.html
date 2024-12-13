@@ -23,8 +23,20 @@
   <button (click)="togglePatients()">Vrati se stomatologe</button>
   <h3>Naši Pacijenti</h3>
   </div>
+  <label for="patient">Pacijent:</label>
+
+
+
+  <input id="patient" list="pacijenti" [(ngModel)]="selectedPatientName" name="patientName"
+    (ngModelChange)="filterPacijenti()" placeholder="Izaberite ili unesite ime pacijenta" required />
+  <datalist id="pacijenti">
+    <option *ngFor="let patient of pacijenti" [value]="patient.name + ' - ' + patient.email">
+      {{ patient.name }} - {{ patient.email }} 
+    </option>
+
+  </datalist>
   <ul>
-    <li *ngFor="let pacijent of pacijenti">
+    <li *ngFor="let pacijent of filteredPatients">
       <strong>{{ pacijent.name }}</strong><br />
       Email: {{ pacijent.email }}<br />
       Ukupno potrošeno: {{ pacijent.totalSpent | currency:'RSD' }}<br />

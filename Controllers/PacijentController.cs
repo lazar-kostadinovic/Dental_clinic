@@ -65,6 +65,7 @@ public class PacijentController : ControllerBase
             Id = pacijent.Id.ToString(),
             Slika = pacijent.Slika,
             Ime = pacijent.Ime,
+            Godine = pacijent.Godine,
             Prezime = pacijent.Prezime,
             Adresa = pacijent.Adresa,
             BrojTelefona = pacijent.BrojTelefona,
@@ -84,6 +85,7 @@ public class PacijentController : ControllerBase
         {
             Id = p.Id.ToString(),
             Name = $"{p.Ime} {p.Prezime}",
+            Age = p.Godine,
             Email = p.Email,
             totalSpent = p.UkupnoPotroseno,
             debt = p.Dugovanje,
@@ -106,6 +108,7 @@ public class PacijentController : ControllerBase
             Slika = pacijent.Slika,
             Ime = pacijent.Ime,
             Prezime = pacijent.Prezime,
+            Godine = pacijent.Godine,
             Adresa = pacijent.Adresa,
             BrojTelefona = pacijent.BrojTelefona,
             Email = pacijent.Email,
@@ -201,7 +204,6 @@ public class PacijentController : ControllerBase
             return NotFound($"Pacijent with Email = {email} not found");
         }
 
-        // Ažuriramo samo potrebna polja
         existingPacijent.Adresa = adresa;
         existingPacijent.BrojTelefona = brojTelefona;
         existingPacijent.Email = newEmail;
@@ -235,7 +237,7 @@ public class PacijentController : ControllerBase
         // if (amount > pacijent.Dugovanje)
         // {
         //     pacijent.Dugovanje = 0;
-        //     pacijent.UkupnoPotroseno = 
+        //     pacijent.UkupnoPotroseno += amount;
         // }
         else
         {

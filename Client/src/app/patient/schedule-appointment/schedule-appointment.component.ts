@@ -114,6 +114,30 @@ export class ScheduleAppointmentComponent implements OnInit {
     console.log(this.daysOff.includes(date));
     return this.daysOff.includes(date);
   }
+  scheduleNextAppointment(dentistId:string):void{
+    const apiUrl = `http://localhost:5001/Pregled/scheduleNextAvailable/${dentistId}/${this.patientId}`;
+    console.log(apiUrl);
+    this.http.post(apiUrl, {}).subscribe({
+      next: (response:any) => {
+        const scheduledDate = response?.datum; 
+        const date = new Date(scheduledDate);
+
+        const day = date.getUTCDate();
+        const month = date.toLocaleString('en-US', { month: 'long', timeZone: 'UTC' });
+        const year = date.getUTCFullYear();
+        const hours = date.getUTCHours().toString().padStart(2, '0');
+        const minutes = date.getUTCMinutes().toString().padStart(2, '0'); 
+
+        const formattedMessage = `Pregled je zakazan uspešno za ${day}. ${month} ${year}. u ${hours}:${minutes}!`;
+        alert(`${formattedMessage}!`);
+        this.appointmentScheduled.emit();
+        this.closeForm();
+      },
+      error: (error) => {
+        console.error('Greška pri zakazivanju pregleda:', error);
+      },
+    });
+  }
 
   scheduleAppointment(): void {
     if (

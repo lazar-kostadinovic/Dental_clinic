@@ -2,7 +2,7 @@
   <div class="appointmentsForToday">
     <h3>Danasnji pregledi</h3>
     <div class="row">
-    <h3>Vasi pregledi za danasnji dan:</h3>
+      <h3>Vasi pregledi za danasnji dan:</h3>
       <ng-container *ngFor="let pregled of filteredAppointmentListForToday">
         <div class="appointment">
           <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
@@ -20,12 +20,13 @@
       <option *ngFor="let pacijent of pacijentList" [value]="pacijent.id ">{{pacijent.email}}</option>
     </datalist> -->
 
-    <input list="pacijenti" [(ngModel)]="selectedPatientName" (input)="onPatientSelected()" placeholder="Izaberite ili unesite ime pacijenta"/>
-<datalist id="pacijenti">
-  <option *ngFor="let pacijent of pacijentList" [value]="pacijent.name + ' - ' + pacijent.email">
-    {{ pacijent.name }} - {{ pacijent.email }}
-  </option>
-</datalist>
+    <input list="pacijenti" [(ngModel)]="selectedPatientName" (input)="onPatientSelected()"
+      placeholder="Izaberite ili unesite ime pacijenta" />
+    <datalist id="pacijenti">
+      <option *ngFor="let pacijent of pacijentList" [value]="pacijent.name + ' - ' + pacijent.email">
+        {{ pacijent.name }} - {{ pacijent.email }}
+      </option>
+    </datalist>
 
 
     <h3>Prošli pregledi</h3>

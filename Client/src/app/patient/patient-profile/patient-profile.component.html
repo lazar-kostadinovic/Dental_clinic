@@ -17,6 +17,7 @@
 
     <p><strong>Ime:</strong> {{ patient.ime }}</p>
     <p><strong>Prezime:</strong> {{ patient.prezime }}</p>
+    <p><strong>Godine:</strong> {{ patient.godine }}</p>
     <p><strong>Adresa:</strong> {{ patient.adresa }}</p>
     <p><strong>Broj Telefona:</strong> {{ patient.brojTelefona }}</p>
     <p><strong>Email:</strong> {{ patient.email }}</p>
@@ -26,7 +27,6 @@
     <button (click)="toggleUpdateForm()">Promeni podatke</button>
 
     <p><strong>Vase dugovanje: {{patient.dugovanje}}</strong></p>
-    {{patient.ukupnoPotroseno}}
     <div *ngIf="patient.dugovanje > 0">
       <button class="error" (click)="handlePayment()">Izmiri dugovanje</button>
       <div *ngIf="isPaymentFormVisible">

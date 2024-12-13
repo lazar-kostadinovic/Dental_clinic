@@ -8,6 +8,7 @@ export interface StomatologDTO {
   brojTelefona: string;
   role: string;
   specijalizacija: number;
+  prvaSmena: boolean;
   slobodnidani: Date[];
   predstojeciPregledi: string[];
   komentariStomatologa: string[];
