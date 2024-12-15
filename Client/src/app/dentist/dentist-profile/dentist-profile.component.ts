@@ -5,11 +5,12 @@ import { CommonModule } from '@angular/common';
 import { DentistAppointmentComponent} from './dentist-appointment/dentist-appointment.component';
 import { FormsModule } from '@angular/forms';
 import { DentistScheduleComponent } from './dentist-schedule/dentist-schedule.component';
+import { UnconfirmedAppointmentsComponent } from '../unconfirmed-appointments/unconfirmed-appointments.component';
 
 @Component({
   selector: 'app-dentist-profile',
   standalone: true,
-  imports: [CommonModule, DentistAppointmentComponent,FormsModule,DentistScheduleComponent],
+  imports: [CommonModule, DentistAppointmentComponent,FormsModule,DentistScheduleComponent,UnconfirmedAppointmentsComponent],
   templateUrl: './dentist-profile.component.html',
   styleUrls: ['./dentist-profile.component.css'],
 })
@@ -19,6 +20,7 @@ export class DentistProfileComponent {
   showAppointments = true;
   showDayOffForm =false;
   showAppointmentForm = false;
+  showUnconfirmedAppointments = false;
 
   availableTimeSlots: string[] = [];
   selectedDate: string | null = null; 
@@ -46,6 +48,7 @@ export class DentistProfileComponent {
     console.log('Roditelj dobio ažuriranu listu ID-ova:', this.dentist.predstojeciPregledi);
   }
   onApointmentCanceled(): void {
+    this.showAppointments=true;
     this.showAppointmentForm = false; 
     this.fetchDentistProfile(); 
   }
@@ -113,11 +116,45 @@ export class DentistProfileComponent {
     this.showAppointmentForm = !this.showAppointmentForm;
     this.showAppointments=!this.showAppointments;
     this.showDayOffForm=false;
+    this.showUnconfirmedAppointments = false;
     if (this.showAppointmentForm) {
       this.fetchPatients();
     }
+    this.fetchDentistProfile();
   }
-  
+    
+  toggleAppointmentsHistory() {
+    this.showAppointments = !this.showAppointments;
+    this.showAppointmentForm = false;
+    this.showDayOffForm=false;
+    this.showUnconfirmedAppointments = false;
+    this.fetchDentistProfile();
+  }
+
+  toggleUnconfirmedAppointments() {
+    this.showUnconfirmedAppointments = !this.showUnconfirmedAppointments;
+    this.showAppointments=!this.showAppointments;
+    this.showDayOffForm=false;
+    this.showAppointmentForm=false;
+    this.fetchDentistProfile();
+  }
+
+  toggleDayOffForm(){
+    this.showAppointments=!this.showAppointments;
+    this.showDayOffForm=!this.showDayOffForm;
+    this.showAppointmentForm=false;
+    this.showUnconfirmedAppointments = false;
+    this.fetchDentistProfile();
+  }
+  showButtons(){
+    if(    this.showAppointmentForm == false&&
+      this.showDayOffForm==false&&
+      this.showUnconfirmedAppointments == false)
+      return true
+      else
+      return false;
+  }
+
   fetchPatients() {
     this.http.get<{id: string; name: string; email: string; totalSpent: number; debt:number}[]>(`http://localhost:5001/Pacijent/basic`)
       .subscribe({
@@ -129,25 +166,14 @@ export class DentistProfileComponent {
         }
       });
   }
-  
-  getImageUrl(imageName: string): string {
-    return `http://localhost:5001/assets/${imageName}`;
-  }
-  
-  toggleAppointmentsHistory() {
-    this.showAppointments = !this.showAppointments;
-    this.showAppointmentForm = false;
-    this.showDayOffForm=false;
-  }
+
   closeForm(): void {
     this.newAppointment = { datum: '', vreme: '', opis: '' };
     this.availableTimeSlots = [];
   }
-
-  toggleDayOffForm(){
-    this.showDayOffForm=!this.showDayOffForm;
-    this.showAppointmentForm=false;
-    this.showAppointments=!this.showAppointments;
+  
+  getImageUrl(imageName: string): string {
+    return `http://localhost:5001/assets/${imageName}`;
   }
 
   submitDayOff(): void {

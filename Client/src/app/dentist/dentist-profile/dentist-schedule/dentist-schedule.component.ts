@@ -138,5 +138,4 @@ export class DentistScheduleComponent {
     this.selectedPatient = null;
     this.appointmentCanceled.emit();
   }
-  
 }

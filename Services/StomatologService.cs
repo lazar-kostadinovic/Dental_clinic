@@ -93,7 +93,7 @@ namespace StomatoloskaOrdinacija.Services
             return true;
         }
 
-        public bool RemoveAppointment(ObjectId stomatologId, ObjectId appointmentId)
+        public bool RemoveAppointment(ObjectId? stomatologId, ObjectId appointmentId)
         {
             var filter = Builders<Stomatolog>.Filter.Eq(p => p.Id, stomatologId);
             var update = Builders<Stomatolog>.Update.Pull(p => p.PredstojeciPregledi, appointmentId);

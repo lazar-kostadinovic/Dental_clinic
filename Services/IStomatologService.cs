@@ -14,7 +14,7 @@ namespace StomatoloskaOrdinacija.Services
         Stomatolog Create(Stomatolog pacijent);
         void Update(ObjectId id, Stomatolog stomatolog);
         void Remove(ObjectId id);
-        bool RemoveAppointment(ObjectId stomatologId, ObjectId appointmentId);
+        bool RemoveAppointment(ObjectId? stomatologId, ObjectId appointmentId);
         Task<bool> Register(RegistrationModelStomatolog resource);
         bool SetDayOff(ObjectId stomatologId, DateTime day);
         bool ChangeShift(ObjectId stomatologId);

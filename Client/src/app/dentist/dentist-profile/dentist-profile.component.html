@@ -19,8 +19,10 @@
     <p><strong>Email:</strong> {{ dentist.email }}</p>
 
   </div>
-  <button (click)="toggleDayOffForm()">Dodaj slobodan dan</button> <br/>
-  <button (click)="toggleAppointmentForm()">Zakazi pregled</button>
+  <button *ngIf="!showButtons()" (click)="toggleAppointmentsHistory()">Prikazi preglede</button><br/>
+  <button *ngIf="showButtons()" (click)="toggleDayOffForm()">Dodaj slobodan dan</button> <br/>
+  <button *ngIf="showButtons()" (click)="toggleAppointmentForm()">Zakazi pregled</button><br/>
+  <button *ngIf="showButtons()" (click)="toggleUnconfirmedAppointments()">Prikazi nepotvrdjene preglede</button><br/>
   <p *ngIf="dentist">Vasa trenutna smena je{{ getDentistShift(dentist.prvaSmena)}}</p>
   <button (click)="changeShift(dentist.id)">Promeni smenu</button>
   <!-- <button (click)="toggleAppointmentsHistory()">Prikaži preglede</button> -->
@@ -45,9 +47,11 @@
   <app-dentist-schedule [dentistId]="dentist.id" [patients]="patients" (appointmentScheduled)="onAppointmentScheduled($event)"  (appointmentCanceled)="onApointmentCanceled()"></app-dentist-schedule>
 </div>
 
-<!-- <div *ngIf="showAppointments" class="showAppointments"> -->
-  <div *ngIf="!showAppointmentForm&&!showDayOffForm" class="showAppointments">
-  <!-- <button (click)="toggleAppointmentsHistory()">Vrati se na profil</button> -->
+<div *ngIf="showUnconfirmedAppointments">
+<app-unconfirmed-appointments [dentisId]="dentist.id"></app-unconfirmed-appointments>
+</div>
+
+<div *ngIf="showAppointments" class="showAppointments">
   <app-dentist-appointment *ngIf="dentist" [appointmentIds]="dentist.predstojeciPregledi" [dentistId]="dentist.id"
     (appointmentsUpdated)="onAppointmentsUpdated($event)"></app-dentist-appointment>
 </div>

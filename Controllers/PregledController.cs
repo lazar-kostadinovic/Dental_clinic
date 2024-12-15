@@ -96,7 +96,7 @@ public class PregledController : ControllerBase
             return StatusCode(500, ex.Message);
         }
     }
-    
+
     [HttpGet("availableTimeSlots/{datum}")]
     public ActionResult<IEnumerable<string>> GetAvailableTimeSlots(DateTime datum)
     {
@@ -317,10 +317,10 @@ public class PregledController : ControllerBase
             return NotFound($"Patient with Id = {patientId} or appointment with Id = {id} not found");
         }
 
-        // if (!stomatologService.RemoveAppointment(stomatologId, id))
-        // {
-        //     return NotFound($"Stomatolog with Id = {stomatologId} or appointment with Id = {id} not found");
-        // }
+        if (!stomatologService.RemoveAppointment(stomatologId, id))
+        {
+            return NotFound($"Stomatolog with Id = {stomatologId} or appointment with Id = {id} not found");
+        }
 
         pregledService.Remove(id);
 

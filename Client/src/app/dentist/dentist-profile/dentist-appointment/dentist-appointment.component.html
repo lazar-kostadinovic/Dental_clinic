@@ -1,5 +1,5 @@
 <div class="allAppoitnments">
-  <div class="appointmentsForToday">
+  <div *ngIf="filterAppointmentsForToday.length>0" class="appointmentsForToday">
     <h3>Danasnji pregledi</h3>
     <div class="row">
       <h3>Vasi pregledi za danasnji dan:</h3>
@@ -12,19 +12,7 @@
         </div>
       </ng-container>
     </div>
-    <button (click)="fetchUnconfirmedAppointments()">Prikazi nepotvrdjene preglede</button>
-    <div *ngIf="unconfirmed" class="row">
-      <h3>Nepotvrđeni pregledi</h3>
-      <ng-container *ngFor="let pregled of unconfirmedAppointments">
-        <div class="pregled-item upcoming-pregled">
-          <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
-          <p><strong>Opis:</strong> {{ pregled.opis }}</p>
-          <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
-          <button (click)="takeAppointment(pregled.id)">Preuzmi pregled</button>
-        </div>
-      </ng-container>
-    </div>
-    
+
   </div>
   <div class="appointments-container">
     <!-- <input list="pacijenti" [(ngModel)]="selectedPatientId" (input)="filterAppointmentsByPatientName()"
