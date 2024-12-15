@@ -1,4 +1,15 @@
 <div class="appointments-container">
+    <div class="row">
+      <h3>Nepotvrdjeni pregledi</h3>
+      <ng-container *ngFor="let pregled of pregledList">
+        <div *ngIf="!pregled.idStomatologa" class="pregled-item upcoming-pregled">
+          <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
+          <p><strong>Opis:</strong> {{ pregled.opis }}</p>
+          <p><strong>Stomatolog:</strong> {{ pregled.imeStomatologa }}</p>
+        </div>
+      </ng-container>
+    </div>
+
   <h3>Prošli pregledi</h3>
   <div class="row">
     <ng-container *ngFor="let pregled of pregledList">
@@ -60,16 +71,4 @@
       </form>
     </div>
   </div>
-
-  <!-- <div class="column">
-    <h3>Otkazani pregledi</h3>
-    <ng-container *ngFor="let pregled of pregledList">
-      <div *ngIf="pregled.status === 2" class="pregled-item upcoming-pregled">
-        <p><strong>Datum:</strong> {{ pregled.datum | date : "short" }}</p>
-        <p><strong>Opis:</strong> {{ pregled.opis }}</p>
-        <p><strong>Stomatolog:</strong> {{ pregled.imeStomatologa }}</p>
-      </div>
-    </ng-container>
-  </div>
-</div> -->
 </div>

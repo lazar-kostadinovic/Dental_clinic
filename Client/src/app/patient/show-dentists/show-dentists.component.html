@@ -1,0 +1,81 @@
+<div class="home-container">
+    <h3>Naši Stomatolozi</h3>
+    
+    <div class="filter-container">
+      <label for="specijalizacija">Filter po specijalizaciji:</label>
+      <select id="specijalizacija" [(ngModel)]="selectedSpecijalizacija" (change)="filterBySpecijalizacija()">
+        <option value="">Sve specijalizacije</option>
+        <option *ngFor="let spec of specijalizacije; let i = index" [value]="i">
+          {{ spec }}
+        </option>
+      </select>
+    </div>
+  
+    <ul>
+      <li *ngFor="let stomatolog of stomatolozi">
+        <strong>{{ stomatolog.ime }} {{ stomatolog.prezime }}</strong><br />
+        <img [src]="getImageUrl(stomatolog.slika)" alt="Profilna slika" class="dentist-image" />
+        Specijalizacija: {{ getSpecijalizacijaLabel(stomatolog.specijalizacija)}}<br />
+        Adresa: {{ stomatolog.adresa }}<br />
+        Email: {{ stomatolog.email }}<br />
+        Telefon: {{ stomatolog.brojTelefona }}<br />
+        <button (click)="scheduleNextAppointment(stomatolog.id)">Zakazi prvi sledeci termin</button>
+        <button (click)="openForm(stomatolog.id)">Zakaži pregled</button>
+        <button (click)="showReviews(stomatolog.komentariStomatologa, stomatolog.id)">Prikaži utiske ostalih korisnika
+        </button>
+  
+        <div *ngIf="selectedStomatologForComments === stomatolog.id">
+          <h4>Komentari za {{ stomatolog.ime }} {{ stomatolog.prezime }}</h4>
+          <ul>
+            <li *ngFor="let komentar of komentariStomatologa">
+              <strong>{{ imePacijenata[komentar.idPacijenta] }}
+                {{ komentar.ocena }}/5<br /></strong>
+              {{ komentar.komentar }} <br />
+              {{ komentar.datum | date }}
+            </li>
+          </ul>
+  
+          <h5>Dodaj komentar</h5>
+          <textarea [(ngModel)]="newComment.komentar" placeholder="Unesite komentar"></textarea><br />
+  
+          <div>
+            <label>Ocena:</label>
+            <span *ngFor="let star of [1, 2, 3, 4, 5]">
+              <i class="star" [ngClass]="{ selected: newComment.ocena >= star }" (click)="newComment.ocena = star">★</i>
+            </span>
+          </div>
+  
+          <button (click)="addComment(stomatolog.id)">Dodaj komentar</button>
+        </div>
+  
+        <div *ngIf="selectedStomatologForAppointment === stomatolog.id" class="appointment-form">
+          <h4>
+            Zakazivanje pregleda kod {{ stomatolog.ime }} {{ stomatolog.prezime }}
+          </h4>
+          <form (ngSubmit)="scheduleAppointment()">
+            <label for="datum">Datum:</label>
+            <input id="datum" type="date" [(ngModel)]="newAppointment.datum" name="datum" required [min]="today"
+              [ngClass]="{ 'disabled-day': isDayDisabled(newAppointment.datum) }" (change)="
+                loadAvailableTimeSlots(stomatolog.id, newAppointment.datum)
+              " />
+  
+            <label for="vreme">Vreme:</label>
+            <select id="vreme" [(ngModel)]="newAppointment.vreme" name="vreme" required>
+              <option *ngFor="let timeSlot of availableTimeSlots" [value]="timeSlot">
+                {{ timeSlot }}
+              </option>
+            </select>
+  
+            <label for="opis">Opis:</label>
+            <textarea id="opis" [(ngModel)]="newAppointment.opis" name="opis" required></textarea>
+  
+            <button type="submit" [disabled]="isDayDisabled(newAppointment.datum)">Zakaži</button>
+            <button type="button" (click)="closeForm()">Otkaži</button>
+          </form>
+          <div *ngIf="daysOff.length > 0" class="day-off-list">
+            <p class="error">Neradni dani stomatologa: {{ formattedDaysOff }}</p>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>

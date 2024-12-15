@@ -96,6 +96,41 @@ public class PregledController : ControllerBase
             return StatusCode(500, ex.Message);
         }
     }
+    
+    [HttpGet("availableTimeSlots/{datum}")]
+    public ActionResult<IEnumerable<string>> GetAvailableTimeSlots(DateTime datum)
+    {
+        var allTimeSlots = new List<string> { "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00" };
+        var existingAppointments = pregledService.GetAppointmentsInDateRange(datum.Date, datum.Date.AddDays(1));
+        var existingTimeSlots = existingAppointments.Select(appointment => appointment.Datum.ToUniversalTime().ToString("HH:mm"));
+        var availableTimeSlots = allTimeSlots.Except(existingTimeSlots);
+        return Ok(availableTimeSlots);
+    }
+
+    [HttpPut("assignDentist/{idPregleda}/{idStomatologa}")]
+    public IActionResult AssignDentist(ObjectId idPregleda, ObjectId idStomatologa)
+    {
+        var pregled = pregledService.Get(idPregleda);
+
+        if (pregled == null)
+        {
+            return NotFound($"Pregled with Id = {idPregleda} not found");
+        }
+
+        if (pregled.IdStomatologa != null)
+        {
+            return BadRequest("This appointment already has an assigned dentist.");
+        }
+
+        stomatologService.GetAndUpdate(idStomatologa, pregled.Id);
+
+        pregled.IdStomatologa = idStomatologa;
+        pregledService.Update(idPregleda, pregled);
+
+        return Ok(new { message = "Dentist assigned successfully." });
+    }
+
+
 
 
     [HttpPost]
@@ -105,7 +140,54 @@ public class PregledController : ControllerBase
 
         return CreatedAtAction(nameof(Get), new { id = pregled.Id }, pregled);
     }
-    [HttpPost("schedule/{idStomatologa}/{idPacijenta}/{datum}/{opis}")]
+
+    [HttpPost("schedule/{idPacijenta}/{datum}/{opis}")]
+    public IActionResult ScheduleAppointment(ObjectId idPacijenta, DateTime datum, string opis)
+    {
+        var pregled = new Pregled
+        {
+            IdStomatologa = null,
+            IdPacijenta = idPacijenta,
+            Datum = datum.ToLocalTime(),
+            Opis = opis,
+            Status = StatusPregleda.Predstojeci
+        };
+
+        if (pregled == null)
+        {
+            return BadRequest("Invalid appointment data");
+        }
+
+        var patient = pacijentService.Get(pregled.IdPacijenta);
+        patient.Dugovanje += 1500;
+        pacijentService.Update(pregled.IdPacijenta, patient);
+
+        if (patient == null)
+        {
+            return NotFound("Patient not found");
+        }
+
+        // if (IsAppointmentConflict(pregled))
+        // {
+        //     return BadRequest("Appointment time conflict");
+        // }
+
+        pregledService.Create(pregled);
+        pacijentService.GetAndUpdate(pregled.IdPacijenta, pregled.Id);
+        var response = new
+        {
+            Id = pregled.Id.ToString(),
+            IdStomatologa = pregled.IdStomatologa,
+            IdPacijenta = pregled.IdPacijenta,
+            Datum = pregled.Datum,
+            Opis = pregled.Opis,
+            Status = pregled.Status
+        };
+
+        return CreatedAtAction(nameof(pregledService.Get), new { id = response.Id }, response);
+    }
+
+     [HttpPost("schedule/{idStomatologa}/{idPacijenta}/{datum}/{opis}")]
     public IActionResult ScheduleAppointment(ObjectId idStomatologa, ObjectId idPacijenta, DateTime datum, string opis)
     {
         var pregled = new Pregled
@@ -235,10 +317,10 @@ public class PregledController : ControllerBase
             return NotFound($"Patient with Id = {patientId} or appointment with Id = {id} not found");
         }
 
-        if (!stomatologService.RemoveAppointment(stomatologId, id))
-        {
-            return NotFound($"Stomatolog with Id = {stomatologId} or appointment with Id = {id} not found");
-        }
+        // if (!stomatologService.RemoveAppointment(stomatologId, id))
+        // {
+        //     return NotFound($"Stomatolog with Id = {stomatologId} or appointment with Id = {id} not found");
+        // }
 
         pregledService.Remove(id);
 
@@ -266,69 +348,89 @@ public class PregledController : ControllerBase
         return false;
     }
 
-    [HttpPost("scheduleNextAvailable/{idStomatologa}/{idPacijenta}")]
-    public IActionResult ScheduleNextAvailable(ObjectId idStomatologa, ObjectId idPacijenta)
+    // [HttpPost("scheduleNextAvailable/{idStomatologa}/{idPacijenta}")]
+    // public IActionResult ScheduleNextAvailable(ObjectId idStomatologa, ObjectId idPacijenta)
+    // {
+    //     try
+    //     {
+    //         var stomatolog = stomatologService.Get(idStomatologa);
+    //         if (stomatolog == null)
+    //         {
+    //             return NotFound($"Stomatolog with Id = {idStomatologa} not found");
+    //         }
+
+    //         var patient = pacijentService.Get(idPacijenta);
+    //         patient.Dugovanje += 1500;
+    //         pacijentService.Update(idPacijenta, patient);
+
+    //         var prvaSmenaTimeSlots = new List<string> { "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00" };
+    //         var drugaSmenaTimeSlots = new List<string> { "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00" };
+    //         var allTimeSlots = stomatolog.PrvaSmena ? prvaSmenaTimeSlots : drugaSmenaTimeSlots;
+
+    //         var currentDate = DateTime.Now.Date;
+
+    //         while (true)
+    //         {
+    //             var existingAppointments = pregledService.GetStomatologAppointmentsInDateRange(idStomatologa, currentDate, currentDate.AddDays(1));
+    //             var existingTimeSlots = existingAppointments.Select(appointment => appointment.Datum.ToUniversalTime().ToString("HH:mm"));
+    //             var availableTimeSlots = allTimeSlots.Except(existingTimeSlots).ToList();
+
+    //             if (availableTimeSlots.Any())
+    //             {
+    //                 var nextAvailableTime = DateTime.ParseExact(availableTimeSlots.First(), "HH:mm", CultureInfo.InvariantCulture);
+    //                 var scheduledDateTime = currentDate.AddHours(nextAvailableTime.Hour).AddMinutes(nextAvailableTime.Minute);
+
+    //                 var pregled = new Pregled
+    //                 {
+    //                     IdStomatologa = idStomatologa,
+    //                     IdPacijenta = idPacijenta,
+    //                     Datum = scheduledDateTime,
+    //                     Opis = "opis",
+    //                     Status = StatusPregleda.Predstojeci
+    //                 };
+
+    //                 pregledService.Create(pregled);
+    //                 pacijentService.GetAndUpdate(pregled.IdPacijenta, pregled.Id);
+    //                 stomatologService.GetAndUpdate(pregled.IdStomatologa, pregled.Id);
+
+    //                 return CreatedAtAction(nameof(Get), new { id = pregled.Id }, new
+    //                 {
+    //                     Id = pregled.Id.ToString(),
+    //                     IdStomatologa = pregled.IdStomatologa,
+    //                     IdPacijenta = pregled.IdPacijenta,
+    //                     Datum = pregled.Datum,
+    //                     Opis = pregled.Opis,
+    //                     Status = pregled.Status
+    //                 });
+    //             }
+
+    //             currentDate = currentDate.AddDays(1);
+    //         }
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         return StatusCode(500, ex.Message);
+    //     }
+    // }
+    [HttpGet("unconfirmed")]
+    public ActionResult<List<PregledDTO>> GetUnconfirmedAppointments()
     {
-        try
+        var unconfirmedAppointments = pregledService.GetUnconfirmedAppointments();
+
+        if (unconfirmedAppointments == null || !unconfirmedAppointments.Any())
         {
-            var stomatolog = stomatologService.Get(idStomatologa);
-            if (stomatolog == null)
-            {
-                return NotFound($"Stomatolog with Id = {idStomatologa} not found");
-            }
-
-            var patient = pacijentService.Get(idPacijenta);
-            patient.Dugovanje += 1500;
-            pacijentService.Update(idPacijenta, patient);
-
-            var prvaSmenaTimeSlots = new List<string> { "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00" };
-            var drugaSmenaTimeSlots = new List<string> { "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00" };
-            var allTimeSlots = stomatolog.PrvaSmena ? prvaSmenaTimeSlots : drugaSmenaTimeSlots;
-
-            var currentDate = DateTime.Now.Date;
-
-            while (true)
-            {
-                var existingAppointments = pregledService.GetStomatologAppointmentsInDateRange(idStomatologa, currentDate, currentDate.AddDays(1));
-                var existingTimeSlots = existingAppointments.Select(appointment => appointment.Datum.ToUniversalTime().ToString("HH:mm"));
-                var availableTimeSlots = allTimeSlots.Except(existingTimeSlots).ToList();
-
-                if (availableTimeSlots.Any())
-                {
-                    var nextAvailableTime = DateTime.ParseExact(availableTimeSlots.First(), "HH:mm", CultureInfo.InvariantCulture);
-                    var scheduledDateTime = currentDate.AddHours(nextAvailableTime.Hour).AddMinutes(nextAvailableTime.Minute);
-
-                    var pregled = new Pregled
-                    {
-                        IdStomatologa = idStomatologa,
-                        IdPacijenta = idPacijenta,
-                        Datum = scheduledDateTime,
-                        Opis = "opis",
-                        Status = StatusPregleda.Predstojeci
-                    };
-
-                    pregledService.Create(pregled);
-                    pacijentService.GetAndUpdate(pregled.IdPacijenta, pregled.Id);
-                    stomatologService.GetAndUpdate(pregled.IdStomatologa, pregled.Id);
-
-                    return CreatedAtAction(nameof(Get), new { id = pregled.Id }, new
-                    {
-                        Id = pregled.Id.ToString(),
-                        IdStomatologa = pregled.IdStomatologa,
-                        IdPacijenta = pregled.IdPacijenta,
-                        Datum = pregled.Datum,
-                        Opis = pregled.Opis,
-                        Status = pregled.Status
-                    });
-                }
-
-                currentDate = currentDate.AddDays(1);
-            }
+            return NotFound("No unconfirmed appointments found.");
         }
-        catch (Exception ex)
+
+        var unconfirmedAppointmentsDTO = unconfirmedAppointments.Select(appointment => new PregledDTO
         {
-            return StatusCode(500, ex.Message);
-        }
+            Id = appointment.Id.ToString(),
+            IdPacijenta = appointment.IdPacijenta.ToString(),
+            Datum = appointment.Datum,
+            Opis = appointment.Opis
+        }).ToList();
+
+        return Ok(unconfirmedAppointmentsDTO);
     }
 
 }

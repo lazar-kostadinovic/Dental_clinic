@@ -48,6 +48,6 @@
 <!-- <div *ngIf="showAppointments" class="showAppointments"> -->
   <div *ngIf="!showAppointmentForm&&!showDayOffForm" class="showAppointments">
   <!-- <button (click)="toggleAppointmentsHistory()">Vrati se na profil</button> -->
-  <app-dentist-appointment *ngIf="dentist" [appointmentIds]="dentist.predstojeciPregledi"
+  <app-dentist-appointment *ngIf="dentist" [appointmentIds]="dentist.predstojeciPregledi" [dentistId]="dentist.id"
     (appointmentsUpdated)="onAppointmentsUpdated($event)"></app-dentist-appointment>
 </div>

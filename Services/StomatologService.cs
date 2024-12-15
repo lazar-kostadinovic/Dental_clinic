@@ -31,7 +31,7 @@ namespace StomatoloskaOrdinacija.Services
             return _stomatolozi.Find(stomatolog => true).ToList();
         }
 
-        public Stomatolog Get(ObjectId id)
+        public Stomatolog Get(ObjectId? id)
         {
             return _stomatolozi.Find(stomatolog => stomatolog.Id == id).FirstOrDefault();
         }
@@ -44,7 +44,7 @@ namespace StomatoloskaOrdinacija.Services
         {
             return _stomatolozi.Find(s => s.Specijalizacija == specijalizacija).ToList();
         }
-        public Stomatolog GetAndUpdate(ObjectId stomatologId, ObjectId pregledId)
+        public Stomatolog GetAndUpdate(ObjectId? stomatologId, ObjectId pregledId)
         {
             return _stomatolozi.FindOneAndUpdate(
             Builders<Stomatolog>.Filter.Eq(s => s.Id, stomatologId),

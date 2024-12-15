@@ -70,5 +70,22 @@ namespace StomatoloskaOrdinacija.Services
 
             return _pregledi.Find(filter).ToList();
         }
+
+        public List<Pregled> GetAppointmentsInDateRange(DateTime startDate, DateTime endDate)
+        {
+            var filter = Builders<Pregled>.Filter.And(
+                Builders<Pregled>.Filter.Gte(p => p.Datum, startDate),
+                Builders<Pregled>.Filter.Lte(p => p.Datum, endDate)
+            );
+
+            return _pregledi.Find(filter).ToList();
+        }
+
+        public List<Pregled> GetUnconfirmedAppointments()
+        {
+            var filter = Builders<Pregled>.Filter.Eq(p => p.IdStomatologa, null);
+            return _pregledi.Find(filter).ToList();
+        }
+
     }
 }

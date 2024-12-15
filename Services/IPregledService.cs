@@ -13,5 +13,8 @@ namespace StomatoloskaOrdinacija.Services
         void UpdatePregledStatuses();
         void Remove(ObjectId id);
         List<Pregled> GetStomatologAppointmentsInDateRange(ObjectId idStomatologa, DateTime startDate, DateTime endDate);
+        List<Pregled> GetAppointmentsInDateRange(DateTime startDate, DateTime endDate);
+        List<Pregled> GetUnconfirmedAppointments();
+
     }
 }

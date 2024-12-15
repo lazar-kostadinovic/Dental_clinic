@@ -10,7 +10,7 @@ namespace StomatoloskaOrdinacija.Models
         [BsonId]
         public ObjectId Id { get; set; }
         [BsonElement("IdStomatologa")]
-        public ObjectId IdStomatologa { get; set; }
+        public ObjectId? IdStomatologa { get; set; }
         [BsonElement("IdPacijenta")]
         public ObjectId IdPacijenta { get; set; }
         [BsonElement("Datum")]

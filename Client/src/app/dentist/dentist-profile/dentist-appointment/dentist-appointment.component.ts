@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class DentistAppointmentComponent {
   @Input() appointmentIds: string[] = [];
+  @Input() dentistId!:string;
   @Output() appointmentsUpdated = new EventEmitter<string[]>(); 
   appointmentList : PregledDTO[] = [];
   filteredAppointmentList : PregledDTO[] = [];
@@ -24,7 +25,10 @@ export class DentistAppointmentComponent {
   hasPastAppointments: boolean = false;
   hasUpcomingAppointments: boolean = false; 
   appointmentsForToday=false;
+  unconfirmed=false;
   selectedPatientName: string = '';
+  
+  unconfirmedAppointments: PregledDTO[] = [];
 
 
   constructor(private http: HttpClient, private dateService: DateService) {}
@@ -32,7 +36,8 @@ export class DentistAppointmentComponent {
   ngOnInit() {
     this.fetchPatientHistory();
     this.fetchAllPatients();
-    //this.filterAppointmentsForToday()
+    // this.fetchUnconfirmedAppointments(); 
+    // this.filterAppointmentsForToday()
   }
 
   formatDate(utcDate: Date): string {
@@ -68,6 +73,47 @@ export class DentistAppointmentComponent {
       });
     }
   }
+  fetchUnconfirmedAppointments() {
+    this.unconfirmed=true;
+    const token = localStorage.getItem('token');
+    
+    this.http.get<PregledDTO[]>('http://localhost:5001/Pregled/unconfirmed', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .pipe(
+        switchMap((appointments) => {
+          const appointmentRequests = appointments.map((pregled) =>
+            this.http
+              .get<{ ime: string; prezime: string }>(
+                `http://localhost:5001/Pacijent/getDTO/${pregled.idPacijenta}`
+              )
+              .pipe(
+                map((patient) => ({
+                  ...pregled,
+                  imePacijenta: `${patient.ime} ${patient.prezime}`,
+                }))
+              )
+          );
+  
+          return forkJoin(appointmentRequests);
+        })
+      )
+      .subscribe({
+        next: (appointmentsWithPatientNames) => {
+          this.unconfirmedAppointments = appointmentsWithPatientNames;
+          console.log(
+            'Nepotvrđeni pregledi sa imenima pacijenata:',
+            this.unconfirmedAppointments
+          );
+        },
+        error: (error) => {
+          console.error('Greška pri dobijanju nepotvrđenih pregleda:', error);
+        },
+      });
+  }
+  
 
   filterAppointmentsForToday() {
     const today = new Date().setHours(0, 0, 0, 0);
@@ -115,10 +161,10 @@ export class DentistAppointmentComponent {
     );
   
     if (selectedPatient) {
-      this.selectedPatientId = selectedPatient.id; // Postavite ID pacijenta za filtriranje
-      this.filterAppointmentsByPatient(); // Filtrirajte preglede
+      this.selectedPatientId = selectedPatient.id;
+      this.filterAppointmentsByPatient();
     } else {
-      this.selectedPatientId = ''; // Resetujte ID ako nema odgovarajućeg pacijenta
+      this.selectedPatientId = '';
       this.filteredAppointmentList = [...this.appointmentList];
       this.updateAppointmentIndicators();
     }
@@ -174,20 +220,43 @@ export class DentistAppointmentComponent {
     this.hasUpcomingAppointments = this.filteredAppointmentList.some((pregled) => pregled.status === 0);
   }
 
-  // filterAppointmentsByPatientName() {
-  //   const name = this.selectedPatientName.toLowerCase();
-  //   if (name) {
-  //     this.filteredAppointmentList = this.appointmentList.filter(
-  //       (pregled) => pregled.imePacijenta && pregled.imePacijenta.toLowerCase().includes(name)
-  //     );
-  //   } else {
-  //     this.filteredAppointmentList = [...this.appointmentList];
-  //   }
-  //   this.updateAppointmentIndicators();
-  // }
   sortAppointmentsByDate(): void {
     this.filteredAppointmentList.sort((a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime());
     this.filteredAppointmentListForToday.sort((a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime());
+  }
+
+  takeAppointment(appointmentId: string) {
+    const token = localStorage.getItem('token');
+  
+    this.http
+      .put(`http://localhost:5001/Pregled/assignDentist/${appointmentId}/${this.dentistId}`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .subscribe({
+        next: () => {
+          alert('Uspešno ste preuzeli pregled.');
+  
+          // Pronađite pregled u unconfirmedAppointments i dodajte ga u predstojeće preglede
+          const confirmedAppointment = this.unconfirmedAppointments.find(
+            (appointment) => appointment.id === appointmentId
+          );
+  
+          if (confirmedAppointment) {
+            this.unconfirmedAppointments=this.unconfirmedAppointments.filter((app)=>app.id!=confirmedAppointment.id);
+            this.appointmentList = [...this.appointmentList, confirmedAppointment];
+            this.filteredAppointmentList = [...this.filteredAppointmentList, confirmedAppointment];
+            this.updateAppointmentIndicators();
+          }
+  
+          this.appointmentIds = [...this.appointmentIds, appointmentId];
+        },
+        error: (error) => {
+          console.error('Greška pri preuzimanju pregleda:', error);
+          alert('Došlo je do greške prilikom preuzimanja pregleda.');
+        },
+      });
   }
   
 }

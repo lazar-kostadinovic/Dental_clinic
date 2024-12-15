@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { map, switchMap, forkJoin } from 'rxjs';
+import { map, switchMap, forkJoin, iif, of } from 'rxjs';
 import { PregledDTO } from '../../models/pregledDTO.model';
 import { FormsModule } from '@angular/forms';
 import { DateService } from '../../shared/date.service';
@@ -31,11 +31,11 @@ export class PatientAppointmentsComponent implements OnInit {
   ngOnInit() {
     this.fetchPatientHistory();
   }
-
+  
   formatDate(utcDate: Date): string {
     return this.dateService.formatDate(utcDate);
   }
-
+  
   fetchPatientHistory() {
     console.log('fecujem');
     const pregledRequests = this.appointmentIds.map((id) =>
@@ -43,16 +43,20 @@ export class PatientAppointmentsComponent implements OnInit {
         .get<PregledDTO>(`http://localhost:5001/Pregled/getPregledDTO/${id}`)
         .pipe(
           switchMap((pregled) =>
-            this.http
-              .get<{ ime: string; prezime: string }>(
-                `http://localhost:5001/Stomatolog/getStomatologDTO/${pregled.idStomatologa}`
-              )
-              .pipe(
-                map((stomatolog) => ({
-                  ...pregled,
-                  imeStomatologa: `${stomatolog.ime} ${stomatolog.prezime}`,
-                }))
-              )
+            iif(
+              () => !!pregled.idStomatologa,
+              this.http
+                .get<{ ime: string; prezime: string }>(
+                  `http://localhost:5001/Stomatolog/getStomatologDTO/${pregled.idStomatologa}`
+                )
+                .pipe(
+                  map((stomatolog) => ({
+                    ...pregled,
+                    imeStomatologa: `${stomatolog.ime} ${stomatolog.prezime}`,
+                  }))
+                ),
+              of({ ...pregled, imeStomatologa: 'Nepoznat stomatolog' })
+            )
           )
         )
     );
@@ -61,7 +65,6 @@ export class PatientAppointmentsComponent implements OnInit {
       console.log(pregledRequests);
       forkJoin(pregledRequests).subscribe({
         next: (pregledi) => {
-          // this.pregledList = pregledi;
           this.pregledList = this.sortPregledi(pregledi);
         },
         error: (error) => {
@@ -77,70 +80,58 @@ export class PatientAppointmentsComponent implements OnInit {
   }
 
   deleteAppointment(id: string) {
-   const token = localStorage.getItem('token') || '';
+    const token = localStorage.getItem('token') || '';
     console.log(token);
-  
+
     this.http
       .delete(`http://localhost:5001/Pregled/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }).subscribe({
-      next: () => {
-        this.pregledList = this.pregledList.filter(
-          (pregled) => pregled.id !== id
-        );
-        this.appointmentIds = this.appointmentIds.filter(
-          (appId) => appId !== id
-        );
-        this.appointmentsUpdated.emit(this.appointmentIds);
-        alert('Pregled je uspešno obrisan.');
-      },
-      error: (error) => {
-        console.error('Greška pri brisanju pregleda:', error);
-      },
-    });
+      })
+      .subscribe({
+        next: () => {
+          this.pregledList = this.pregledList.filter(
+            (pregled) => pregled.id !== id
+          );
+          this.appointmentIds = this.appointmentIds.filter(
+            (appId) => appId !== id
+          );
+          this.appointmentsUpdated.emit(this.appointmentIds);
+          alert('Pregled je uspešno obrisan.');
+        },
+        error: (error) => {
+          console.error('Greška pri brisanju pregleda:', error);
+        },
+      });
   }
 
   cancelAppointment(id: string) {
     const token = localStorage.getItem('token') || '';
     console.log(token);
-  
+
     this.http
       .delete(`http://localhost:5001/Pregled/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }).subscribe({
-      next: () => {
-        this.pregledList = this.pregledList.filter(
-          (pregled) => pregled.id !== id
-        );
-        this.appointmentIds = this.appointmentIds.filter(
-          (appId) => appId !== id
-        );
-        this.appointmentsUpdated.emit(this.appointmentIds);
-        alert('Pregled je uspešno otkazan.');
-      },
-      error: (error) => {
-        console.error('Greška pri brisanju pregleda:', error);
-      },
-    });
+      })
+      .subscribe({
+        next: () => {
+          this.pregledList = this.pregledList.filter(
+            (pregled) => pregled.id !== id
+          );
+          this.appointmentIds = this.appointmentIds.filter(
+            (appId) => appId !== id
+          );
+          this.appointmentsUpdated.emit(this.appointmentIds);
+          alert('Pregled je uspešno otkazan.');
+        },
+        error: (error) => {
+          console.error('Greška pri brisanju pregleda:', error);
+        },
+      });
   }
-  // cancelPregled(id: string) {
-  //   const apiUrl = `http://localhost:5001/Pregled/updateStatus/${id}/2`;
-
-  //   this.http.put(apiUrl, {}).subscribe({
-  //     next: () => {
-  //       alert('Pregled je uspešno otkazan.');
-  //       // Osvežite listu pregleda nakon otkazivanja
-  //       this.fetchPatientHistory();
-  //     },
-  //     error: (error) => {
-  //       console.error('Greška pri otkazivanju pregleda:', error);
-  //     }
-  //   });
-  // }
 
   openUpdateForm(id: string, status: number): void {
     const pregled = this.pregledList.find((p) => p.id === id);

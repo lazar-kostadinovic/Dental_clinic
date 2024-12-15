@@ -9,6 +9,7 @@ import { UpdateProfileComponent } from '../update-profile/update-profile.compone
 import { StripeService } from '../../services/stripe.service';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { FormsModule } from '@angular/forms';
+import { ShowDentistComponent } from '../show-dentists/show-dentists.component';
 
 @Component({
   selector: 'app-patient-profile',
@@ -19,7 +20,8 @@ import { FormsModule } from '@angular/forms';
     ScheduleAppointmentComponent,
     PatientAppointmentsComponent,
     UpdateProfileComponent,
-    FormsModule
+    FormsModule,
+    ShowDentistComponent
   ],
   templateUrl: './patient-profile.component.html',
   styleUrls: ['./patient-profile.component.css'],
@@ -30,6 +32,7 @@ export class PatientProfileComponent {
   showHistory = true;
   showDentists = false;
   showUpdateForm = false;
+  showSchedule = false;
   isPaymentFormVisible = false;
   isPaymentProcessing =false;
   stripe!: Stripe ;
@@ -148,20 +151,30 @@ export class PatientProfileComponent {
       });
   }
 
+  toggleSchedule(){
+    this.showSchedule=!this.showSchedule;
+    this.showHistory = false;
+    this.showDentists = false;
+    this.showUpdateForm = false;
+  }
+  
   toggleHistory() {
     this.showHistory = !this.showHistory;
     this.showDentists = false;
     this.showUpdateForm = false;
+    this.showSchedule = false;
   }
   toggleDentists() {
     this.showDentists = !this.showDentists;
     this.showHistory = false;
     this.showUpdateForm = false;
+    this.showSchedule = false;
   }
   toggleUpdateForm() {
     this.showUpdateForm = !this.showUpdateForm;
     this.showHistory = false;
     this.showDentists = false;
+    this.showSchedule = false;
   }
 
   triggerFileInput(): void {

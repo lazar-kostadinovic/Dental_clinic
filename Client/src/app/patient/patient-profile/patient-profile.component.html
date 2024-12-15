@@ -23,8 +23,9 @@
     <p><strong>Email:</strong> {{ patient.email }}</p>
 
     <button (click)="toggleHistory()">Prikaži Istoriju Pregleda</button>
-    <button (click)="toggleDentists()">Zakazi pregled</button>
+    <button (click)="toggleDentists()">Prikazi stomatologe</button>
     <button (click)="toggleUpdateForm()">Promeni podatke</button>
+    <button (click)="toggleSchedule()">Zakazi pregled</button>
 
     <p><strong>Vase dugovanje: {{patient.dugovanje}}</strong></p>
     <div *ngIf="patient.dugovanje > 0">
@@ -47,11 +48,15 @@
       (appointmentsUpdated)="onAppointmentsUpdated($event)"></app-patient-appointments>
   </div>
   <div *ngIf="showDentists">
-    <app-schedule-appointment *ngIf="patient?.id" [patientId]="patient!.id"
-      (appointmentScheduled)="refreshPregledList()"></app-schedule-appointment>
+    app-show-de
+    <app-show-dentists *ngIf="patient?.id" [patientId]="patient!.id"
+      (appointmentScheduled)="refreshPregledList()"></app-show-dentists>
   </div>
   <div *ngIf="showUpdateForm">
     <app-update-profile></app-update-profile>
+  </div>
+  <div *ngIf="showSchedule">
+    <app-schedule-appointment [patientId]="patient.id"></app-schedule-appointment>
   </div>
 
 
