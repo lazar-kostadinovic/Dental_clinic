@@ -187,7 +187,7 @@ public class PregledController : ControllerBase
         return CreatedAtAction(nameof(pregledService.Get), new { id = response.Id }, response);
     }
 
-     [HttpPost("schedule/{idStomatologa}/{idPacijenta}/{datum}/{opis}")]
+    [HttpPost("schedule/{idStomatologa}/{idPacijenta}/{datum}/{opis}")]
     public IActionResult ScheduleAppointment(ObjectId idStomatologa, ObjectId idPacijenta, DateTime datum, string opis)
     {
         var pregled = new Pregled
@@ -316,16 +316,17 @@ public class PregledController : ControllerBase
         {
             return NotFound($"Patient with Id = {patientId} or appointment with Id = {id} not found");
         }
-
-        if (!stomatologService.RemoveAppointment(stomatologId, id))
+        if (stomatologId != null)
         {
-            return NotFound($"Stomatolog with Id = {stomatologId} or appointment with Id = {id} not found");
+            stomatologService.RemoveAppointment(stomatologId, id);
+            pregledService.Remove(id);
+            return Ok(new { message = $"Pregled with Id = {id} deleted" });
         }
-
-        pregledService.Remove(id);
-
-
-        return Ok(new { message = $"Pregled with Id = {id} deleted" });
+        else
+        {
+            pregledService.Remove(id);
+            return Ok(new { message = $"Pregled with Id = {id} deleted" });
+        }
 
     }
 

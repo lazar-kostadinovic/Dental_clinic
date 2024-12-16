@@ -44,6 +44,7 @@ export class RegisterDentistComponent {
   
     const payload = {
       ...this.registrationModel,
+      email: this.registrationModel.email.toLowerCase(),
       brojTelefona: this.registrationModel.brojTelefona.toString(),
       specijalizacija: Number(this.registrationModel.specijalizacija),
     };

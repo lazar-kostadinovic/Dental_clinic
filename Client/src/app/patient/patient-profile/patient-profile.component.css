@@ -52,9 +52,6 @@ button {
   background-color: red;
 }
 
-/* button:hover {
-  background-color: #45a049;
-} */
 
 button:active {
   background-color: #3e8e41;
@@ -79,32 +76,29 @@ button:disabled {
 }
 
 #card-element {
-  border: 1px solid #ccc; /* Lagani okvir oko elementa */
-  border-radius: 4px; /* Zaobljeni uglovi */
-  padding: 10px; /* Unutrašnji razmak */
-  font-size: 16px; /* Povećajte font za bolju čitljivost */
-  line-height: 1.5; /* Razmak između redova teksta */
-  background-color: #fff; /* Pozadina treba biti bela */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); /* Meka senka oko elementa */
-  transition: box-shadow 0.3s ease-in-out; /* Glatki prelaz za senku */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: box-shadow 0.3s ease-in-out;
 }
 
-/* Kada je fokusiran (kada korisnik unosi podatke) */
 #card-element:focus {
-  border-color: #4caf50; /* Promenite boju okvira na zelenu kada je fokusirano */
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Zeleni svetli okvir */
+  border-color: #4caf50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
 }
 
-/* Za greške ili nevalidan unos */
 .StripeElement--invalid {
-  border-color: #f44336; /* Crveni okvir u slučaju greške */
-  background-color: #fff1f1; /* Pozadina se može promeniti u svetlo crvenu */
+  border-color: #f44336;
+  background-color: #fff1f1;
 }
 
-/* Kada je unos uspešan */
 .StripeElement--valid {
-  border-color: #4caf50; /* Zeleni okvir kada je unos ispravan */
-  background-color: #f1fff1; /* Pozadina se može promeniti u svetlo zelenu */
+  border-color: #4caf50;
+  background-color: #f1fff1;
 }
 .payment-modal {
   position: fixed;
@@ -146,3 +140,46 @@ button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
+
+.edit-icon {
+  cursor: pointer;
+  margin-left: 10px;
+  color: #007bff;
+}
+
+.edit-icon:hover {
+  color: #0056b3;
+}
+
+.custom-edit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  color: #555;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  margin-left: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.custom-edit-button:hover {
+  background-color: #e0e0e0;
+  color: #000;
+}
+
+.custom-edit-button:active {
+  background-color: #ccc;
+}
+
+.custom-edit-button i {
+  font-style: normal;
+  font-size: 18px;
+}
+
+

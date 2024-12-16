@@ -65,6 +65,7 @@ namespace StomatoloskaOrdinacija.Services
             {
                 Ime = resource.Ime,
                 Prezime = resource.Prezime,
+                DatumRodjenja = resource.DatumRodjenja,
                 Adresa = resource.Adresa,
                 BrojTelefona = resource.BrojTelefona,
                 Role = UserRole.Pacijent,

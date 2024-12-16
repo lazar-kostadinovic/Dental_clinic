@@ -5,8 +5,7 @@
       <div *ngIf="patient.slika">
         <img (click)="triggerFileInput()" [src]="getImageUrl(patient.slika)" alt="Profilna slika"
           class="patient-image" />
-
-        <!-- <button (click)="triggerFileInput()">Promeni sliku</button> -->
+          <!-- <i class="custom-edit-button" (click)="triggerFileInput()">✎</i> -->
       </div>
       <div *ngIf="!patient.slika">
         <p>Nema dostupne slike.</p>
@@ -17,15 +16,29 @@
 
     <p><strong>Ime:</strong> {{ patient.ime }}</p>
     <p><strong>Prezime:</strong> {{ patient.prezime }}</p>
-    <p><strong>Godine:</strong> {{ patient.godine }}</p>
-    <p><strong>Adresa:</strong> {{ patient.adresa }}</p>
-    <p><strong>Broj Telefona:</strong> {{ patient.brojTelefona }}</p>
-    <p><strong>Email:</strong> {{ patient.email }}</p>
+    <p><strong>Godine:</strong> {{ calculateAge(patient.datumRodjenja) }}</p>
 
-    <button (click)="toggleHistory()">Prikaži Istoriju Pregleda</button>
-    <button (click)="toggleDentists()">Prikazi stomatologe</button>
-    <button (click)="toggleUpdateForm()">Promeni podatke</button>
-    <button (click)="toggleSchedule()">Zakazi pregled</button>
+    <p><strong>Email:</strong> {{ patient.email }}<i class="custom-edit-button" (click)="toggleEditEmail()">✎</i></p>
+    <div *ngIf="isEditing.email">
+      <input type="text" [(ngModel)]="updatedValues.email" placeholder="Unesite novi email" />
+      <button (click)="saveChanges('email')">Potvrdi</button>
+    </div>
+    
+    <p><strong>Broj Telefona:</strong> {{ patient.brojTelefona }}<i class="custom-edit-button" (click)="toggleEditNumber()">✎</i></p>
+    <div *ngIf="isEditing.brojTelefona">
+      <input type="text" [(ngModel)]="updatedValues.brojTelefona" placeholder="Unesite novi broj telefona" />
+      <button (click)="saveChanges('brojTelefona')">Potvrdi</button>
+    </div>
+    
+    <p><strong>Adresa:</strong> {{ patient.adresa }}<i class="custom-edit-button" (click)="toggleEditAddress()">✎</i></p>
+    <div *ngIf="isEditing.adresa">
+      <input type="text" [(ngModel)]="updatedValues.adresa" placeholder="Unesite novu adresu" />
+      <button (click)="saveChanges('adresa')">Potvrdi</button>
+    </div>
+    
+    <button (click)="toggleSchedule()">Zakazi pregled</button> <br>
+    <button (click)="toggleDentists()">Prikazi stomatologe</button><br>
+
 
     <p><strong>Vase dugovanje: {{patient.dugovanje}}</strong></p>
     <div *ngIf="patient.dugovanje > 0">
@@ -43,22 +56,16 @@
     <p *ngIf="patient.dugovanje <= 0"><strong>Hvala Vam sto na vreme izmirujete Vasa dugovanja.</strong></p>
   </div>
 
-  <div *ngIf="showHistory">
+  <div *ngIf="!showDentists&&!showSchedule">
     <app-patient-appointments *ngIf="patient" [appointmentIds]="patient.istorijaPregleda"
       (appointmentsUpdated)="onAppointmentsUpdated($event)"></app-patient-appointments>
   </div>
   <div *ngIf="showDentists">
-    app-show-de
     <app-show-dentists *ngIf="patient?.id" [patientId]="patient!.id"
       (appointmentScheduled)="refreshPregledList()"></app-show-dentists>
-  </div>
-  <div *ngIf="showUpdateForm">
-    <app-update-profile></app-update-profile>
   </div>
   <div *ngIf="showSchedule">
     <app-schedule-appointment [patientId]="patient.id"></app-schedule-appointment>
   </div>
-
-
 </div>
 <button (click)="deleteAccount()" class="error">Obrisi profil</button>

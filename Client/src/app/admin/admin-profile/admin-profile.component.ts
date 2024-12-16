@@ -158,9 +158,8 @@ export class AdminProfileComponent {
       .delete(`http://localhost:5001/Pacijent/${pacijentId}`, { headers })
       .subscribe({
         next: () => {
-          this.pacijenti = this.pacijenti.filter(
-            (pacijent) => pacijent.id !== pacijentId
-          );
+          this.pacijenti = this.pacijenti.filter((pacijent) => pacijent.id !== pacijentId);
+          this.filterPacijenti();
           alert('Pacijent je uspesno obrisan.');
         },
         error: (error) => {

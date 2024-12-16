@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PregledDTO } from '../../models/pregledDTO.model';
 import { DateService } from '../../shared/date.service';
 import { forkJoin, map, switchMap } from 'rxjs';
@@ -16,6 +16,7 @@ export class UnconfirmedAppointmentsComponent {
   unconfirmed=false;
   unconfirmedAppointments: PregledDTO[] = [];
   @Input () dentisId!:string;
+  @Output () appointmentTaken = new EventEmitter<void>;
 
   constructor(private http: HttpClient, private dateService: DateService) {}
 
@@ -35,20 +36,14 @@ export class UnconfirmedAppointmentsComponent {
       .subscribe({
         next: () => {
           alert('Uspešno ste preuzeli pregled.');
-  
-          // Pronađite pregled u unconfirmedAppointments i dodajte ga u predstojeće preglede
           const confirmedAppointment = this.unconfirmedAppointments.find(
             (appointment) => appointment.id === appointmentId
           );
   
           if (confirmedAppointment) {
             this.unconfirmedAppointments=this.unconfirmedAppointments.filter((app)=>app.id!=confirmedAppointment.id);
-            // this.appointmentList = [...this.appointmentList, confirmedAppointment];
-            // this.filteredAppointmentList = [...this.filteredAppointmentList, confirmedAppointment];
-            // this.updateAppointmentIndicators();
           }
-  
-          // this.appointmentIds = [...this.appointmentIds, appointmentId];
+          this.appointmentTaken.emit();
         },
         error: (error) => {
           console.error('Greška pri preuzimanju pregleda:', error);

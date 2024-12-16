@@ -4,6 +4,7 @@ export interface PacijentDTO {
     ime: string;
     prezime: string;
     godine: number;
+    datumRodjenja: string;
     adresa: string;
     brojTelefona: string;
     email: string;

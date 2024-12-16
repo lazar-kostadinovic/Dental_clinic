@@ -19,6 +19,8 @@ namespace StomatoloskaOrdinacija.Models
 
         [BsonElement("Godine")]
         public int Godine { get; set; }
+        [BsonElement("DatumRodjenja")]
+        public DateTime DatumRodjenja { get; set; }
         [BsonElement("Adresa")]
         public string Adresa { get; set; }
         [BsonElement("BrojTelefona")]

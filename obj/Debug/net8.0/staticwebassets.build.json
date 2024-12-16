@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "RPW6bSvDe7w7+l31bDRYAASgw6fRpI4vkTOkDFPHNlE=",
+  "Hash": "DBMxVRq2zHPhUQix1Muj/64vu2bnpWoho6UjKBdxVD4=",
   "Source": "StomatoloskaOrdinacija",
   "BasePath": "_content/StomatoloskaOrdinacija",
   "Mode": "Default",
@@ -53,6 +53,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\assets\\15461933-83f9-4e6b-a79e-59e7f1532e08_slika2.jpeg"
+    },
+    {
+      "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\30078c8c-f111-454e-8f6b-65938f009926_pozadina.png",
+      "SourceId": "StomatoloskaOrdinacija",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\",
+      "BasePath": "_content/StomatoloskaOrdinacija",
+      "RelativePath": "assets/30078c8c-f111-454e-8f6b-65938f009926_pozadina.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\assets\\30078c8c-f111-454e-8f6b-65938f009926_pozadina.png"
     },
     {
       "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\310c7627-dfde-4c04-ac0e-a1479201d7d9_slika1.jpg",
@@ -150,6 +169,25 @@
       "OriginalItemSpec": "wwwroot\\assets\\4cf32c87-5646-43e0-92be-66ee09c0b129_slika2.jpeg"
     },
     {
+      "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\514ddc75-ab89-498a-a92e-0ddb81336901_profilna.jpg",
+      "SourceId": "StomatoloskaOrdinacija",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\",
+      "BasePath": "_content/StomatoloskaOrdinacija",
+      "RelativePath": "assets/514ddc75-ab89-498a-a92e-0ddb81336901_profilna.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\assets\\514ddc75-ab89-498a-a92e-0ddb81336901_profilna.jpg"
+    },
+    {
       "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\58247e6c-c0aa-4f7c-a0d5-17c099e20eec_profilna.jpg",
       "SourceId": "StomatoloskaOrdinacija",
       "SourceType": "Discovered",
@@ -226,6 +264,25 @@
       "OriginalItemSpec": "wwwroot\\assets\\60d7e424-1348-4c05-9abc-052f09941d8f_slika1.jpg"
     },
     {
+      "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\6703ac65-9985-4688-8c8b-c6858a950283_profilna.jpg",
+      "SourceId": "StomatoloskaOrdinacija",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\",
+      "BasePath": "_content/StomatoloskaOrdinacija",
+      "RelativePath": "assets/6703ac65-9985-4688-8c8b-c6858a950283_profilna.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\assets\\6703ac65-9985-4688-8c8b-c6858a950283_profilna.jpg"
+    },
+    {
       "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\728ff4a7-87e8-4b90-a3a8-79b8fa8d0bad_slika3.jpeg",
       "SourceId": "StomatoloskaOrdinacija",
       "SourceType": "Discovered",
@@ -262,6 +319,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\assets\\80fb6f4a-554b-4969-a36b-89c9b83bf117_slika3.jpeg"
+    },
+    {
+      "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\9172c5c4-e901-451a-8467-210ec3d19b4e_profilna.jpg",
+      "SourceId": "StomatoloskaOrdinacija",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\",
+      "BasePath": "_content/StomatoloskaOrdinacija",
+      "RelativePath": "assets/9172c5c4-e901-451a-8467-210ec3d19b4e_profilna.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\assets\\9172c5c4-e901-451a-8467-210ec3d19b4e_profilna.jpg"
     },
     {
       "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\9912ea00-184c-4d88-b63a-57d210a94e4f_slika2.jpeg",
@@ -395,6 +471,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\assets\\ce971022-53e8-47ff-adf7-41544f589111_admin.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\d021d8a5-2c00-4a86-8b4d-4612751ab689_pozadina.png",
+      "SourceId": "StomatoloskaOrdinacija",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\",
+      "BasePath": "_content/StomatoloskaOrdinacija",
+      "RelativePath": "assets/d021d8a5-2c00-4a86-8b4d-4612751ab689_pozadina.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\assets\\d021d8a5-2c00-4a86-8b4d-4612751ab689_pozadina.png"
     },
     {
       "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\default.jpg",

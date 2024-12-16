@@ -5,7 +5,7 @@
         <div *ngIf="!pregled.idStomatologa" class="pregled-item upcoming-pregled">
           <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
           <p><strong>Opis:</strong> {{ pregled.opis }}</p>
-          <p><strong>Stomatolog:</strong> {{ pregled.imeStomatologa }}</p>
+          <button (click)="cancelAppointment(pregled.id)">Otkaži pregled</button>
         </div>
       </ng-container>
     </div>
@@ -18,20 +18,11 @@
         <p><strong>Opis:</strong> {{ pregled.opis }}</p>
         <p><strong>Stomatolog:</strong> {{ pregled.imeStomatologa }}</p>
         <button (click)="deleteAppointment(pregled.id)">Obriši pregled</button>
-        <button (click)="openUpdateForm(pregled.id, pregled.status)">Izmeni opis</button>
       </div>
     </ng-container>
     <div *ngIf="isUpdateFormVisible1" class="update-form-container">
       <h3>Ažuriraj Pregled</h3>
       <form (ngSubmit)="updatePregled()">
-        <!-- <label for="datum">Datum:</label>
-      <input id="datum" type="date" [(ngModel)]="updateForm.datum" name="datum" required [min]="today" 
-        (change)="loadAvailableTimeSlots(stomatolog.id, updateForm.datum)" />
-  
-      <label for="vreme">Vreme:</label>
-      <select id="vreme" [(ngModel)]="updateForm.vreme" name="vreme" required>
-        <option *ngFor="let timeSlot of availableTimeSlots" [value]="timeSlot">{{ timeSlot }}</option>
-      </select> -->
         <label for="opis">Opis:</label>
         <textarea id="opis" [(ngModel)]="updateForm.opis" name="opis" required></textarea>
 
@@ -46,23 +37,15 @@
       <div *ngIf="!pregled">Nemate zakazanih pregleda</div>
       <div *ngIf="pregled.status === 0" class="appointment">
         <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
-        <p><strong>Opis:</strong> {{ pregled.opis }}</p>
+        <p><strong>Opis:</strong> {{ pregled.opis }}<i class="custom-edit-button" (click)="openUpdateForm(pregled.id, pregled.status)">✎</i></p>
         <p><strong>Stomatolog:</strong> {{ pregled.imeStomatologa }}</p>
         <button (click)="cancelAppointment(pregled.id)">Otkaži pregled</button>
-        <button (click)="openUpdateForm(pregled.id, pregled.status)">Izmeni opis</button>
+        <!-- <button (click)="openUpdateForm(pregled.id, pregled.status)">Izmeni opis</button> -->
       </div>
     </ng-container>
     <div *ngIf="isUpdateFormVisible0" class="update-form-container">
       <h3>Ažuriraj Pregled</h3>
       <form (ngSubmit)="updatePregled()">
-        <!-- <label for="datum">Datum:</label>
-      <input id="datum" type="date" [(ngModel)]="updateForm.datum" name="datum" required [min]="today" 
-        (change)="loadAvailableTimeSlots(stomatolog.id, updateForm.datum)" />
-  
-      <label for="vreme">Vreme:</label>
-      <select id="vreme" [(ngModel)]="updateForm.vreme" name="vreme" required>
-        <option *ngFor="let timeSlot of availableTimeSlots" [value]="timeSlot">{{ timeSlot }}</option>
-      </select> -->
         <label for="opis">Opis:</label>
         <textarea id="opis" [(ngModel)]="updateForm.opis" name="opis" required></textarea>
 

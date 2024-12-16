@@ -12,6 +12,12 @@
       <div *ngIf="registerForm.submitted && !registerForm.controls['prezime'].valid" class="error">
         Prezime je obavezno.
       </div>
+
+      <label for="datumRodjenja">Datum rodjenja:</label>
+      <input type="date" id="datumRodjenja" [(ngModel)]="registrationModel.datumRodjenja" name="datumRodjenja" required />
+      <div *ngIf="registerForm.submitted && !registerForm.controls['datumRodjenja'].valid" class="error">
+        Datum rodjenja je obavezna.
+      </div>
   
       <label for="adresa">Adresa:</label>
       <input type="text" id="adresa" [(ngModel)]="registrationModel.adresa" name="adresa" required />

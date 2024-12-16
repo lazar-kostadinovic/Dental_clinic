@@ -123,6 +123,7 @@ public class StomatologController : ControllerBase
             Ime = stomatolog.Ime,
             Prezime = stomatolog.Prezime,
             BrojTelefona = stomatolog.BrojTelefona,
+            Adresa = stomatolog.Adresa,
             Email = stomatolog.Email,
             Role = stomatolog.Role,
             PrvaSmena = stomatolog.PrvaSmena,
@@ -181,6 +182,54 @@ public class StomatologController : ControllerBase
         existingStomatolog.BrojTelefona = brojTelefona;
         existingStomatolog.Specijalizacija = specijalizacija;
         stomatologService.Update(id, existingStomatolog);
+
+        return NoContent();
+    }
+
+    [HttpPut("changeEmail/{id}/{newEmail}")]
+    public ActionResult ChangeEmail(ObjectId id, string newEmail)
+    {
+        var existingStomatolog = stomatologService.Get(id);
+        if (existingStomatolog == null)
+        {
+            return NotFound($"Stomatolog with id = {id} not found");
+        }
+
+        existingStomatolog.Email = newEmail;
+
+        stomatologService.Update(existingStomatolog.Id, existingStomatolog);
+
+        return NoContent();
+    }
+
+    [HttpPut("changeAddress/{id}/{adresa}")]
+    public ActionResult ChangeAddress(ObjectId id, string adresa)
+    {
+        var existingStomatolog = stomatologService.Get(id);
+        if (existingStomatolog == null)
+        {
+            return NotFound($"Stomatolog with id = {id} not found");
+        }
+
+        existingStomatolog.Adresa = adresa;
+
+        stomatologService.Update(existingStomatolog.Id, existingStomatolog);
+
+        return NoContent();
+    }
+
+    [HttpPut("changeNumber/{id}/{brojTelefona}")]
+    public ActionResult ChangeNumber(ObjectId id, string brojTelefona)
+    {
+        var existingStomatolog = stomatologService.Get(id);
+        if (existingStomatolog == null)
+        {
+            return NotFound($"Stomatolog with id = {id} not found");
+        }
+
+        existingStomatolog.BrojTelefona = brojTelefona;
+
+        stomatologService.Update(existingStomatolog.Id, existingStomatolog);
 
         return NoContent();
     }

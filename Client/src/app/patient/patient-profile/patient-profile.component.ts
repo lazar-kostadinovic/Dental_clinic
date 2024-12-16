@@ -5,7 +5,6 @@ import { PacijentDTO } from '../../models/pacijentDTO.model';
 import { ScheduleAppointmentComponent } from '../schedule-appointment/schedule-appointment.component';
 import { PatientAppointmentsComponent } from '../patient-appointments/patient-appointments.component';
 import { Router } from '@angular/router';
-import { UpdateProfileComponent } from '../update-profile/update-profile.component';
 import { StripeService } from '../../services/stripe.service';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { FormsModule } from '@angular/forms';
@@ -19,7 +18,6 @@ import { ShowDentistComponent } from '../show-dentists/show-dentists.component';
     PatientAppointmentsComponent,
     ScheduleAppointmentComponent,
     PatientAppointmentsComponent,
-    UpdateProfileComponent,
     FormsModule,
     ShowDentistComponent
   ],
@@ -29,9 +27,8 @@ import { ShowDentistComponent } from '../show-dentists/show-dentists.component';
 export class PatientProfileComponent {
   patient!: PacijentDTO;
   email: string | null = null;
-  showHistory = true;
+
   showDentists = false;
-  showUpdateForm = false;
   showSchedule = false;
   isPaymentFormVisible = false;
   isPaymentProcessing =false;
@@ -39,6 +36,20 @@ export class PatientProfileComponent {
   card: any = null; 
   cardMounted = false;  
   paymentAmount: number = 0; 
+
+  
+  isEditing = {
+    email: false,
+    brojTelefona: false,
+    adresa: false
+  };
+
+  updatedValues = {
+    email: '',
+    brojTelefona: '',
+    adresa: ''
+  };
+
 
   @ViewChild(PatientAppointmentsComponent)
   patientAppointmentsComponent?: PatientAppointmentsComponent;
@@ -153,27 +164,11 @@ export class PatientProfileComponent {
 
   toggleSchedule(){
     this.showSchedule=!this.showSchedule;
-    this.showHistory = false;
     this.showDentists = false;
-    this.showUpdateForm = false;
   }
   
-  toggleHistory() {
-    this.showHistory = !this.showHistory;
-    this.showDentists = false;
-    this.showUpdateForm = false;
-    this.showSchedule = false;
-  }
   toggleDentists() {
     this.showDentists = !this.showDentists;
-    this.showHistory = false;
-    this.showUpdateForm = false;
-    this.showSchedule = false;
-  }
-  toggleUpdateForm() {
-    this.showUpdateForm = !this.showUpdateForm;
-    this.showHistory = false;
-    this.showDentists = false;
     this.showSchedule = false;
   }
 
@@ -238,4 +233,65 @@ export class PatientProfileComponent {
       localStorage.removeItem('email');
       localStorage.removeItem('role');
   }
+
+  toggleEditEmail() {
+    this.isEditing.email=true;
+    this.isEditing.adresa=false;
+    this.isEditing.brojTelefona=false;
+  }
+  toggleEditNumber() {
+    this.isEditing.brojTelefona=true;
+    this.isEditing.adresa=false;
+    this.isEditing.email=false;
+  }
+  toggleEditAddress() {
+    this.isEditing.adresa=true;
+    this.isEditing.email=false;
+    this.isEditing.brojTelefona=false;
+  }
+
+  saveChanges(field: string) {
+    const apiUrl = `http://localhost:5001/Pacijent`; 
+    let endpoint = '';
+
+    switch (field) {
+      case 'email':
+        endpoint = `changeEmail/${this.patient.id}/${this.updatedValues.email}`;
+        break;
+      case 'brojTelefona':
+        endpoint = `changeNumber/${this.patient.id}/${this.updatedValues.brojTelefona}`;
+        break;
+      case 'adresa':
+        endpoint = `changeAddress/${this.patient.id}/${this.updatedValues.adresa}`;
+        break;
+      default:
+        console.error('Nepoznat tip izmene:', field);
+        return;
+    }
+  
+    this.http.put(`${apiUrl}/${endpoint}`, {}).subscribe({
+      next: () => {
+        (this.patient as any)[field] = this.updatedValues[field];
+        this.isEditing[field] = false; 
+        alert(`${field} uspešno ažurirano!`);
+      },
+      error: (err) => {
+        console.error(`Greška pri ažuriranju ${field}:`, err);
+        alert(`Došlo je do greške pri ažuriranju ${field}.`);
+      }
+    });
+  }
+  calculateAge(dateOfBirth: string): number {
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+  1
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+  
+    return age;
+  }
+  
 }

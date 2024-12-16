@@ -32,6 +32,19 @@ export class DentistProfileComponent {
     vreme: '',
     opis: '',
   };
+
+  isEditing = {
+    email: false,
+    brojTelefona: false,
+    adresa: false
+  };
+
+  updatedValues = {
+    email: '',
+    brojTelefona: '',
+    adresa: ''
+  };
+
   token = localStorage.getItem('token');
 
   @ViewChild('fileInput') fileInput!: ElementRef;
@@ -55,6 +68,9 @@ export class DentistProfileComponent {
   onAppointmentScheduled(newAppointmentId: string): void {
     this.showAppointmentForm = false; 
     this.dentist.predstojeciPregledi = [newAppointmentId, ...this.dentist.predstojeciPregledi];
+    this.fetchDentistProfile();
+  }
+  onAppointmentTaken(){
     this.fetchDentistProfile();
   }
 
@@ -177,8 +193,6 @@ export class DentistProfileComponent {
   }
 
   submitDayOff(): void {
-
-
     if (!this.selectedDate) {
       alert('Molimo odaberite datum.');
       return;
@@ -250,6 +264,57 @@ export class DentistProfileComponent {
           alert('Greska prilikom menjanja smene');
         },
       });
+  }
+
+  toggleEditEmail() {
+    this.isEditing.email=true;
+    this.isEditing.adresa=false;
+    this.isEditing.brojTelefona=false;
+  }
+  toggleEditNumber() {
+    this.isEditing.brojTelefona=true;
+    this.isEditing.adresa=false;
+    this.isEditing.email=false;
+  }
+  toggleEditAddress() {
+    this.isEditing.adresa=true;
+    this.isEditing.email=false;
+    this.isEditing.brojTelefona=false;
+  }
+
+  saveChanges(field: string) {
+    const apiUrl = `http://localhost:5001/Stomatolog`; 
+    let endpoint = '';
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.token}`,
+    });
+    switch (field) {
+      case 'email':
+        endpoint = `changeEmail/${this.dentist.id}/${this.updatedValues.email}`;
+        break;
+      case 'brojTelefona':
+        endpoint = `changeNumber/${this.dentist.id}/${this.updatedValues.brojTelefona}`;
+        break;
+      case 'adresa':
+        endpoint = `changeAddress/${this.dentist.id}/${this.updatedValues.adresa}`;
+        break;
+      default:
+        console.error('Nepoznat tip izmene:', field);
+        return;
+    }
+  
+    this.http.put(`${apiUrl}/${endpoint}`, {},  { headers }).subscribe({
+      next: () => {
+        (this.dentist as any)[field] = this.updatedValues[field];
+        this.isEditing[field] = false; 
+        alert(`${field} uspešno ažurirano!`);
+      },
+      error: (err) => {
+        console.error(`Greška pri ažuriranju ${field}:`, err);
+        alert(`Došlo je do greške pri ažuriranju ${field}.`);
+      }
+    });
   }
   
 }

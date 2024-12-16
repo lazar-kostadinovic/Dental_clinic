@@ -185,6 +185,5 @@ export class DentistAppointmentComponent {
     this.filteredAppointmentList.sort((a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime());
     this.filteredAppointmentListForToday.sort((a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime());
   }
-
   
 }

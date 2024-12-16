@@ -15,6 +15,7 @@ export class RegisterPatientComponent {
   registrationModel = {
     ime: '',
     prezime: '',
+    datumRodjenja: '',
     adresa: '',
     brojTelefona: '',
     email: '',
@@ -31,6 +32,7 @@ export class RegisterPatientComponent {
 
     const payload = {
       ...this.registrationModel,
+      email: this.registrationModel.email.toLowerCase(),
       brojTelefona: this.registrationModel.brojTelefona.toString(),
     };
     this.http

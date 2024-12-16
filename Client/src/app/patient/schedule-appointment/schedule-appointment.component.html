@@ -1,28 +1,24 @@
 <div class="home-container">
- <h3>Zakazivanje pregleda</h3>
- <div class="appointment-form">
+  <h3>Zakazivanje pregleda</h3>
+  <div class="appointment-form">
+    <form (ngSubmit)="scheduleAppointment()">
+      <label for="datum">Datum:</label>
+      <input id="datum" type="date" [(ngModel)]="newAppointment.datum" name="datum" required [min]="today"
+        (change)="loadAvailableTimeSlots( newAppointment.datum)" />
 
+      <label for="vreme">Vreme:</label>
+      <select id="vreme" [(ngModel)]="newAppointment.vreme" name="vreme" required>
+        <option *ngFor="let timeSlot of availableTimeSlots" [value]="timeSlot">
+          {{ timeSlot }}
+        </option>
+      </select>
 
-  <form (ngSubmit)="scheduleAppointment()">
-    <label for="datum">Datum:</label>
-    <input id="datum" type="date" [(ngModel)]="newAppointment.datum" name="datum" required [min]="today"
-      (change)="loadAvailableTimeSlots( newAppointment.datum)" />
+      <label for="opis">Opis:</label>
+      <textarea id="opis" [(ngModel)]="newAppointment.opis" name="opis" required></textarea>
 
-    <label for="vreme">Vreme:</label>
-    <select id="vreme" [(ngModel)]="newAppointment.vreme" name="vreme" required>
-      <option *ngFor="let timeSlot of availableTimeSlots" [value]="timeSlot">
-        {{ timeSlot }}
-      </option>
-    </select>
-
-    <label for="opis">Opis:</label>
-    <textarea id="opis" [(ngModel)]="newAppointment.opis" name="opis" required></textarea>
-
-    <button type="submit">Zakaži</button>
-    <button type="button" (click)="closeForm()">Otkaži</button>
-    <button (click)="scheduleNextAppointment()">Zakazi prvi slobodan termin</button>
-  </form>
-
-</div>
-
+      <button type="submit">Zakaži</button>
+      <button type="button" (click)="closeForm()">Otkaži</button>
+      <button (click)="scheduleNextAppointment()">Zakazi prvi slobodan termin</button>
+    </form>
+  </div>
 </div>

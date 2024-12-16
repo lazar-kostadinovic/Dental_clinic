@@ -65,7 +65,7 @@ public class PacijentController : ControllerBase
             Id = pacijent.Id.ToString(),
             Slika = pacijent.Slika,
             Ime = pacijent.Ime,
-            Godine = pacijent.Godine,
+            DatumRodjenja = pacijent.DatumRodjenja,
             Prezime = pacijent.Prezime,
             Adresa = pacijent.Adresa,
             BrojTelefona = pacijent.BrojTelefona,
@@ -108,7 +108,7 @@ public class PacijentController : ControllerBase
             Slika = pacijent.Slika,
             Ime = pacijent.Ime,
             Prezime = pacijent.Prezime,
-            Godine = pacijent.Godine,
+            DatumRodjenja = pacijent.DatumRodjenja,
             Adresa = pacijent.Adresa,
             BrojTelefona = pacijent.BrojTelefona,
             Email = pacijent.Email,
@@ -207,6 +207,55 @@ public class PacijentController : ControllerBase
         existingPacijent.Adresa = adresa;
         existingPacijent.BrojTelefona = brojTelefona;
         existingPacijent.Email = newEmail;
+
+        pacijentService.Update(existingPacijent.Id, existingPacijent);
+
+        return NoContent();
+    }
+
+
+    [HttpPut("changeEmail/{id}/{newEmail}")]
+    public ActionResult ChangeEmail(ObjectId id, string newEmail)
+    {
+        var existingPacijent = pacijentService.Get(id);
+        if (existingPacijent == null)
+        {
+            return NotFound($"Pacijent with id = {id} not found");
+        }
+
+        existingPacijent.Email = newEmail;
+
+        pacijentService.Update(existingPacijent.Id, existingPacijent);
+
+        return NoContent();
+    }
+
+    [HttpPut("changeAddress/{id}/{adresa}")]
+    public ActionResult ChangeAddress(ObjectId id, string adresa)
+    {
+        var existingPacijent = pacijentService.Get(id);
+        if (existingPacijent == null)
+        {
+            return NotFound($"Pacijent with id = {id} not found");
+        }
+
+        existingPacijent.Adresa = adresa;
+
+        pacijentService.Update(existingPacijent.Id, existingPacijent);
+
+        return NoContent();
+    }
+
+    [HttpPut("changeNumber/{id}/{brojTelefona}")]
+    public ActionResult ChangeNumber(ObjectId id, string brojTelefona)
+    {
+        var existingPacijent = pacijentService.Get(id);
+        if (existingPacijent == null)
+        {
+            return NotFound($"Pacijent with id = {id} not found");
+        }
+
+        existingPacijent.BrojTelefona = brojTelefona;
 
         pacijentService.Update(existingPacijent.Id, existingPacijent);
 
