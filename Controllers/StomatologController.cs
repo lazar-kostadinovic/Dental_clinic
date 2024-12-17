@@ -166,26 +166,6 @@ public class StomatologController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = stomatolog.Id }, stomatolog);
     }
 
-    [HttpPut("{email}/{adresa}/{brojTelefona}/{newEmail}/{specijalizacija}")]
-    public async Task<ActionResult> Put(string email, string adresa, string brojTelefona, string newEmail, Specijalizacija specijalizacija)
-    {
-        var existingStomatolog = await stomatologService.GetStomatologByEmailAsync(email);
-        var id = existingStomatolog.Id;
-
-        if (existingStomatolog == null)
-        {
-            return NotFound($"Stomatolog sa Email = {email} nije pronadjen");
-        }
-
-        existingStomatolog.Adresa = adresa;
-        existingStomatolog.Email = newEmail;
-        existingStomatolog.BrojTelefona = brojTelefona;
-        existingStomatolog.Specijalizacija = specijalizacija;
-        stomatologService.Update(id, existingStomatolog);
-
-        return NoContent();
-    }
-
     [HttpPut("changeEmail/{id}/{newEmail}")]
     public ActionResult ChangeEmail(ObjectId id, string newEmail)
     {

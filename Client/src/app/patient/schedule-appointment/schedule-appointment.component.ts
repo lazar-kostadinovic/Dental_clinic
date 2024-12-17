@@ -15,7 +15,7 @@ import { KomentarDTO } from '../../models/komentarDTO';
 })
 export class ScheduleAppointmentComponent implements OnInit {
   @Input({ required: true }) patientId?: string;
-  @Output() appointmentScheduled = new EventEmitter<void>();
+  @Output() appointmentScheduled = new EventEmitter<string>();
   stomatolozi: StomatologDTO[] = [];
   selectedStomatologForAppointment: string | null = null;
   selectedStomatologForComments: string | null = null;
@@ -110,10 +110,11 @@ export class ScheduleAppointmentComponent implements OnInit {
     const apiUrl = `http://localhost:5001/Pregled/schedule/${this.patientId}/${dateTimeString}/${this.newAppointment.opis}`;
     console.log(apiUrl);
     this.http.post(apiUrl, {}).subscribe({
-      next: (response) => {
+      next: (response:any) => {
+        const newAppointmentId = response.id; 
         console.log('Pregled zakazan uspešno:', response);
+        this.appointmentScheduled.emit(newAppointmentId);
         alert('Pregled je zakazan uspešno!');
-        this.appointmentScheduled.emit();
         this.closeForm();
       },
       error: (error) => {

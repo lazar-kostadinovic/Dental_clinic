@@ -194,26 +194,6 @@ public class PacijentController : ControllerBase
         return Ok(new { fileName });
     }
 
-
-    [HttpPut("{email}/{adresa}/{brojTelefona}/{newEmail}")]
-    public async Task<ActionResult> Put(string email, string adresa, string brojTelefona, string newEmail)
-    {
-        var existingPacijent = await pacijentService.GetPacijentByEmailAsync(email);
-        if (existingPacijent == null)
-        {
-            return NotFound($"Pacijent with Email = {email} not found");
-        }
-
-        existingPacijent.Adresa = adresa;
-        existingPacijent.BrojTelefona = brojTelefona;
-        existingPacijent.Email = newEmail;
-
-        pacijentService.Update(existingPacijent.Id, existingPacijent);
-
-        return NoContent();
-    }
-
-
     [HttpPut("changeEmail/{id}/{newEmail}")]
     public ActionResult ChangeEmail(ObjectId id, string newEmail)
     {

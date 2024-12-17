@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "DBMxVRq2zHPhUQix1Muj/64vu2bnpWoho6UjKBdxVD4=",
+  "Hash": "6Xk4BWFDLaEL9teqmkZh3ICi/GuFTrO+UBCPvW0ZhZg=",
   "Source": "StomatoloskaOrdinacija",
   "BasePath": "_content/StomatoloskaOrdinacija",
   "Mode": "Default",
@@ -186,6 +186,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\assets\\514ddc75-ab89-498a-a92e-0ddb81336901_profilna.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\5157b66d-0b64-4d48-a21a-087eab5ab031_profilna.jpg",
+      "SourceId": "StomatoloskaOrdinacija",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\",
+      "BasePath": "_content/StomatoloskaOrdinacija",
+      "RelativePath": "assets/5157b66d-0b64-4d48-a21a-087eab5ab031_profilna.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\assets\\5157b66d-0b64-4d48-a21a-087eab5ab031_profilna.jpg"
     },
     {
       "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\58247e6c-c0aa-4f7c-a0d5-17c099e20eec_profilna.jpg",

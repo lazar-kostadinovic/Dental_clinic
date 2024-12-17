@@ -165,11 +165,13 @@ export class PatientProfileComponent {
   toggleSchedule(){
     this.showSchedule=!this.showSchedule;
     this.showDentists = false;
+    this.fetchPatientProfile();
   }
   
   toggleDentists() {
     this.showDentists = !this.showDentists;
     this.showSchedule = false;
+    this.fetchPatientProfile();
   }
 
   triggerFileInput(): void {
@@ -205,9 +207,18 @@ export class PatientProfileComponent {
     return `http://localhost:5001/assets/${imageName}`;
   }
 
-  refreshPregledList() {
-    this.patientAppointmentsComponent?.fetchPatientHistory();
-    this.ngOnInit();
+  // refreshPregledList() {
+  //   console.log("ima li ovde");
+  //   this.showSchedule=false;
+  //   this.patientAppointmentsComponent?.fetchPatientHistory();
+  //   this.ngOnInit();
+  //   this.toggleSchedule();
+  // }
+
+  onAppointmentScheduled(newAppointmentId: string): void {
+    this.showSchedule = false; 
+    this.patient.istorijaPregleda = [newAppointmentId, ...this.patient.istorijaPregleda];
+    this.fetchPatientProfile();
   }
 
   deleteAccount() {

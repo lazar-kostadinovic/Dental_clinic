@@ -15,12 +15,8 @@ import { KomentarDTO } from '../../models/komentarDTO';
 })
 export class ShowDentistComponent implements OnInit {
   @Input({ required: true }) patientId?: string;
-  @Output() appointmentScheduled = new EventEmitter<void>();
   stomatolozi: StomatologDTO[] = [];
-  selectedStomatologForAppointment: string | null = null;
   selectedStomatologForComments: string | null = null;
-  availableTimeSlots: string[] = [];
-  daysOff: string[] = [];
   today: string = '';
   imePacijenata: { [key: string]: string } = {};
   selectedSpecijalizacija: string = '';
@@ -30,6 +26,7 @@ export class ShowDentistComponent implements OnInit {
     vreme: '',
     opis: '',
   };
+
   komentariStomatologa: any[] = [];
   newComment = {
     komentar: '',
@@ -54,93 +51,6 @@ export class ShowDentistComponent implements OnInit {
     const now = new Date();
     now.setDate(now.getDate() + 1);
     this.today = now.toISOString().split('T')[0];
-  }
-
-  openForm(idStomatologa: string): void {
-    if (this.selectedStomatologForAppointment === idStomatologa) {
-      this.closeForm();
-    } else {
-      this.selectedStomatologForAppointment = idStomatologa;
-      this.availableTimeSlots = [];
-      this.fetchAllDaysOff(idStomatologa);
-      this.selectedStomatologForComments = null;
-    }
-
-  }
-
-  loadAvailableTimeSlots(idStomatologa: string, datum: string): void {
-    const apiUrl = `http://localhost:5001/Pregled/availableTimeSlots/${idStomatologa}/${datum}`;
-    this.http.get<string[]>(apiUrl).subscribe(
-      (data) => {
-        this.availableTimeSlots = data;
-        console.log('Dostupni termini:', this.availableTimeSlots);
-      },
-      (error) => {
-        console.error('Greška pri učitavanju slobodnih termina:', error);
-      }
-    );
-  }
-
-  fetchAllDaysOff(idStomatologa: string): void {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-    this.http
-      .get<string[]>(
-        `http://localhost:5001/Stomatolog/GetAllDaysOff/${idStomatologa}`,
-        { headers }
-      )
-      .subscribe({
-        next: (daysOff) => {
-          this.daysOff = daysOff
-
-            .filter((day) => new Date(day).getTime() > new Date().getTime())
-            .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-        },
-        error: (error) => {
-          console.error('Greška prilikom preuzimanja slobodnih dana:', error);
-          alert(
-            error.error?.message ||
-              'Došlo je do greške prilikom preuzimanja slobodnih dana.'
-          );
-        },
-      });
-
-      console.log(this.daysOff);
-  }
-
-  isDayDisabled(date: string): boolean {
-    console.log('Days off:', this.daysOff);
-    console.log(this.daysOff.includes(date));
-    return this.daysOff.includes(date);
-  }
-
-  scheduleAppointment(): void {
-    if (
-      !this.patientId ||
-      !this.selectedStomatologForAppointment ||
-      !this.newAppointment.datum ||
-      !this.newAppointment.vreme ||
-      !this.newAppointment.opis
-    ) {
-      alert('Molimo popunite sve podatke.');
-      return;
-    }
-
-    const dateTimeString = `${this.newAppointment.datum}T${this.newAppointment.vreme}`;
-    const apiUrl = `http://localhost:5001/Pregled/schedule/${this.selectedStomatologForAppointment}/${this.patientId}/${dateTimeString}/${this.newAppointment.opis}`;
-    console.log(apiUrl);
-    this.http.post(apiUrl, {}).subscribe({
-      next: (response) => {
-        console.log('Pregled zakazan uspešno:', response);
-        alert('Pregled je zakazan uspešno!');
-        this.appointmentScheduled.emit();
-        this.closeForm();
-      },
-      error: (error) => {
-        console.error('Greška pri zakazivanju pregleda:', error);
-      },
-    });
   }
 
   loadStomatolozi(): void {
@@ -187,7 +97,6 @@ export class ShowDentistComponent implements OnInit {
         });
       }
     }
-    this.closeForm();
   }
 
   addComment(stomatologId: string): void {
@@ -274,20 +183,6 @@ export class ShowDentistComponent implements OnInit {
 
   getSpecijalizacijaLabel(specijalizacija: number): string {
     return this.specijalizacije[specijalizacija] || 'Nepoznato';
-  }
-
-  closeForm(): void {
-    this.selectedStomatologForAppointment = null;
-    this.newAppointment = { datum: '', vreme: '', opis: '' };
-    this.availableTimeSlots = [];
-  }
-  get formattedDaysOff(): string {
-    return this.daysOff
-      .map((day) => {
-        const date = new Date(day);
-        return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
-      })
-      .join(', ');
   }
   
 }

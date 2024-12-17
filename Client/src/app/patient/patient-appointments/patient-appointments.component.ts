@@ -5,21 +5,23 @@ import { map, switchMap, forkJoin, iif, of } from 'rxjs';
 import { PregledDTO } from '../../models/pregledDTO.model';
 import { FormsModule } from '@angular/forms';
 import { DateService } from '../../shared/date.service';
+import { UnconfirmedAppointmentsComponent } from './unconfirmed-appointments/unconfirmed-appointments.component';
 @Component({
   selector: 'app-patient-appointments',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,UnconfirmedAppointmentsComponent],
   templateUrl: './patient-appointments.component.html',
   styleUrl: './patient-appointments.component.css',
 })
 export class PatientAppointmentsComponent implements OnInit {
   @Input() appointmentIds: string[] = [];
   @Output() appointmentsUpdated = new EventEmitter<string[]>();
+  unconfirmedAppointments: PregledDTO[] = [];
   pregledList: PregledDTO[] = [];
   updateForm = {
     opis: '',
   };
-
+  showUnconfirmed = false;
   isUpdateFormVisible1 = false;
   isUpdateFormVisible0 = false;
   selectedPregledId: string | null = null;
@@ -66,6 +68,10 @@ export class PatientAppointmentsComponent implements OnInit {
       forkJoin(pregledRequests).subscribe({
         next: (pregledi) => {
           this.pregledList = this.sortPregledi(pregledi);
+          this.unconfirmedAppointments = pregledi.filter(
+            (pregled) => !pregled.idStomatologa
+          );
+          console.log(this.unconfirmedAppointments);
         },
         error: (error) => {
           console.error('Error fetching pregledi or stomatologs:', error);
@@ -173,5 +179,9 @@ export class PatientAppointmentsComponent implements OnInit {
   refreshPregledList() {
     console.log('Proba osvežavanja liste pregleda');
     this.fetchPatientHistory();
+  }
+
+  toggleUnconfirmed(){
+    this.showUnconfirmed=!this.showUnconfirmed;
   }
 }

@@ -19,7 +19,6 @@
         Adresa: {{ stomatolog.adresa }}<br />
         Email: {{ stomatolog.email }}<br />
         Telefon: {{ stomatolog.brojTelefona }}<br />
-        <button (click)="openForm(stomatolog.id)">Zakaži pregled</button>
         <button (click)="showReviews(stomatolog.komentariStomatologa, stomatolog.id)">Prikaži utiske ostalih korisnika
         </button>
   
@@ -45,35 +44,6 @@
           </div>
   
           <button (click)="addComment(stomatolog.id)">Dodaj komentar</button>
-        </div>
-  
-        <div *ngIf="selectedStomatologForAppointment === stomatolog.id" class="appointment-form">
-          <h4>
-            Zakazivanje pregleda kod {{ stomatolog.ime }} {{ stomatolog.prezime }}
-          </h4>
-          <form (ngSubmit)="scheduleAppointment()">
-            <label for="datum">Datum:</label>
-            <input id="datum" type="date" [(ngModel)]="newAppointment.datum" name="datum" required [min]="today"
-              [ngClass]="{ 'disabled-day': isDayDisabled(newAppointment.datum) }" (change)="
-                loadAvailableTimeSlots(stomatolog.id, newAppointment.datum)
-              " />
-  
-            <label for="vreme">Vreme:</label>
-            <select id="vreme" [(ngModel)]="newAppointment.vreme" name="vreme" required>
-              <option *ngFor="let timeSlot of availableTimeSlots" [value]="timeSlot">
-                {{ timeSlot }}
-              </option>
-            </select>
-  
-            <label for="opis">Opis:</label>
-            <textarea id="opis" [(ngModel)]="newAppointment.opis" name="opis" required></textarea>
-  
-            <button type="submit" [disabled]="isDayDisabled(newAppointment.datum)">Zakaži</button>
-            <button type="button" (click)="closeForm()">Otkaži</button>
-          </form>
-          <div *ngIf="daysOff.length > 0" class="day-off-list">
-            <p class="error">Neradni dani stomatologa: {{ formattedDaysOff }}</p>
-          </div>
         </div>
       </li>
     </ul>

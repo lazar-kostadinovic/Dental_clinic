@@ -56,7 +56,7 @@ export class DentistProfileComponent {
     this.fetchDentistProfile();
   }
 
-    onAppointmentsUpdated(updatedIds: string[]) {
+  onAppointmentsUpdated(updatedIds: string[]) {
     this.dentist.predstojeciPregledi = updatedIds; 
     console.log('Roditelj dobio ažuriranu listu ID-ova:', this.dentist.predstojeciPregledi);
   }

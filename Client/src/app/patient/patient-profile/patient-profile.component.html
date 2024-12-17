@@ -61,11 +61,10 @@
       (appointmentsUpdated)="onAppointmentsUpdated($event)"></app-patient-appointments>
   </div>
   <div *ngIf="showDentists">
-    <app-show-dentists *ngIf="patient?.id" [patientId]="patient!.id"
-      (appointmentScheduled)="refreshPregledList()"></app-show-dentists>
+    <app-show-dentists *ngIf="patient?.id" [patientId]="patient!.id"></app-show-dentists>
   </div>
   <div *ngIf="showSchedule">
-    <app-schedule-appointment [patientId]="patient.id"></app-schedule-appointment>
+    <app-schedule-appointment [patientId]="patient.id" (appointmentScheduled)="onAppointmentScheduled($event)"></app-schedule-appointment>
   </div>
 </div>
 <button (click)="deleteAccount()" class="error">Obrisi profil</button>
