@@ -34,7 +34,7 @@ export class DentistScheduleComponent {
 
   ngOnInit() {
     const now = new Date();
-    now.setDate(now.getDate() + 1);
+    now.setDate(now.getDate());
     this.tomorrow = now.toISOString().split('T')[0];
     this.fetchAllDaysOff();
     console.log( new Date().getTime());
@@ -101,7 +101,7 @@ export class DentistScheduleComponent {
     this.http.post(apiUrl, {}).subscribe({
       next: (response: any) => {
         if (response && response.id) {
-          alert(`Pregled je uspešno zakazan! ID: ${response.id}`);
+          alert(`Pregled je uspešno zakazan!`);
           const newAppointmentId = response.id; 
          
           console.log('Zakazani pregled:', response);

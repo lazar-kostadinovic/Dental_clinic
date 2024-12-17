@@ -33,6 +33,7 @@ builder.Services.AddScoped<IStomatologService, StomatologService>();
 builder.Services.AddScoped<IPacijentService, PacijentService>();
 builder.Services.AddScoped<IPregledService, PregledService>();
 builder.Services.AddScoped<IOcenaStomatologaService, OcenaStomatologaService>();
+builder.Services.AddScoped<ITipIntervencijeService, TipIntervencijeService>();
 builder.Services.AddScoped<EmailService>();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -40,7 +41,6 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
 
-    // Add the authorization header parameter
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Enter your token in the text input below.",

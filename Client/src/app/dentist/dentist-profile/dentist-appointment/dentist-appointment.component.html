@@ -8,14 +8,33 @@
           <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
           <p><strong>Opis:</strong> {{ pregled.opis }}</p>
           <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
-          <button>Naplati pregled</button>
-          <!-- dodaj ovde naplatu -->
+          <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">
+            Naplati pregled
+          </button>
+          
         </div>
       </ng-container>
     </div>
-
   </div>
-  <div class="appointments-container">
+  <div *ngIf="showCharge" class="row">
+    <h3>Izaberite intervencije:</h3>
+    <div *ngFor="let intervencija of interventionsList; let i = index" class="intervencija-item">
+      <label>
+        <input type="checkbox" [(ngModel)]="intervencija.selected" />
+        {{ intervencija.naziv }} - {{ intervencija.cena }} din
+      </label>
+
+      <input type="number" [(ngModel)]="intervencija.kolicina" [disabled]="!intervencija.selected" min="1" step="1"
+        style="width: 60px; margin-left: 10px;" />
+
+    </div>
+    <div *ngIf="calculateTotal() > 0" class="total-price">
+      <h4>Ukupna cena: {{ calculateTotal() }} din</h4>
+      <button (click)="chargeAppointment()">Naplati</button>
+    </div>
+  </div>
+
+  <div class="appointments-container" *ngIf="!showCharge">
     <input list="pacijenti" [(ngModel)]="selectedPatientName" (input)="onPatientSelected()"
       placeholder="Izaberite ili unesite ime pacijenta" />
     <datalist id="pacijenti">
@@ -23,7 +42,6 @@
         {{ pacijent.name }} - {{ pacijent.email }}
       </option>
     </datalist>
-
 
     <h3>Prošli pregledi</h3>
     <p *ngIf="!hasPastAppointments">Ovaj pacijent nema prošlih pregleda kod vas</p>

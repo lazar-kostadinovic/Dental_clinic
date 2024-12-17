@@ -64,6 +64,7 @@ public class PregledController : ControllerBase
             Id = pregled.Id.ToString(),
             IdStomatologa = pregled.IdStomatologa.ToString(),
             IdPacijenta = pregled.IdPacijenta.ToString(),
+            Naplacen = pregled.Naplacen,
             Datum = pregled.Datum,
             Opis = pregled.Opis,
             Status = pregled.Status
@@ -180,6 +181,7 @@ public class PregledController : ControllerBase
             IdStomatologa = pregled.IdStomatologa,
             IdPacijenta = pregled.IdPacijenta,
             Datum = pregled.Datum,
+            Naplacen = false,
             Opis = pregled.Opis,
             Status = pregled.Status
         };
@@ -195,6 +197,7 @@ public class PregledController : ControllerBase
             IdStomatologa = idStomatologa,
             IdPacijenta = idPacijenta,
             Datum = datum.ToLocalTime(),
+            Naplacen = false,
             Opis = opis,
             Status = StatusPregleda.Predstojeci
         };
@@ -212,9 +215,6 @@ public class PregledController : ControllerBase
         }
 
         var patient = pacijentService.Get(pregled.IdPacijenta);
-        patient.Dugovanje += 1500;
-        pacijentService.Update(pregled.IdPacijenta, patient);
-
         if (patient == null)
         {
             return NotFound("Patient not found");
@@ -234,6 +234,7 @@ public class PregledController : ControllerBase
             IdStomatologa = pregled.IdStomatologa,
             IdPacijenta = pregled.IdPacijenta,
             Datum = pregled.Datum,
+            Naplacen = false,
             Opis = pregled.Opis,
             Status = pregled.Status
         };
@@ -295,6 +296,24 @@ public class PregledController : ControllerBase
         existingPregled.Status = (StatusPregleda)status;
         pregledService.Update(id, existingPregled);
 
+        return NoContent();
+    }
+
+    [HttpPut("chargeAppointment/{id}/{patientId}/{price}")]
+    public ActionResult ChargeAppointment(ObjectId id,ObjectId patientId,int price)
+    {
+        var existingPregled = pregledService.Get(id);
+        if (existingPregled == null)
+        {
+            return NotFound($"Pregled with Id = {id} not found");
+        }
+        existingPregled.Naplacen = true;
+
+        var patient = pacijentService.Get(patientId);
+        patient.Dugovanje += price;
+        pacijentService.Update(patientId, patient);
+
+        pregledService.Update(id, existingPregled);
         return NoContent();
     }
 

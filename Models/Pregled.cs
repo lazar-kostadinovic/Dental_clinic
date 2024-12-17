@@ -17,6 +17,8 @@ namespace StomatoloskaOrdinacija.Models
         public DateTime Datum { get; set; }
         [BsonElement("Opis")]
         public string Opis { get; set; }
+        [BsonElement("Naplacen")]
+        public bool Naplacen { get; set; } = false;
         [BsonElement("Status")]
         public StatusPregleda Status { get; set; }
     }

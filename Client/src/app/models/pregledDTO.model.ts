@@ -4,6 +4,7 @@ export interface PregledDTO {
   idPacijenta: string;
   pacijentEmail:string;
   datum: Date;
+  naplacen: boolean;
   opis: string;
   status: number;
   imeStomatologa?: string;

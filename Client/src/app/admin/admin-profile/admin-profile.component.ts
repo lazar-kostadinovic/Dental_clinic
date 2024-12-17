@@ -52,6 +52,7 @@ export class AdminProfileComponent {
     const apiUrl = 'http://localhost:5001/Pacijent/basic';
     this.http.get<any[]>(apiUrl).subscribe(
       (data) => {
+        console.log(data);
         this.pacijenti = data;
         this.filteredPatients = data; 
       },
@@ -194,5 +195,10 @@ export class AdminProfileComponent {
   }
   getImageUrl(imageName: string): string {
     return `http://localhost:5001/assets/${imageName}`;
+  }
+
+  getDentistShift(shift:boolean)
+  {
+    return shift===true?" prva":" druga";
   }
 }

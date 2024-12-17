@@ -50,6 +50,7 @@ public class StomatologController : ControllerBase
             Email = stomatolog.Email,
             BrojTelefona = stomatolog.BrojTelefona,
             Role = stomatolog.Role,
+            PrvaSmena = stomatolog.PrvaSmena,
             Specijalizacija = stomatolog.Specijalizacija,
             PredstojeciPregledi = stomatolog.PredstojeciPregledi.Select(p => p.ToString()).ToList(),
             KomentariStomatologa = stomatolog.KomentariStomatologa.Select(k => k.ToString()).ToList()
