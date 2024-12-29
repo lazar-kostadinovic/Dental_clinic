@@ -64,6 +64,7 @@ public class PregledController : ControllerBase
             Id = pregled.Id.ToString(),
             IdStomatologa = pregled.IdStomatologa.ToString(),
             IdPacijenta = pregled.IdPacijenta.ToString(),
+            PacijentEmail = pregled.EmailPacijenta,
             Naplacen = pregled.Naplacen,
             Datum = pregled.Datum,
             Opis = pregled.Opis,
@@ -109,7 +110,7 @@ public class PregledController : ControllerBase
     }
 
     [HttpPut("assignDentist/{idPregleda}/{idStomatologa}")]
-    public IActionResult AssignDentist(ObjectId idPregleda, ObjectId idStomatologa)
+    public ActionResult AssignDentist(ObjectId idPregleda, ObjectId idStomatologa)
     {
         var pregled = pregledService.Get(idPregleda);
 
@@ -143,12 +144,14 @@ public class PregledController : ControllerBase
     }
 
     [HttpPost("schedule/{idPacijenta}/{datum}/{opis}")]
-    public IActionResult ScheduleAppointment(ObjectId idPacijenta, DateTime datum, string opis)
+    public async Task<ActionResult> ScheduleAppointment(ObjectId idPacijenta, DateTime datum, string opis)
     {
+        var emailPacijenta = await pacijentService.GetEmailByIdAsync(idPacijenta);
         var pregled = new Pregled
         {
             IdStomatologa = null,
             IdPacijenta = idPacijenta,
+            EmailPacijenta = emailPacijenta,
             Datum = datum.ToLocalTime(),
             Opis = opis,
             Status = StatusPregleda.Predstojeci
@@ -160,7 +163,6 @@ public class PregledController : ControllerBase
         }
 
         var patient = pacijentService.Get(pregled.IdPacijenta);
-        patient.Dugovanje += 1500;
         pacijentService.Update(pregled.IdPacijenta, patient);
 
         if (patient == null)
@@ -180,7 +182,9 @@ public class PregledController : ControllerBase
             Id = pregled.Id.ToString(),
             IdStomatologa = pregled.IdStomatologa,
             IdPacijenta = pregled.IdPacijenta,
+            EmailPacijenta = emailPacijenta,
             Datum = pregled.Datum,
+            PacijentEmail = pregled.EmailPacijenta,
             Naplacen = false,
             Opis = pregled.Opis,
             Status = pregled.Status
@@ -190,12 +194,20 @@ public class PregledController : ControllerBase
     }
 
     [HttpPost("schedule/{idStomatologa}/{idPacijenta}/{datum}/{opis}")]
-    public IActionResult ScheduleAppointment(ObjectId idStomatologa, ObjectId idPacijenta, DateTime datum, string opis)
+    public async Task<ActionResult> ScheduleAppointment(ObjectId idStomatologa, ObjectId idPacijenta, DateTime datum, string opis)
     {
+        var emailPacijenta = await pacijentService.GetEmailByIdAsync(idPacijenta);
+
+        if (string.IsNullOrEmpty(emailPacijenta))
+        {
+            return NotFound("Patient email not found");
+        }
+
         var pregled = new Pregled
         {
             IdStomatologa = idStomatologa,
             IdPacijenta = idPacijenta,
+            EmailPacijenta = emailPacijenta,
             Datum = datum.ToLocalTime(),
             Naplacen = false,
             Opis = opis,
@@ -206,7 +218,6 @@ public class PregledController : ControllerBase
         {
             return BadRequest("Invalid appointment data");
         }
-
 
         var stomatolog = stomatologService.Get(pregled.IdStomatologa);
         if (stomatolog == null)
@@ -228,11 +239,13 @@ public class PregledController : ControllerBase
         pregledService.Create(pregled);
         pacijentService.GetAndUpdate(pregled.IdPacijenta, pregled.Id);
         stomatologService.GetAndUpdate(pregled.IdStomatologa, pregled.Id);
+
         var response = new
         {
             Id = pregled.Id.ToString(),
             IdStomatologa = pregled.IdStomatologa,
             IdPacijenta = pregled.IdPacijenta,
+            EmailPacijenta = pregled.EmailPacijenta,
             Datum = pregled.Datum,
             Naplacen = false,
             Opis = pregled.Opis,
@@ -241,6 +254,7 @@ public class PregledController : ControllerBase
 
         return CreatedAtAction(nameof(pregledService.Get), new { id = response.Id }, response);
     }
+
 
     [HttpPut("{id}/{datum}/{opis}")]
     public ActionResult Put(ObjectId id, DateTime datum, string opis)
@@ -251,18 +265,10 @@ public class PregledController : ControllerBase
         {
             return NotFound($"Pregled with Id = {id} not found");
         }
+        existingPregled.Datum = datum;
+        existingPregled.Opis = opis;
 
-        var pregled = new Pregled
-        {
-            Id = existingPregled.Id,
-            IdStomatologa = existingPregled.IdStomatologa,
-            IdPacijenta = existingPregled.IdPacijenta,
-            Datum = datum,
-            Opis = opis,
-            Status = existingPregled.Status
-        };
-
-        pregledService.Update(id, pregled);
+        pregledService.Update(id, existingPregled);
 
         return NoContent();
     }
@@ -300,7 +306,7 @@ public class PregledController : ControllerBase
     }
 
     [HttpPut("chargeAppointment/{id}/{patientId}/{price}")]
-    public ActionResult ChargeAppointment(ObjectId id,ObjectId patientId,int price)
+    public ActionResult ChargeAppointment(ObjectId id, ObjectId patientId, int price)
     {
         var existingPregled = pregledService.Get(id);
         if (existingPregled == null)
@@ -369,7 +375,7 @@ public class PregledController : ControllerBase
     }
 
     // [HttpPost("scheduleNextAvailable/{idStomatologa}/{idPacijenta}")]
-    // public IActionResult ScheduleNextAvailable(ObjectId idStomatologa, ObjectId idPacijenta)
+    // public ActionResult ScheduleNextAvailable(ObjectId idStomatologa, ObjectId idPacijenta)
     // {
     //     try
     //     {
@@ -447,7 +453,8 @@ public class PregledController : ControllerBase
             Id = appointment.Id.ToString(),
             IdPacijenta = appointment.IdPacijenta.ToString(),
             Datum = appointment.Datum,
-            Opis = appointment.Opis
+            Opis = appointment.Opis,
+            PacijentEmail = appointment.EmailPacijenta
         }).ToList();
 
         return Ok(unconfirmedAppointmentsDTO);

@@ -1,6 +1,5 @@
 <div class="allAppoitnments">
   <div *ngIf="filteredAppointmentListForToday.length>0" class="appointmentsForToday">
-    <h3>Danasnji pregledi</h3>
     <div class="row">
       <h3>Vasi pregledi za danasnji dan:</h3>
       <ng-container *ngFor="let pregled of filteredAppointmentListForToday">
@@ -18,7 +17,7 @@
   </div>
   <div *ngIf="showCharge" class="row">
     <h3>Izaberite intervencije:</h3>
-    <div *ngFor="let intervencija of interventionsList; let i = index" class="intervencija-item">
+    <div *ngFor="let intervencija of interventionsList; let i = index" class="appointment">
       <label>
         <input type="checkbox" [(ngModel)]="intervencija.selected" />
         {{ intervencija.naziv }} - {{ intervencija.cena }} din
@@ -51,7 +50,10 @@
           <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
           <p><strong>Opis:</strong> {{ pregled.opis }}</p>
           <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
-          <button (click)="deletePregled(pregled.id)">Obriši pregled</button>
+          <button (click)="deleteAppointment(pregled.id)">Obriši pregled</button>
+          <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">
+            Naplati pregled
+          </button>
         </div>
       </ng-container>
     </div>
@@ -63,7 +65,7 @@
           <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
           <p><strong>Opis:</strong> {{ pregled.opis }}</p>
           <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
-          <button (click)="deletePregled(pregled.id)">Otkaži pregled</button>
+          <button (click)="cancelAppointment(pregled.id)">Otkaži pregled</button>
         </div>
       </ng-container>
     </div>

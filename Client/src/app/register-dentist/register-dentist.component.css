@@ -16,10 +16,10 @@
     margin-top: 10px;
   }
   
-  .register-container input {
+  .register-container input,select {
     width: 100%;
     padding: 8px;
-    margin-top: 5px;
+    margin-bottom: 5px;
     box-sizing: border-box;
   }
   

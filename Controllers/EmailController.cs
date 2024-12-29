@@ -67,6 +67,25 @@ namespace StomatoloskaOrdinacija.Controllers
                 return StatusCode(500, $"Error sending email: {ex.Message}");
             }
         }
+
+        [Authorize]
+        [HttpPost("sendAppointmentTakenEmail")]
+        public async Task<IActionResult> SendAppointmentTakenEmail([FromBody] AppointmentTakenEmailRequest request)
+        {
+            try
+            {
+                await _emailService.SendEmailAsync(
+                    request.ToEmail,
+                    "Pregled preuzet",
+                    $"Poštovani {request.PatientName},<br><br>Vaš pregled zakazan za {request.AppointmentDate} je preuzet od strane stomatologa {request.DentistName}.<br><br>S poštovanjem,<br>Vaša ordinacija"
+                );
+                return Ok(new { message = "Email sent successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error sending email: {ex.Message}");
+            }
+        }
     }
 
     public class CancellationEmailRequest
@@ -80,5 +99,12 @@ namespace StomatoloskaOrdinacija.Controllers
         public string ToEmail { get; set; }
         public string PatientName { get; set; }
         public decimal Debt { get; set; }
+    }
+    public class AppointmentTakenEmailRequest
+    {
+        public string ToEmail { get; set; }
+        public string PatientName { get; set; }
+        public string AppointmentDate { get; set; }
+        public string DentistName { get; set; }
     }
 }

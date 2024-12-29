@@ -179,8 +179,35 @@ export class DentistAppointmentComponent {
       this.updateAppointmentIndicators();
     }
   }
+  deleteAppointment(id:string){
+    const token = localStorage.getItem('token') || '';
+    console.log(token);
 
-  deletePregled(id: string) {
+    this.http
+      .delete(`http://localhost:5001/Pregled/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .subscribe({
+        next: () => {
+          this.appointmentList = this.appointmentList.filter(
+            (pregled) => pregled.id !== id
+          );
+          this.appointmentIds = this.appointmentIds.filter(
+            (appId) => appId !== id
+          );
+          this.appointmentsUpdated.emit(this.appointmentIds);
+          alert('Pregled je uspešno obrisan.');
+        },
+        error: (error) => {
+          console.error('Greška pri brisanju pregleda:', error);
+        },
+      });
+
+  }
+
+  cancelAppointment(id: string) {
     const pregled = this.appointmentList.find((p) => p.id === id);
     if (!pregled) return;
 
@@ -266,11 +293,7 @@ export class DentistAppointmentComponent {
     const pregledId = this.selectedPregled.id;
     const pacijentId = this.selectedPregled.idPacijenta;
     const ukupnaCena = this.calculateTotal();
-  
-    console.log('Pregled ID:', pregledId);
-    console.log('Pacijent ID:', pacijentId);
-    console.log('Ukupna cena:', ukupnaCena);
-  
+
     const token = localStorage.getItem('token') || '';
     this.http.put(
       `http://localhost:5001/Pregled/chargeAppointment/${pregledId}/${pacijentId}/${ukupnaCena}`,
@@ -283,6 +306,7 @@ export class DentistAppointmentComponent {
     ).subscribe({
       next: () => {
         alert('Pregled je uspešno naplaćen!');
+        this.fetchPatientHistory();
         this.showCharge = false;
         this.selectedPregled = null;
       },
@@ -291,6 +315,7 @@ export class DentistAppointmentComponent {
         alert('Došlo je do greške pri naplati.');
       }
     });
+    this.fetchPatientHistory();
   }
   
 }

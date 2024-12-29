@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { StomatologDTO } from '../../models/stomatologDTO.model';
 import { forkJoin } from 'rxjs';
 import { KomentarDTO } from '../../models/komentarDTO';
+import { PacijentDTO } from '../../models/pacijentDTO.model';
 
 @Component({
   selector: 'app-schedule-appointment',
@@ -14,7 +15,8 @@ import { KomentarDTO } from '../../models/komentarDTO';
   styleUrls: ['./schedule-appointment.component.css'],
 })
 export class ScheduleAppointmentComponent implements OnInit {
-  @Input({ required: true }) patientId?: string;
+  patient!: PacijentDTO;
+  email: string | null = null;
   @Output() appointmentScheduled = new EventEmitter<string>();
   stomatolozi: StomatologDTO[] = [];
   selectedStomatologForAppointment: string | null = null;
@@ -37,7 +39,24 @@ export class ScheduleAppointmentComponent implements OnInit {
     const now = new Date();
     now.setDate(now.getDate() + 1);
     this.today = now.toISOString().split('T')[0];
+    this.email = localStorage.getItem('email');
+    this.fetchPatientProfile();
   }
+
+    fetchPatientProfile() {
+      this.http
+        .get<PacijentDTO>(
+          `http://localhost:5001/Pacijent/GetPacijentByEmail/${this.email}`
+        )
+        .subscribe({
+          next: (patientData) => {
+            this.patient = patientData;
+          },
+          error: (error) => {
+            console.error('Error fetching patient profile:', error);
+          },
+        });
+    }
 
   openForm(idStomatologa: string): void {
     if (this.selectedStomatologForAppointment === idStomatologa) {
@@ -64,7 +83,7 @@ export class ScheduleAppointmentComponent implements OnInit {
   }
 
   scheduleNextAppointment(): void {
-    const apiUrl = `http://localhost:5001/Pregled/scheduleNextAvailable/${this.patientId}`;
+    const apiUrl = `http://localhost:5001/Pregled/scheduleNextAvailable/${this.patient.id}`;
     console.log(apiUrl);
     this.http.post(apiUrl, {}).subscribe({
       next: (response: any) => {
@@ -93,12 +112,12 @@ export class ScheduleAppointmentComponent implements OnInit {
 
   scheduleAppointment(): void {
     if (
-      !this.patientId ||
+      !this.patient.id ||
       !this.newAppointment.datum ||
       !this.newAppointment.vreme ||
       !this.newAppointment.opis
     ) {
-      console.log(  this.patientId,
+      console.log(  this.patient.id,
         this.newAppointment.datum ,
         this.newAppointment.vreme ,
         this.newAppointment.opis);
@@ -107,7 +126,7 @@ export class ScheduleAppointmentComponent implements OnInit {
     }
 
     const dateTimeString = `${this.newAppointment.datum}T${this.newAppointment.vreme}`;
-    const apiUrl = `http://localhost:5001/Pregled/schedule/${this.patientId}/${dateTimeString}/${this.newAppointment.opis}`;
+    const apiUrl = `http://localhost:5001/Pregled/schedule/${this.patient.id}/${dateTimeString}/${this.newAppointment.opis}`;
     console.log(apiUrl);
     this.http.post(apiUrl, {}).subscribe({
       next: (response:any) => {

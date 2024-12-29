@@ -93,5 +93,12 @@ namespace StomatoloskaOrdinacija.Services
             return result.ModifiedCount > 0;
         }
 
+        public async Task<string> GetEmailByIdAsync(ObjectId id)
+        {
+            var pacijent = await _pacijenti.Find(p => p.Id == id).FirstOrDefaultAsync();
+            return pacijent.Email;  
+        }
+
+
     }
 }

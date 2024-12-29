@@ -222,7 +222,7 @@ export class DentistProfileComponent {
   fetchAllDaysOff(): void {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
+  
     this.http
       .get<string[]>(
         `http://localhost:5001/Stomatolog/GetAllDaysOff/${this.dentist.id}`,
@@ -230,9 +230,10 @@ export class DentistProfileComponent {
       )
       .subscribe({
         next: (daysOff) => {
-          this.daysOff = daysOff.map((day) =>
-            new Date(day).toLocaleDateString('sr-RS')
-          );
+          this.daysOff = daysOff
+            .map((day) => new Date(day))
+            .sort((a, b) => a.getTime() - b.getTime()) 
+            .map((date) => date.toLocaleDateString('sr-RS'));
         },
         error: (error) => {
           console.error('Greška prilikom preuzimanja slobodnih dana:', error);
@@ -244,6 +245,18 @@ export class DentistProfileComponent {
       });
   }
 
+
+  countCurrentYearDaysOff(): number {
+    const currentYear = new Date().getFullYear();
+    return this.daysOff.filter((dateString) => {
+      console.log(dateString);
+      const parts = dateString.split('.').map(part => part.trim()); 
+      const year = parseInt(parts[2], 10);
+      return year === currentYear;
+    }).length;
+  }
+  
+  
   changeShift(stomatologId: string) {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${this.token}`,
@@ -309,6 +322,10 @@ export class DentistProfileComponent {
         (this.dentist as any)[field] = this.updatedValues[field];
         this.isEditing[field] = false; 
         alert(`${field} uspešno ažurirano!`);
+        if (field === 'email') {
+          localStorage.setItem('email', this.updatedValues.email);
+          this.fetchDentistProfile();
+        }
       },
       error: (err) => {
         console.error(`Greška pri ažuriranju ${field}:`, err);

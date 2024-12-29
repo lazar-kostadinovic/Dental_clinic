@@ -13,6 +13,8 @@ import { map, Observable } from 'rxjs';
 })
 export class NavbarComponent {
   email: string | null = localStorage.getItem('email');
+  isAdmin: boolean = false;
+  isPatient: boolean = false;
 
   constructor(private router: Router) {}
 
@@ -22,9 +24,14 @@ export class NavbarComponent {
     const role = localStorage.getItem('role');
     
     if(email ==="admin@gmail.com"){
+      this.isAdmin=true;
       return '/admin-profile';
     }
     else if (token && email) {
+      this.isAdmin=false;
+      if(role==='pacijent'){
+        this.isPatient=true;
+      }
       return role === 'stomatolog' ? '/dentist-profile' : '/patient-profile';
     }
   }
@@ -33,6 +40,8 @@ export class NavbarComponent {
   }
 
   logout() {
+    this.isAdmin=false;
+    this.isPatient=false;
     localStorage.removeItem('token');
     localStorage.removeItem('email');
     localStorage.removeItem('role');

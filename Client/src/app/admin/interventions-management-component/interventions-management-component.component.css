@@ -1,0 +1,97 @@
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: left;
+  padding: 20px;
+}
+
+.appointment {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.3s;
+  width: calc(33% - 20px);
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.appointment:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  font-size: 16px;
+  color: #333;
+}
+
+.price-input {
+  width: 80%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  text-align: center;
+}
+
+button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.custom-edit-button {
+  cursor: pointer;
+  font-size: 20px;
+  margin-left: 10px;
+  transition: color 0.3s;
+  color: #555;
+}
+
+.custom-edit-button:hover {
+  color: #007bff;
+}
+
+.new-intervention-form {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.new-intervention-form input {
+  width: calc(50% - 10px);
+  padding: 10px;
+  margin: 10px 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.new-intervention-form button {
+  margin-top: 10px;
+}

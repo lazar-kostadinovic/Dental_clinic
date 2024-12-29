@@ -13,6 +13,8 @@ namespace StomatoloskaOrdinacija.Models
         public ObjectId? IdStomatologa { get; set; }
         [BsonElement("IdPacijenta")]
         public ObjectId IdPacijenta { get; set; }
+        [BsonElement("emailPacijenta")]
+        public string EmailPacijenta { get; set; }
         [BsonElement("Datum")]
         public DateTime Datum { get; set; }
         [BsonElement("Opis")]

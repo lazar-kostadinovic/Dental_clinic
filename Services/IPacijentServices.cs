@@ -15,5 +15,6 @@ namespace StomatoloskaOrdinacija.Services
         bool RemoveAppointment(ObjectId pacijentId, ObjectId appointmentId);
         Task<bool> Register(RegistrationModel resource);
         bool AddOrUpdateSlika(ObjectId pacijentId, string slikaFileName);
+        Task<string> GetEmailByIdAsync(ObjectId id);
     }
 }

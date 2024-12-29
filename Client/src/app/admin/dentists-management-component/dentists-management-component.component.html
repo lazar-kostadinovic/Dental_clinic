@@ -1,0 +1,33 @@
+<div *ngIf="token"  class="home-container">
+    <div class="header">
+      <h3>Naši Stomatolozi</h3>
+      <button (click)="navigateToRegisterDentist()">Dodaj novog stomatologa</button>
+    </div>
+    <ul>
+      <li *ngFor="let stomatolog of stomatolozi">
+        <strong>{{ stomatolog.ime }} {{ stomatolog.prezime }}</strong><br />
+        <img [src]="getImageUrl(stomatolog.slika)" alt="Profilna slika" class="dentist-image" />
+        Specijalizacija: {{ getSpecijalizacijaLabel(stomatolog.specijalizacija) }}<br />
+        Adresa: {{ stomatolog.adresa }}<br />
+        Email: {{ stomatolog.email }}<br />
+        Telefon: {{ stomatolog.brojTelefona }}<br />
+        Smena: {{getDentistShift(stomatolog.prvaSmena)}}<br/>
+        <button (click)="deleteDentist(stomatolog.id)">Obrisi </button>
+        <button (click)="changeShift(stomatolog.id)">Promeni smenu </button>
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="!token" class="home-container">
+    <div class="header">
+      <h3>Naši Stomatolozi</h3>
+      <br>
+    </div>
+    <ul>
+      <li *ngFor="let stomatolog of stomatolozi">
+        <strong>{{ stomatolog.ime }} {{ stomatolog.prezime }}</strong>
+        <img [src]="getImageUrl(stomatolog.slika)" alt="Profilna slika" class="dentist-image" />
+        Specijalizacija: {{ getSpecijalizacijaLabel(stomatolog.specijalizacija) }}<br />
+      </li>
+    </ul>
+  </div>

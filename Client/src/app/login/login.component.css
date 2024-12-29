@@ -1,3 +1,6 @@
+:host{
+  margin: 10px;
+}
 .login-container {
     width: 300px;
     margin: 0 auto;

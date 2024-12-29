@@ -63,6 +63,6 @@ export class RegisterDentistComponent {
   }
   
   adminProfile() {
-    this.router.navigate(['/admin-profile']);
+    this.router.navigate(['/dentist-management']);
   }
 }

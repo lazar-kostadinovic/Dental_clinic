@@ -9,4 +9,5 @@ export interface PregledDTO {
   status: number;
   imeStomatologa?: string;
   imePacijenta?:string
+  emailPacijenta?:string
 }

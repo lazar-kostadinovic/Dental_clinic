@@ -1,45 +1,62 @@
+:host {
+  font-family: Arial, sans-serif;
+  background-color: #fafafa;
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+}
+
 .register-container {
-    width: 300px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .register-container h2 {
-    text-align: center;
-  }
-  
-  .register-container label {
-    display: block;
-    margin-top: 10px;
-  }
-  
-  .register-container input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    box-sizing: border-box;
-  }
-  
-  .register-container button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .register-container button:hover {
-    background-color: #0056b3;
-  }
-  .error {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-  }
-  
+  width: 100%;
+  max-width: 300px;
+  background: white;
+  padding: 20px;
+  border: 1px solid #dbdbdb;
+  text-align: left;
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.register-container h2 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.register-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #dbdbdb;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.register-container input::placeholder {
+  color: #aaa;
+  font-size: 14px;
+}
+
+.register-container .error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+
+.register-container .btn-submit {
+  background-color: #0095f6;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.register-container .btn-submit:hover {
+  background-color: #007bb5;
+}

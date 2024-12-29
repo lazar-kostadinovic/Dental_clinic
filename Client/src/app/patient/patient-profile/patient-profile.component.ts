@@ -285,6 +285,10 @@ export class PatientProfileComponent {
         (this.patient as any)[field] = this.updatedValues[field];
         this.isEditing[field] = false; 
         alert(`${field} uspešno ažurirano!`);
+        if (field === 'email') {
+          localStorage.setItem('email', this.updatedValues.email);
+          this.fetchPatientProfile();
+        }
       },
       error: (err) => {
         console.error(`Greška pri ažuriranju ${field}:`, err);
