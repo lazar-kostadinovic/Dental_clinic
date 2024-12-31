@@ -14,10 +14,10 @@
     </datalist>
     <ul>
       <li *ngFor="let pacijent of filteredPatients">
-        <strong>{{ pacijent.name }}</strong><br />
-        Email: {{ pacijent.email }}<br />
-        Ukupno potrošeno: {{ pacijent.totalSpent | currency:'RSD' }}<br />
-        <p  [ngClass]="{'error': pacijent.debt > 0}"> Dugovanje: {{ pacijent.debt | currency:'RSD' }} </p>
+        <strong>{{ pacijent.name }} {{pacijent.age}}</strong><br />
+        Email: <br>{{ pacijent.email }}<br />
+        Ukupno potrošeno: <br>{{ pacijent.totalSpent | currency:'RSD' }}
+        <p  [ngClass]="{'error': pacijent.debt > 0}"> Dugovanje: <br> {{ pacijent.debt | currency:'RSD' }} </p>
         <button (click)="sendWarning(pacijent.email,pacijent.name,pacijent.debt)">Posalji upozorenje</button>
         <button (click)="deletePatient(pacijent.id)">Obrisi </button>
       </li>

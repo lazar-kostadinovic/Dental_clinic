@@ -14,7 +14,7 @@ export class ContactComponent {
   }
 
   initMap(): void {
-    const map = L.map('map').setView([43.32230905684506, 21.92228605320106], 13); 
+    const map = L.map('map').setView([43.33146766182903, 21.89257564155965], 13); 
 
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -22,8 +22,10 @@ export class ContactComponent {
     }).addTo(map);
 
 
-    L.marker([43.32230905684506, 21.92228605320106]).addTo(map)
-      .bindPopup('<b>Stomatoloska ordinacija</b><br>Adresa klinike: Narodnih heroja 42')
+    L.marker([43.33146766182903, 21.89257564155965]).addTo(map)
+      .bindPopup('<b>Stomatoloska ordinacija</b><br>Adresa klinike: Александра Медведева 4')
       .openPopup();
+
+      
   }
 }

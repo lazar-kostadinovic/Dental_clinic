@@ -11,7 +11,6 @@
 }
 
 .profile-container {
-  /* width: 100%;   */
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -46,23 +45,21 @@
 }
 
 button {
-  background-color: #4CAF50;
-  color: white;
   padding: 10px 15px;
-  margin: 5px;
+  margin-top: 10px;
+  background-color: #007bff;
+  color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #0056b3;
 }
 
 button:active {
-  background-color: #3e8e41;
   transform: scale(0.98);
 }
 
@@ -108,14 +105,9 @@ button:disabled {
 }
 
 .day-off-form button {
-  margin-top: 10px;
-  background-color: #28a745;
-  color: white;
+  margin-right: 5px;
 }
 
-.day-off-form button:hover {
-  background-color: #218838;
-}
 
 .edit-icon {
   cursor: pointer;

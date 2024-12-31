@@ -36,8 +36,11 @@
       <button (click)="saveChanges('adresa')">Potvrdi</button>
     </div>
     
-    <button (click)="toggleSchedule()">Zakazi pregled</button> <br>
-    <button (click)="toggleDentists()">Prikazi stomatologe</button><br>
+    <button *ngIf="!showButtons()"  (click)="toggleAppointments()">Prikazi preglede</button><br>
+    <button *ngIf="showButtons()"  (click)="toggleSchedule()">Zakazi pregled</button> <br>
+    <button *ngIf="showButtons()"  (click)="toggleDentists()">Prikazi stomatologe</button><br>
+
+    
 
 
     <p><strong>Vase dugovanje: {{patient.dugovanje}}</strong></p>

@@ -46,7 +46,7 @@
           <a *ngIf="isLoggedIn() && !isAdmin" [routerLink]="getProfileLink()" routerLinkActive="active" class="nav-item nav-link">Moj Profil</a>
           <a *ngIf="!isLoggedIn()" routerLink="/login" routerLinkActive="active" class="nav-item nav-link">Prijava</a>
           <a *ngIf="isLoggedIn()"  (click)="logout()" routerLinkActive="active" class="nav-item nav-link">Logout</a>
-          <a *ngIf="!isLoggedIn()" routerLink="/register-patient" routerLinkActive="active" class="nav-item nav-link">Registracija</a>
+          <!-- <a *ngIf="!isLoggedIn()" routerLink="/register-patient" routerLinkActive="active" class="nav-item nav-link">Registracija</a> -->
      
       </div>
       <button type="button" class="btn text-dark" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fa fa-search"></i></button>

@@ -19,7 +19,7 @@ import { ShowDentistComponent } from '../show-dentists/show-dentists.component';
     ScheduleAppointmentComponent,
     PatientAppointmentsComponent,
     FormsModule,
-    ShowDentistComponent
+    ShowDentistComponent,
   ],
   templateUrl: './patient-profile.component.html',
   styleUrls: ['./patient-profile.component.css'],
@@ -31,31 +31,33 @@ export class PatientProfileComponent {
   showDentists = false;
   showSchedule = false;
   isPaymentFormVisible = false;
-  isPaymentProcessing =false;
-  stripe!: Stripe ;
-  card: any = null; 
-  cardMounted = false;  
-  paymentAmount: number = 0; 
+  isPaymentProcessing = false;
+  stripe!: Stripe;
+  card: any = null;
+  cardMounted = false;
+  paymentAmount: number = 0;
 
-  
   isEditing = {
     email: false,
     brojTelefona: false,
-    adresa: false
+    adresa: false,
   };
 
   updatedValues = {
     email: '',
     brojTelefona: '',
-    adresa: ''
+    adresa: '',
   };
-
 
   @ViewChild(PatientAppointmentsComponent)
   patientAppointmentsComponent?: PatientAppointmentsComponent;
   @ViewChild('fileInput') fileInput!: ElementRef;
 
-  constructor(private http: HttpClient, private router: Router, private stripeService: StripeService) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private stripeService: StripeService
+  ) {}
   ngOnInit() {
     this.email = localStorage.getItem('email');
     console.log(this.email);
@@ -63,15 +65,15 @@ export class PatientProfileComponent {
   }
 
   ngAfterViewInit() {
-    loadStripe('pk_test_51QTXIkG3cGPJ8wzKPtQCYQ5GT5MShiYx6YSxgKz2TWJ5MSWEXfeMlXcBUFvjnGjx73ct443JR2Q9hPOmCuNdlMVt00IuWYFTZW').then(
-      (stripe) => {
-        if (!stripe) {
-          alert('Stripe nije učitan.');
-          return;
-        }
-        this.stripe = stripe;
+    loadStripe(
+      'pk_test_51QTXIkG3cGPJ8wzKPtQCYQ5GT5MShiYx6YSxgKz2TWJ5MSWEXfeMlXcBUFvjnGjx73ct443JR2Q9hPOmCuNdlMVt00IuWYFTZW'
+    ).then((stripe) => {
+      if (!stripe) {
+        alert('Stripe nije učitan.');
+        return;
       }
-    );
+      this.stripe = stripe;
+    });
   }
 
   handlePayment() {
@@ -80,7 +82,6 @@ export class PatientProfileComponent {
     setTimeout(() => {
       this.loadStripeCardElement();
     }, 300);
-  
   }
 
   loadStripeCardElement() {
@@ -102,45 +103,53 @@ export class PatientProfileComponent {
 
     this.isPaymentProcessing = true;
 
-    this.stripeService.createPaymentIntent(this.paymentAmount).then(
-      (response: { clientSecret: string }) => {
-        this.stripe.confirmCardPayment(response.clientSecret, {
-          payment_method: {
-            card: this.card,
-            billing_details: {
-              name: `${this.patient.ime} ${this.patient.prezime}`,
+    this.stripeService
+      .createPaymentIntent(this.paymentAmount)
+      .then((response: { clientSecret: string }) => {
+        this.stripe
+          .confirmCardPayment(response.clientSecret, {
+            payment_method: {
+              card: this.card,
+              billing_details: {
+                name: `${this.patient.ime} ${this.patient.prezime}`,
+              },
             },
-          },
-        }).then((result) => {
-          this.isPaymentProcessing = false;
+          })
+          .then((result) => {
+            this.isPaymentProcessing = false;
 
-          if (result.error) {
-            alert(`Došlo je do greške: ${result.error.message}`);
-          } else if (result.paymentIntent?.status === 'succeeded') {
-            alert('Plaćanje uspešno izvršeno!');
-            this.reducePatientDebt(this.patient.id, this.paymentAmount);
-          }
-        });
-      }
-    ).catch((err) => {
-      console.error('Greška prilikom kreiranja Payment Intenta:', err);
-      alert('Došlo je do greške prilikom plaćanja.');
-      this.isPaymentProcessing = false;
-    });
+            if (result.error) {
+              alert(`Došlo je do greške: ${result.error.message}`);
+            } else if (result.paymentIntent?.status === 'succeeded') {
+              alert('Plaćanje uspešno izvršeno!');
+              this.reducePatientDebt(this.patient.id, this.paymentAmount);
+            }
+          });
+      })
+      .catch((err) => {
+        console.error('Greška prilikom kreiranja Payment Intenta:', err);
+        alert('Došlo je do greške prilikom plaćanja.');
+        this.isPaymentProcessing = false;
+      });
   }
 
   reducePatientDebt(patientId: string, amount: number) {
-    this.http.put(`http://localhost:5001/Pacijent/reduceDebt/${patientId}/${amount}`, {}).subscribe({
-      next: (response: any) => {
-        this.patient.dugovanje -= amount;
-        console.log("proba"); 
-        alert(response.message);
-      },
-      error: (err) => {
-        console.error('Greška prilikom smanjenja dugovanja:', err);
-        alert('Došlo je do greške prilikom ažuriranja dugovanja.');
-      }
-    });
+    this.http
+      .put(
+        `http://localhost:5001/Pacijent/reduceDebt/${patientId}/${amount}`,
+        {}
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.patient.dugovanje -= amount;
+          console.log('proba');
+          alert(response.message);
+        },
+        error: (err) => {
+          console.error('Greška prilikom smanjenja dugovanja:', err);
+          alert('Došlo je do greške prilikom ažuriranja dugovanja.');
+        },
+      });
   }
 
   onAppointmentsUpdated(updatedIds: string[]) {
@@ -162,16 +171,28 @@ export class PatientProfileComponent {
       });
   }
 
-  toggleSchedule(){
-    this.showSchedule=!this.showSchedule;
+  toggleSchedule() {
+    this.showSchedule = !this.showSchedule;
     this.showDentists = false;
     this.fetchPatientProfile();
   }
-  
+
   toggleDentists() {
     this.showDentists = !this.showDentists;
     this.showSchedule = false;
     this.fetchPatientProfile();
+  }
+
+  toggleAppointments() {
+    this.showDentists = false;
+    this.showSchedule = false;
+    this.fetchPatientProfile();
+  }
+
+  showButtons() {
+    if (!this.showDentists && !this.showSchedule) {
+      return true;
+    } else return false;
   }
 
   triggerFileInput(): void {
@@ -216,8 +237,11 @@ export class PatientProfileComponent {
   // }
 
   onAppointmentScheduled(newAppointmentId: string): void {
-    this.showSchedule = false; 
-    this.patient.istorijaPregleda = [newAppointmentId, ...this.patient.istorijaPregleda];
+    this.showSchedule = false;
+    this.patient.istorijaPregleda = [
+      newAppointmentId,
+      ...this.patient.istorijaPregleda,
+    ];
     this.fetchPatientProfile();
   }
 
@@ -240,29 +264,29 @@ export class PatientProfileComponent {
           console.error('Greska prilikom birsanja profila:', error);
         },
       });
-      localStorage.removeItem('token');
-      localStorage.removeItem('email');
-      localStorage.removeItem('role');
+    localStorage.removeItem('token');
+    localStorage.removeItem('email');
+    localStorage.removeItem('role');
   }
 
   toggleEditEmail() {
-    this.isEditing.email=true;
-    this.isEditing.adresa=false;
-    this.isEditing.brojTelefona=false;
+    this.isEditing.email = true;
+    this.isEditing.adresa = false;
+    this.isEditing.brojTelefona = false;
   }
   toggleEditNumber() {
-    this.isEditing.brojTelefona=true;
-    this.isEditing.adresa=false;
-    this.isEditing.email=false;
+    this.isEditing.brojTelefona = true;
+    this.isEditing.adresa = false;
+    this.isEditing.email = false;
   }
   toggleEditAddress() {
-    this.isEditing.adresa=true;
-    this.isEditing.email=false;
-    this.isEditing.brojTelefona=false;
+    this.isEditing.adresa = true;
+    this.isEditing.email = false;
+    this.isEditing.brojTelefona = false;
   }
 
   saveChanges(field: string) {
-    const apiUrl = `http://localhost:5001/Pacijent`; 
+    const apiUrl = `http://localhost:5001/Pacijent`;
     let endpoint = '';
 
     switch (field) {
@@ -279,11 +303,11 @@ export class PatientProfileComponent {
         console.error('Nepoznat tip izmene:', field);
         return;
     }
-  
+
     this.http.put(`${apiUrl}/${endpoint}`, {}).subscribe({
       next: () => {
         (this.patient as any)[field] = this.updatedValues[field];
-        this.isEditing[field] = false; 
+        this.isEditing[field] = false;
         alert(`${field} uspešno ažurirano!`);
         if (field === 'email') {
           localStorage.setItem('email', this.updatedValues.email);
@@ -293,7 +317,7 @@ export class PatientProfileComponent {
       error: (err) => {
         console.error(`Greška pri ažuriranju ${field}:`, err);
         alert(`Došlo je do greške pri ažuriranju ${field}.`);
-      }
+      },
     });
   }
   calculateAge(dateOfBirth: string): number {
@@ -301,12 +325,14 @@ export class PatientProfileComponent {
     const birthDate = new Date(dateOfBirth);
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-  1
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    1;
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
       age--;
     }
-  
+
     return age;
   }
-  
 }

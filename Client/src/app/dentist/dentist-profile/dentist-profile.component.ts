@@ -163,7 +163,7 @@ export class DentistProfileComponent {
     this.fetchDentistProfile();
   }
   showButtons(){
-    if(    this.showAppointmentForm == false&&
+    if(this.showAppointmentForm == false&&
       this.showDayOffForm==false&&
       this.showUnconfirmedAppointments == false)
       return true

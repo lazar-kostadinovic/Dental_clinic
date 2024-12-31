@@ -61,11 +61,19 @@ namespace StomatoloskaOrdinacija.Services
             {
                 throw new InvalidOperationException("Pacijent sa ovom email adresom već postoji.");
             }
+
+            int godine = DateTime.Now.Year - resource.DatumRodjenja.Year;
+            if (DateTime.Now.Date < resource.DatumRodjenja.Date.AddYears(godine))
+            {
+                godine--;
+            }
+
             var pacijent = new Pacijent
             {
                 Ime = resource.Ime,
                 Prezime = resource.Prezime,
                 DatumRodjenja = resource.DatumRodjenja,
+                Godine = godine,
                 Adresa = resource.Adresa,
                 BrojTelefona = resource.BrojTelefona,
                 Role = UserRole.Pacijent,
@@ -77,6 +85,7 @@ namespace StomatoloskaOrdinacija.Services
 
             return true;
         }
+
         public bool RemoveAppointment(ObjectId pacijentId, ObjectId appointmentId)
         {
             var filter = Builders<Pacijent>.Filter.Eq(p => p.Id, pacijentId);
@@ -96,7 +105,7 @@ namespace StomatoloskaOrdinacija.Services
         public async Task<string> GetEmailByIdAsync(ObjectId id)
         {
             var pacijent = await _pacijenti.Find(p => p.Id == id).FirstOrDefaultAsync();
-            return pacijent.Email;  
+            return pacijent.Email;
         }
 
 
