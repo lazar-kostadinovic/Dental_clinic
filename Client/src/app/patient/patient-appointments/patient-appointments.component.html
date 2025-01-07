@@ -1,5 +1,4 @@
 <div class="appointments-container">
-  <button (click)="toggleUnconfirmed()">Prikazi jos uvek nepotvrdjene preglede</button>
   <div *ngIf="showUnconfirmed">
     <app-unconfirmed-appointments [unconfirmedAppointments]="unconfirmedAppointments"></app-unconfirmed-appointments>
   </div>

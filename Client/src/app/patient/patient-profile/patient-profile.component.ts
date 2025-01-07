@@ -9,6 +9,7 @@ import { StripeService } from '../../services/stripe.service';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { FormsModule } from '@angular/forms';
 import { ShowDentistComponent } from '../show-dentists/show-dentists.component';
+import { UnconfirmedAppointmentsComponent } from '../patient-appointments/unconfirmed-appointments/unconfirmed-appointments.component';
 
 @Component({
   selector: 'app-patient-profile',
@@ -20,6 +21,7 @@ import { ShowDentistComponent } from '../show-dentists/show-dentists.component';
     PatientAppointmentsComponent,
     FormsModule,
     ShowDentistComponent,
+    UnconfirmedAppointmentsComponent
   ],
   templateUrl: './patient-profile.component.html',
   styleUrls: ['./patient-profile.component.css'],
@@ -28,6 +30,7 @@ export class PatientProfileComponent {
   patient!: PacijentDTO;
   email: string | null = null;
 
+  showUnconfirmed = false;
   showDentists = false;
   showSchedule = false;
   isPaymentFormVisible = false;
@@ -49,8 +52,7 @@ export class PatientProfileComponent {
     adresa: '',
   };
 
-  @ViewChild(PatientAppointmentsComponent)
-  patientAppointmentsComponent?: PatientAppointmentsComponent;
+  @ViewChild(PatientAppointmentsComponent) patientAppointmentsComponent?: PatientAppointmentsComponent;
   @ViewChild('fileInput') fileInput!: ElementRef;
 
   constructor(
@@ -123,6 +125,10 @@ export class PatientProfileComponent {
             } else if (result.paymentIntent?.status === 'succeeded') {
               alert('Plaćanje uspešno izvršeno!');
               this.reducePatientDebt(this.patient.id, this.paymentAmount);
+              this.paymentAmount = 0;    
+              this.card.destroy(); 
+              this.cardMounted = false; 
+              this.isPaymentFormVisible = false; 
             }
           });
       })
@@ -131,6 +137,8 @@ export class PatientProfileComponent {
         alert('Došlo je do greške prilikom plaćanja.');
         this.isPaymentProcessing = false;
       });
+
+
   }
 
   reducePatientDebt(patientId: string, amount: number) {
@@ -171,29 +179,39 @@ export class PatientProfileComponent {
       });
   }
 
+  toggleUnconfirmed() {
+    this.showUnconfirmed=!this.showUnconfirmed;
+    this.showDentists = false;
+    this.showSchedule = false;
+    this.fetchPatientProfile();
+  }
+
   toggleSchedule() {
     this.showSchedule = !this.showSchedule;
     this.showDentists = false;
+    this.showUnconfirmed = false;
     this.fetchPatientProfile();
   }
 
   toggleDentists() {
     this.showDentists = !this.showDentists;
     this.showSchedule = false;
+    this.showUnconfirmed = false;
     this.fetchPatientProfile();
   }
 
   toggleAppointments() {
     this.showDentists = false;
     this.showSchedule = false;
+    this.showUnconfirmed = false;
     this.fetchPatientProfile();
   }
 
-  showButtons() {
-    if (!this.showDentists && !this.showSchedule) {
-      return true;
-    } else return false;
-  }
+  // showButtons() {
+  //   if (!this.showDentists && !this.showSchedule && !this.showUnconfirmed) {
+  //     return true;
+  //   } else return false;
+  // }
 
   triggerFileInput(): void {
     this.fileInput.nativeElement.click();

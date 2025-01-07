@@ -12,6 +12,8 @@ namespace StomatoloskaOrdinacija.DTOs
         public string Email { get; set; }
         public string BrojTelefona { get; set; }
         public bool PrvaSmena { get; set; }
+        public int BrojPregleda { get; set; }
+        public int UkupanBrojPregleda { get; set; }
         public UserRole Role { get; set; }
         public Specijalizacija Specijalizacija { get; set; }
         public List<string> PredstojeciPregledi { get; set; }

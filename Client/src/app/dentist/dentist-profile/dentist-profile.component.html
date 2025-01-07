@@ -31,14 +31,16 @@
       <input type="text" [(ngModel)]="updatedValues.adresa" placeholder="Unesite novu adresu" />
       <button (click)="saveChanges('adresa')">Potvrdi</button>
     </div>
+    <p><strong>Trenutna smena:</strong> {{ getDentistShift(dentist.prvaSmena)}}</p>
 
   </div>
   <button *ngIf="!showButtons()" (click)="toggleAppointmentsHistory()">Prikazi preglede</button><br/>
   <button *ngIf="showButtons()" (click)="toggleDayOffForm()">Dodaj slobodan dan</button> <br/>
   <button *ngIf="showButtons()" (click)="toggleAppointmentForm()">Zakazi pregled</button><br/>
   <button *ngIf="showButtons()" (click)="toggleUnconfirmedAppointments()">Prikazi nepotvrdjene preglede</button><br/>
-  <p *ngIf="dentist">Vasa trenutna smena je{{ getDentistShift(dentist.prvaSmena)}}</p>
+
   <button (click)="changeShift(dentist.id)">Promeni smenu</button>
+  <p>Broj obavljenih pregleda ove godine: {{dentist.brojPregleda}}</p>
   <!-- <button (click)="toggleAppointmentsHistory()">Prikaži preglede</button> -->
 
 </div>

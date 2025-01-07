@@ -10,4 +10,6 @@ export interface PregledDTO {
   imeStomatologa?: string;
   imePacijenta?:string
   emailPacijenta?:string
+  intervencije?: { naziv: string; cena: number; kolicina: number }[];
+  ukupnaCena?: number;
 }

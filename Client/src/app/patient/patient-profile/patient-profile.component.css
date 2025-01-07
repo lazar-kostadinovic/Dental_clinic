@@ -13,6 +13,7 @@
   flex-shrink: 0;
 }
 
+
 .profile-container h2 {
   text-align: center;
 }
@@ -54,65 +55,20 @@
   border: 2px solid #ccc;
 }
 
-#card-element {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 10px;
-  font-size: 16px;
-  line-height: 1.5;
-  background-color: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  transition: box-shadow 0.3s ease-in-out;
-}
-
-#card-element:focus {
-  border-color: #4caf50;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
-}
-
-.StripeElement--invalid {
-  border-color: #f44336;
-  background-color: #fff1f1;
-}
-
-.StripeElement--valid {
-  border-color: #4caf50;
-  background-color: #f1fff1;
-}
-.payment-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.payment-modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 400px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 button {
   padding: 10px 15px;
-  margin: 5px;
-  margin-left: 0;
+  margin-top: 10px;
   background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.3s, transform 0.2s;
+  text-align: center;
+  width: 230px;
+  display: inline-block
 }
+
 
 button:hover {
   background-color: #0056b3;
@@ -171,4 +127,57 @@ button:disabled {
   font-size: 18px;
 }
 
+
+.payment-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  margin-top: 10px;
+}
+
+.payment-form label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.payment-form input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#card-element {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+#card-element:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+.StripeElement--invalid {
+  border-color: #f44336;
+  background-color: #fff1f1;
+}
+
+.StripeElement--valid {
+  border-color: #4caf50;
+  background-color: #f1fff1;
+}
 

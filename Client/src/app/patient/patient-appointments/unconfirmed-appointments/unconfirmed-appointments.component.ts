@@ -14,6 +14,7 @@ import { PregledDTO } from '../../../models/pregledDTO.model';
 export class UnconfirmedAppointmentsComponent {
   @Input () unconfirmedAppointments!: PregledDTO[];
   
+  
   constructor(private dateService:DateService, private http:HttpClient) {}
 
   formatDate(utcDate: Date): string {

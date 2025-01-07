@@ -68,7 +68,10 @@ public class PregledController : ControllerBase
             Naplacen = pregled.Naplacen,
             Datum = pregled.Datum,
             Opis = pregled.Opis,
-            Status = pregled.Status
+            Status = pregled.Status,
+            Intervencije = pregled.Intervencije,
+            UkupnaCena = pregled.UkupnaCena
+            
         };
         return pregledDTO;
     }
@@ -125,6 +128,10 @@ public class PregledController : ControllerBase
         }
 
         stomatologService.GetAndUpdate(idStomatologa, pregled.Id);
+
+        var stomatolog = stomatologService.Get(idStomatologa);
+        stomatolog.BrojPregleda +=1;
+        stomatologService.Update(idStomatologa,stomatolog);
 
         pregled.IdStomatologa = idStomatologa;
         pregledService.Update(idPregleda, pregled);
@@ -305,23 +312,51 @@ public class PregledController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut("chargeAppointment/{id}/{patientId}/{price}")]
-    public ActionResult ChargeAppointment(ObjectId id, ObjectId patientId, int price)
+    // [HttpPut("chargeAppointment/{id}/{patientId}/{price}")]
+    // public ActionResult ChargeAppointment(ObjectId id, ObjectId patientId, int price)
+    // {
+    //     var existingPregled = pregledService.Get(id);
+    //     if (existingPregled == null)
+    //     {
+    //         return NotFound($"Pregled with Id = {id} not found");
+    //     }
+    //     existingPregled.Naplacen = true;
+
+    //     var patient = pacijentService.Get(patientId);
+    //     patient.Dugovanje += price;
+    //     pacijentService.Update(patientId, patient);
+
+    //     pregledService.Update(id, existingPregled);
+    //     return NoContent();
+    // }
+
+    [HttpPut("chargeAppointment/{id}/{patientId}")]
+    public ActionResult ChargeAppointment(ObjectId id, ObjectId patientId, [FromBody] ChargeAppointmentRequest request)
     {
         var existingPregled = pregledService.Get(id);
         if (existingPregled == null)
         {
             return NotFound($"Pregled with Id = {id} not found");
         }
+
         existingPregled.Naplacen = true;
+        existingPregled.Intervencije = request.Intervencije;
+        existingPregled.UkupnaCena = request.UkupnaCena;
 
         var patient = pacijentService.Get(patientId);
-        patient.Dugovanje += price;
+        if (patient == null)
+        {
+            return NotFound($"Patient with Id = {patientId} not found");
+        }
+
+        patient.Dugovanje += request.UkupnaCena;
         pacijentService.Update(patientId, patient);
 
         pregledService.Update(id, existingPregled);
+
         return NoContent();
     }
+
 
     [Authorize]
     [HttpDelete("{id}")]

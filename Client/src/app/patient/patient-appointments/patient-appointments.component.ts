@@ -15,13 +15,14 @@ import { UnconfirmedAppointmentsComponent } from './unconfirmed-appointments/unc
 })
 export class PatientAppointmentsComponent implements OnInit {
   @Input() appointmentIds: string[] = [];
+  @Input() showUnconfirmed: boolean = false;
   @Output() appointmentsUpdated = new EventEmitter<string[]>();
   unconfirmedAppointments: PregledDTO[] = [];
   pregledList: PregledDTO[] = [];
   updateForm = {
     opis: '',
   };
-  showUnconfirmed = false;
+  // showUnconfirmed = false;
   isUpdateFormVisible1 = false;
   isUpdateFormVisible0 = false;
   selectedPregledId: string | null = null;
@@ -179,9 +180,5 @@ export class PatientAppointmentsComponent implements OnInit {
   refreshPregledList() {
     console.log('Proba osvežavanja liste pregleda');
     this.fetchPatientHistory();
-  }
-
-  toggleUnconfirmed(){
-    this.showUnconfirmed=!this.showUnconfirmed;
   }
 }

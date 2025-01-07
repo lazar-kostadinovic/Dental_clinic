@@ -23,6 +23,8 @@ namespace StomatoloskaOrdinacija.Models
         public bool Naplacen { get; set; } = false;
         [BsonElement("Status")]
         public StatusPregleda Status { get; set; }
+        public List<Intervencija> Intervencije { get; set; } = new List<Intervencija>();
+        public int UkupnaCena { get; set; }
     }
 }
 
@@ -31,4 +33,11 @@ public enum StatusPregleda
     Predstojeci,
     Prosli,
     Otkazani
+}
+
+public class Intervencija
+{
+    public string Naziv { get; set; }
+    public int Cena { get; set; }
+    public int Kolicina { get; set; }
 }

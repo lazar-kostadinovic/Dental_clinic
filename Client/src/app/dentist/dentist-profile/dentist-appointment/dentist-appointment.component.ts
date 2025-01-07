@@ -37,7 +37,6 @@ export class DentistAppointmentComponent {
   selectedPatientName: string = '';
   selectedPregled: PregledDTO | null = null;
 
-
   constructor(private http: HttpClient, private dateService: DateService) {}
 
   ngOnInit() {
@@ -129,28 +128,32 @@ export class DentistAppointmentComponent {
   }
 
   fetchAllInterventions() {
-    this.http.get<IntervencijaDTO[]>('http://localhost:5001/Intervencija/getDTOs').subscribe({
-      next: (intervencije) => {
-        this.interventionsList = intervencije.map((intervencija) => ({
-          ...intervencija,
-          selected: false,
-          kolicina: 1,
-        }));
-        console.log('Učitana lista intervencija:', this.interventionsList);
-      },
-      error: (error) => {
-        console.error('Greška pri učitavanju intervencija:', error);
-      },
-    });
+    this.http
+      .get<IntervencijaDTO[]>('http://localhost:5001/Intervencija/getDTOs')
+      .subscribe({
+        next: (intervencije) => {
+          this.interventionsList = intervencije.map((intervencija) => ({
+            ...intervencija,
+            selected: false,
+            kolicina: 1,
+          }));
+          console.log('Učitana lista intervencija:', this.interventionsList);
+        },
+        error: (error) => {
+          console.error('Greška pri učitavanju intervencija:', error);
+        },
+      });
   }
 
   calculateTotal(): number {
     return this.interventionsList
       .filter((intervencija) => intervencija.selected)
-      .reduce((total, intervencija) => total + intervencija.cena * intervencija.kolicina, 0);
+      .reduce(
+        (total, intervencija) =>
+          total + intervencija.cena * intervencija.kolicina,
+        0
+      );
   }
-  
-  
 
   filterAppointmentsByPatient() {
     if (this.selectedPatientId) {
@@ -161,6 +164,7 @@ export class DentistAppointmentComponent {
       this.filteredAppointmentList = [...this.appointmentList];
     }
     this.updateAppointmentIndicators();
+    this.sortAppointmentsByDate();
   }
 
   onPatientSelected() {
@@ -179,7 +183,7 @@ export class DentistAppointmentComponent {
       this.updateAppointmentIndicators();
     }
   }
-  deleteAppointment(id:string){
+  deleteAppointment(id: string) {
     const token = localStorage.getItem('token') || '';
     console.log(token);
 
@@ -197,6 +201,7 @@ export class DentistAppointmentComponent {
           this.appointmentIds = this.appointmentIds.filter(
             (appId) => appId !== id
           );
+          this.filterAppointmentsByPatient();
           this.appointmentsUpdated.emit(this.appointmentIds);
           alert('Pregled je uspešno obrisan.');
         },
@@ -204,7 +209,6 @@ export class DentistAppointmentComponent {
           console.error('Greška pri brisanju pregleda:', error);
         },
       });
-
   }
 
   cancelAppointment(id: string) {
@@ -285,37 +289,45 @@ export class DentistAppointmentComponent {
     this.selectedPregled = pregled;
     this.showCharge = true;
   }
-  
 
   chargeAppointment() {
     if (!this.selectedPregled) return;
-  
+
     const pregledId = this.selectedPregled.id;
     const pacijentId = this.selectedPregled.idPacijenta;
     const ukupnaCena = this.calculateTotal();
+    const intervencije = this.interventionsList
+      .filter((intervencija) => intervencija.selected)
+      .map((intervencija) => ({
+        naziv: intervencija.naziv,
+        cena: intervencija.cena,
+        kolicina: intervencija.kolicina,
+      }));
 
     const token = localStorage.getItem('token') || '';
-    this.http.put(
-      `http://localhost:5001/Pregled/chargeAppointment/${pregledId}/${pacijentId}/${ukupnaCena}`,
-      { },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+    this.http
+      .put(
+        `http://localhost:5001/Pregled/chargeAppointment/${pregledId}/${pacijentId}`,
+        { intervencije, ukupnaCena },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .subscribe({
+        next: () => {
+          alert('Pregled je uspešno naplaćen!');
+          console.log(intervencije, ukupnaCena);
+          this.fetchPatientHistory();
+          this.showCharge = false;
+          this.selectedPregled = null;
         },
-      }
-    ).subscribe({
-      next: () => {
-        alert('Pregled je uspešno naplaćen!');
-        this.fetchPatientHistory();
-        this.showCharge = false;
-        this.selectedPregled = null;
-      },
-      error: (err) => {
-        console.error('Greška pri naplati pregleda:', err);
-        alert('Došlo je do greške pri naplati.');
-      }
-    });
+        error: (err) => {
+          console.error('Greška pri naplati pregleda:', err);
+          alert('Došlo je do greške pri naplati.');
+        },
+      });
     this.fetchPatientHistory();
   }
-  
 }

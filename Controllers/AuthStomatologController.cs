@@ -9,7 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace StomatoloskaOrdinacija.Controllers
 {
-    [Authorize]
+
     [Route("api/[controller]")]
     [ApiController]
     public class AuthStomatologController : ControllerBase
@@ -23,7 +23,6 @@ namespace StomatoloskaOrdinacija.Controllers
             _stomatolog = stomatolog;
         }
 
-        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Authenticate([FromBody] LoginModel login)
         {

@@ -10,6 +10,8 @@ export interface StomatologDTO {
   specijalizacija: number;
   prvaSmena: boolean;
   slobodnidani: Date[];
+  brojPregleda: Date[];
+  ukupanBrojPregleda: Date[];
   predstojeciPregledi: string[];
   komentariStomatologa: string[];
 }

@@ -6,7 +6,6 @@ import { PatientProfileComponent } from './patient/patient-profile/patient-profi
 import { RegisterDentistComponent } from './register-dentist/register-dentist.component';
 import { RegisterPatientComponent } from './register-patient/register-patient.component';
 import { DentistProfileComponent } from './dentist/dentist-profile/dentist-profile.component';
-import { AdminProfileComponent } from './admin/admin-profile/admin-profile.component';
 import { DentistsManagementComponentComponent } from './admin/dentists-management-component/dentists-management-component.component';
 import { PatientsManagementComponentComponent } from './admin/patients-management-component/patients-management-component.component';
 import { InterventionsManagementComponentComponent } from './admin/interventions-management-component/interventions-management-component.component';
@@ -24,7 +23,6 @@ export const routes: Routes = [
   { path: 'dentist-profile', component: DentistProfileComponent },
   { path: 'dentist-schedule', component: DentistScheduleComponent },
   { path: 'patient-schedule', component: ScheduleAppointmentComponent },
-  { path: 'admin-profile', component: AdminProfileComponent},
   { path: 'dentist-management', component: DentistsManagementComponentComponent},
   { path: 'patient-management', component: PatientsManagementComponentComponent},
   { path: 'interventions-management', component: InterventionsManagementComponentComponent},

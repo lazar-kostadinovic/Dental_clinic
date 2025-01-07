@@ -52,6 +52,7 @@ public class StomatologController : ControllerBase
             Role = stomatolog.Role,
             PrvaSmena = stomatolog.PrvaSmena,
             Specijalizacija = stomatolog.Specijalizacija,
+            BrojPregleda = stomatolog.BrojPregleda,
             PredstojeciPregledi = stomatolog.PredstojeciPregledi.Select(p => p.ToString()).ToList(),
             KomentariStomatologa = stomatolog.KomentariStomatologa.Select(k => k.ToString()).ToList()
         }).ToList();
@@ -128,6 +129,7 @@ public class StomatologController : ControllerBase
             Email = stomatolog.Email,
             Role = stomatolog.Role,
             PrvaSmena = stomatolog.PrvaSmena,
+            BrojPregleda = stomatolog.BrojPregleda,
             Specijalizacija = stomatolog.Specijalizacija,
             KomentariStomatologa = stomatolog.KomentariStomatologa.Select(id => id.ToString()).ToList(),
             PredstojeciPregledi = stomatolog.PredstojeciPregledi.Select(id => id.ToString()).ToList(),

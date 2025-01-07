@@ -10,7 +10,7 @@
           <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">
             Naplati pregled
           </button>
-          
+
         </div>
       </ng-container>
     </div>
@@ -44,19 +44,38 @@
 
     <h3>Prošli pregledi</h3>
     <p *ngIf="!hasPastAppointments">Ovaj pacijent nema prošlih pregleda kod vas</p>
-    <div class="row" *ngIf="hasPastAppointments">
+    <!-- <div class="row" *ngIf="hasPastAppointments">
       <ng-container *ngFor="let pregled of filteredAppointmentList">
         <div *ngIf="pregled.status === 1" class="appointment">
           <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
           <p><strong>Opis:</strong> {{ pregled.opis }}</p>
           <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
           <button (click)="deleteAppointment(pregled.id)">Obriši pregled</button>
-          <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">
-            Naplati pregled
-          </button>
+          <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">Naplati pregled </button>
+        </div>
+      </ng-container>
+    </div> -->
+    <div class="row" *ngIf="hasPastAppointments">
+      <ng-container *ngFor="let pregled of filteredAppointmentList">
+        <div *ngIf="pregled.status === 1" class="appointment">
+          <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
+          <p><strong>Opis:</strong> {{ pregled.opis }}</p>
+          <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
+          <div *ngIf="pregled.naplacen">
+            <p><strong>Intervencije:</strong></p>
+            <ul>
+              <li *ngFor="let intervencija of pregled.intervencije">
+                {{ intervencija.naziv }} - {{ intervencija.cena }} din x {{ intervencija.kolicina }}
+              </li>
+            </ul>
+            <p><strong>Ukupna cena:</strong> {{ pregled.ukupnaCena }} din</p>
+          </div>
+          <button *ngIf="!pregled.naplacen" (click)="deleteAppointment(pregled.id)">Obriši pregled</button>
+          <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">Naplati pregled</button>
         </div>
       </ng-container>
     </div>
+    
     <h3>Predstojeći pregledi</h3>
     <p *ngIf="!hasUpcomingAppointments">Ovaj pacijent nema zakazanih pregleda kod vas</p>
     <div class="row" *ngIf="hasUpcomingAppointments">

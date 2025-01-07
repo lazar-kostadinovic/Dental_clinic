@@ -10,6 +10,8 @@ namespace StomatoloskaOrdinacija.DTOs
         public bool Naplacen { get; set; }
         public string Opis { get; set; }
         public StatusPregleda Status { get; set; }
+        public List<Intervencija> Intervencije { get; set; }
+        public int UkupnaCena { get; set; }
     }
 }
 
