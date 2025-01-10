@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { StomatologDTO } from '../../models/stomatologDTO.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-dentists-management-component',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,FormsModule],
   templateUrl: './dentists-management-component.component.html',
   styleUrl: './dentists-management-component.component.css',
 })
@@ -16,6 +17,10 @@ export class DentistsManagementComponentComponent {
   pacijenti: any[] = [];
   token = localStorage.getItem('token');
   filteredPatients: any[] = [];
+  daysOffMap: { [key: string]: string[] } = {};
+  showDayOff: { [key: string]: boolean } = {};
+  selectedDate: { [dentistId: string]: string } = {};
+
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -37,6 +42,85 @@ export class DentistsManagementComponentComponent {
       }
     );
   }
+
+  fetchAllDaysOff(dentistId: string): void {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const currentYear = new Date().getFullYear();
+  
+    this.http
+      .get<string[]>(
+        `http://localhost:5001/Stomatolog/GetAllDaysOff/${dentistId}`,
+        { headers }
+      )
+      .subscribe({
+        next: (daysOff) => {
+          this.daysOffMap[dentistId] = daysOff
+            .map((day) => new Date(day))
+            .filter((date) => date.getFullYear() === currentYear)
+            .sort((a, b) => a.getTime() - b.getTime())
+            .map((date) => date.toLocaleDateString('sr-RS'));
+          this.showDayOff[dentistId] = true;
+        },
+        error: (error) => {
+          console.error('Greška prilikom preuzimanja slobodnih dana:', error);
+          alert(
+            error.error?.message ||
+              'Došlo je do greške prilikom preuzimanja slobodnih dana.'
+          );
+        },
+      });
+  }
+  
+
+  toggleDayOffVisibility(dentistId: string): void {
+    this.showDayOff[dentistId] = !this.showDayOff[dentistId];
+  }
+  
+  countCurrentYearDaysOff(dentistId: string): number {
+    const currentYear = new Date().getFullYear();
+    const daysOff = this.daysOffMap[dentistId] || [];
+    return daysOff.filter((dateString) => {
+      const parts = dateString.split('.').map((part) => part.trim()); 
+      const year = parseInt(parts[2], 10);
+      return year === currentYear;
+    }).length;
+  }
+
+  submitDayOff(dentistId: string): void {
+    const selected = this.selectedDate[dentistId];
+    if (!selected) {
+      alert('Molimo odaberite datum.');
+      return;
+    }
+  
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+    this.http
+      .post(
+        `http://localhost:5001/Stomatolog/addDayOff/${dentistId}/${selected}`,
+        null,
+        { headers }
+      )
+      .subscribe({
+        next: () => {
+          alert(`Slobodan dan za ${selected} je dodat.`);
+          this.selectedDate[dentistId] = '';
+          this.fetchAllDaysOff(dentistId);
+        },
+        error: (err) => {
+          console.error('Greška prilikom dodavanja slobodnog dana:', err.error);
+          alert(err.error?.message || 'Došlo je do greške prilikom dodavanja.');
+        },
+      });
+  }
+  
+  getTodayDate(): string {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  }
+  
 
   getSpecijalizacijaLabel(specijalizacija: number): string {
     const specijalizacije = [

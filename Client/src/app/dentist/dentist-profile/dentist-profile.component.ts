@@ -128,9 +128,44 @@ export class DentistProfileComponent {
     }
   }
 
+  // toggleAppointmentForm() {
+  //   this.showAppointmentForm = !this.showAppointmentForm;
+  //   this.showAppointments=!this.showAppointments;
+  //   this.showDayOffForm=false;
+  //   this.showUnconfirmedAppointments = false;
+  //   if (this.showAppointmentForm) {
+  //     this.fetchPatients();
+  //   }
+  //   this.fetchDentistProfile();
+  // }
+    
+  // toggleAppointmentsHistory() {
+  //   this.showAppointments = !this.showAppointments;
+  //   this.showAppointmentForm = false;
+  //   this.showDayOffForm=false;
+  //   this.showUnconfirmedAppointments = false;
+  //   this.fetchDentistProfile();
+  // }
+
+  // toggleUnconfirmedAppointments() {
+  //   this.showUnconfirmedAppointments = true;
+  //   this.showAppointments=!this.showAppointments;
+  //   this.showDayOffForm=false;
+  //   this.showAppointmentForm=false;
+  //   this.fetchDentistProfile();
+  // }
+
+  // toggleDayOffForm(){
+  //   this.showAppointments=!this.showAppointments;
+  //   this.showDayOffForm=!this.showDayOffForm;
+  //   this.showAppointmentForm=false;
+  //   this.showUnconfirmedAppointments = false;
+  //   this.fetchDentistProfile();
+  //   this.fetchAllDaysOff()
+  // }
   toggleAppointmentForm() {
-    this.showAppointmentForm = !this.showAppointmentForm;
-    this.showAppointments=!this.showAppointments;
+    this.showAppointmentForm = true;
+    this.showAppointments=false;
     this.showDayOffForm=false;
     this.showUnconfirmedAppointments = false;
     if (this.showAppointmentForm) {
@@ -140,7 +175,7 @@ export class DentistProfileComponent {
   }
     
   toggleAppointmentsHistory() {
-    this.showAppointments = !this.showAppointments;
+    this.showAppointments = true;
     this.showAppointmentForm = false;
     this.showDayOffForm=false;
     this.showUnconfirmedAppointments = false;
@@ -148,19 +183,20 @@ export class DentistProfileComponent {
   }
 
   toggleUnconfirmedAppointments() {
-    this.showUnconfirmedAppointments = !this.showUnconfirmedAppointments;
-    this.showAppointments=!this.showAppointments;
+    this.showUnconfirmedAppointments = true;
+    this.showAppointments=false;
     this.showDayOffForm=false;
     this.showAppointmentForm=false;
     this.fetchDentistProfile();
   }
 
   toggleDayOffForm(){
-    this.showAppointments=!this.showAppointments;
-    this.showDayOffForm=!this.showDayOffForm;
+    this.showAppointments=false;
+    this.showDayOffForm=true;
     this.showAppointmentForm=false;
     this.showUnconfirmedAppointments = false;
     this.fetchDentistProfile();
+    this.fetchAllDaysOff()
   }
   showButtons(){
     if(this.showAppointmentForm == false&&
@@ -192,32 +228,32 @@ export class DentistProfileComponent {
     return `http://localhost:5001/assets/${imageName}`;
   }
 
-  submitDayOff(): void {
-    if (!this.selectedDate) {
-      alert('Molimo odaberite datum.');
-      return;
-    }
+  // submitDayOff(): void {
+  //   if (!this.selectedDate) {
+  //     alert('Molimo odaberite datum.');
+  //     return;
+  //   }
   
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    console.log(token);
+  //   const token = localStorage.getItem('token');
+  //   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  //   console.log(token);
   
-    this.http.post(`http://localhost:5001/Stomatolog/addDayOff/${this.dentist.id}/${this.selectedDate}`,null, { headers })
-      .subscribe({
-        next: (response: any) => {
-          console.log('Slobodan dan uspešno dodat:', response);
-          alert(`Slobodan dan za ${this.selectedDate} je dodat.`);
-          this.selectedDate = null;
-          // this.showDayOffForm = false;
-          this.fetchAllDaysOff()
-          this.fetchDentistProfile();
-        },
-        error: (err) => {
-          console.error('Greška prilikom dodavanja slobodnog dana:', err.error);
-          alert(`Vec ste postavili ovaj dan za slobodan.`);
-        },
-      });
-  }
+  //   this.http.post(`http://localhost:5001/Stomatolog/addDayOff/${this.dentist.id}/${this.selectedDate}`,null, { headers })
+  //     .subscribe({
+  //       next: (response: any) => {
+  //         console.log('Slobodan dan uspešno dodat:', response);
+  //         alert(`Slobodan dan za ${this.selectedDate} je dodat.`);
+  //         this.selectedDate = null;
+  //         // this.showDayOffForm = false;
+  //         this.fetchAllDaysOff()
+  //         this.fetchDentistProfile();
+  //       },
+  //       error: (err) => {
+  //         console.error('Greška prilikom dodavanja slobodnog dana:', err.error);
+  //         alert(`Vec ste postavili ovaj dan za slobodan.`);
+  //       },
+  //     });
+  // }
 
   fetchAllDaysOff(): void {
     const token = localStorage.getItem('token');

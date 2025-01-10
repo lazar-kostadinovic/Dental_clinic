@@ -6,6 +6,7 @@ import { forkJoin, map, switchMap } from 'rxjs';
 import { DateService } from '../../../shared/date.service';
 import { FormsModule } from '@angular/forms';
 import { IntervencijaDTO } from '../../../models/intervencijaDTO';
+import { PacijentDTO } from '../../../models/pacijentDTO.model';
 
 @Component({
   selector: 'app-dentist-appointment',
@@ -30,12 +31,18 @@ export class DentistAppointmentComponent {
     totalSpent: number;
     debt: number;
   }[] = [];
-  selectedPatientId: string = '';
   hasPastAppointments: boolean = false;
   hasUpcomingAppointments: boolean = false;
   appointmentsForToday = false;
+
+  selectedPatientId: string = '';
   selectedPatientName: string = '';
   selectedPregled: PregledDTO | null = null;
+  showPastAppointments: boolean = false;
+  showUpcomingAppointments: boolean = true;
+
+  selectedPatientDetails?: PacijentDTO;
+  
 
   constructor(private http: HttpClient, private dateService: DateService) {}
 
@@ -43,6 +50,8 @@ export class DentistAppointmentComponent {
     this.fetchPatientHistory();
     this.fetchAllPatients();
   }
+
+  
 
   formatDate(utcDate: Date): string {
     return this.dateService.formatDate(utcDate);
@@ -55,13 +64,15 @@ export class DentistAppointmentComponent {
         .pipe(
           switchMap((pregled) =>
             this.http
-              .get<{ ime: string; prezime: string }>(
+              .get<{ ime: string; prezime: string; email: string; brojTelefona: number}>(
                 `http://localhost:5001/Pacijent/getDTO/${pregled.idPacijenta}`
               )
               .pipe(
                 map((patient) => ({
                   ...pregled,
                   imePacijenta: `${patient.ime} ${patient.prezime}`,
+                  emailPacijenta: `${patient.email}`,
+                  brojPacijenta: `${patient.brojTelefona}`,
                 }))
               )
           )
@@ -82,6 +93,12 @@ export class DentistAppointmentComponent {
         },
       });
     }
+  }
+
+  isToday(date: Date): boolean {
+    const today = new Date().setHours(0, 0, 0, 0);
+    const pregledDate = new Date(date).setHours(0, 0, 0, 0);
+    return pregledDate === today;
   }
 
   filterAppointmentsForToday() {
@@ -164,7 +181,8 @@ export class DentistAppointmentComponent {
       this.filteredAppointmentList = [...this.appointmentList];
     }
     this.updateAppointmentIndicators();
-    this.sortAppointmentsByDate();
+    // this.sortAppointmentsByDate();
+    this.filterAppointmentsForToday();
   }
 
   onPatientSelected() {
@@ -177,13 +195,27 @@ export class DentistAppointmentComponent {
     if (selectedPatient) {
       this.selectedPatientId = selectedPatient.id;
       this.filterAppointmentsByPatient();
+  
+
+      this.http.get<PacijentDTO>(`http://localhost:5001/Pacijent/getDTO/${this.selectedPatientId}`)
+      .subscribe({
+        next: (details)=>{
+          this.selectedPatientDetails=details;
+        },
+        error: (err)=>{
+          alert("Doslo je do greske pri dohvatanju podataka o pacijentu");
+        },
+      });
+
     } else {
       this.selectedPatientId = '';
       this.filteredAppointmentList = [...this.appointmentList];
       this.updateAppointmentIndicators();
+      this.selectedPatientDetails=undefined;
     }
   }
-  deleteAppointment(id: string) {
+
+  deleteAppointment(id: string,patientId:string){
     const token = localStorage.getItem('token') || '';
     console.log(token);
 
@@ -203,10 +235,31 @@ export class DentistAppointmentComponent {
           );
           this.filterAppointmentsByPatient();
           this.appointmentsUpdated.emit(this.appointmentIds);
+          this.filterAppointmentsForToday();
+          this.incrementMissedAppointments(patientId);
           alert('Pregled je uspešno obrisan.');
         },
         error: (error) => {
           console.error('Greška pri brisanju pregleda:', error);
+        },
+      });
+  }
+
+  incrementMissedAppointments(patientId: string) {
+    const token = localStorage.getItem('token') || '';
+  
+    this.http
+      .put(`http://localhost:5001/Pacijent/incrementmissedAppointments/${patientId}`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .subscribe({
+        next: () => {
+          console.log(`Broj nedolazaka za pacijenta sa ID-jem ${patientId} je povećan.`);
+        },
+        error: (error) => {
+          console.error('Greška pri povećanju broja nedolazaka:', error);
         },
       });
   }
@@ -329,5 +382,13 @@ export class DentistAppointmentComponent {
         },
       });
     this.fetchPatientHistory();
+  }
+
+  togglePastAppointments() {
+    this.showPastAppointments = !this.showPastAppointments;
+  }
+
+  toggleUpcomingAppointments() {
+    this.showUpcomingAppointments = !this.showUpcomingAppointments;
   }
 }

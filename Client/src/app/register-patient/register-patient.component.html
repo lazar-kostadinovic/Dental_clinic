@@ -12,12 +12,15 @@
       Prezime je obavezno.
     </div>
 
-    <input type="date" placeholder="Datum rođenja" id="datumRodjenja" [(ngModel)]="registrationModel.datumRodjenja"
+    <div class="form-group">
+      <label for="datumRodjenja">Datum rodjenja:</label>
+      <input type="date" placeholder="Datum rođenja" id="datumRodjenja" [(ngModel)]="registrationModel.datumRodjenja"
       name="datumRodjenja" required />
     <div *ngIf="
           registerForm.submitted && !registerForm.controls['datumRodjenja']?.valid
         " class="error-message">
       Datum rođenja je obavezan.
+    </div>
     </div>
 
     <input type="text" placeholder="Adresa" id="adresa" [(ngModel)]="registrationModel.adresa" name="adresa" required />

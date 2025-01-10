@@ -1,3 +1,4 @@
+<div class="home-container">
 <div class="row">
     <div *ngFor="let intervencija of interventionsList; let i = index" class="appointment">
         <label>
@@ -19,4 +20,5 @@
     <input type="text" [(ngModel)]="newIntervention.naziv" placeholder="Naziv intervencije" />
     <input type="number" [(ngModel)]="newIntervention.cena" placeholder="Cena" />
     <button (click)="addNewIntervention()">Dodaj novu intervenciju</button>
+</div>
 </div>

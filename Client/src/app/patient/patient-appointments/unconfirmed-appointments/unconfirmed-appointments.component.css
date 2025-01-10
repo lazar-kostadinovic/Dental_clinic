@@ -6,6 +6,7 @@
     border-radius: 8px;
     background-color: #fafafa;
     transition: background-color 0.3s;
+    width: 300px;
 }
 .row{
   display: flex;
@@ -28,4 +29,10 @@ button {
   
   button:active {
     transform: scale(0.98);
+  }
+
+  .appointment p {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
   }

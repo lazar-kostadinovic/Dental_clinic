@@ -34,23 +34,28 @@
     <p><strong>Trenutna smena:</strong> {{ getDentistShift(dentist.prvaSmena)}}</p>
 
   </div>
-  <button *ngIf="!showButtons()" (click)="toggleAppointmentsHistory()">Prikazi preglede</button><br/>
-  <button *ngIf="showButtons()" (click)="toggleDayOffForm()">Dodaj slobodan dan</button> <br/>
+  <!-- <button *ngIf="!showButtons()" (click)="toggleAppointmentsHistory()">Prikazi preglede</button><br/>
   <button *ngIf="showButtons()" (click)="toggleAppointmentForm()">Zakazi pregled</button><br/>
   <button *ngIf="showButtons()" (click)="toggleUnconfirmedAppointments()">Prikazi nepotvrdjene preglede</button><br/>
+  <button *ngIf="showButtons()" (click)="toggleDayOffForm()">Prikazi neradne dane</button> <br/> 
+  <button *ngIf="showButtons()" (click)="changeShift(dentist.id)">Promeni smenu</button> -->
 
-  <button (click)="changeShift(dentist.id)">Promeni smenu</button>
-  <p>Broj obavljenih pregleda ove godine: {{dentist.brojPregleda}}</p>
+  <button (click)="toggleAppointmentsHistory()">Prikazi preglede</button><br/>
+  <button (click)="toggleAppointmentForm()">Zakazi pregled</button><br/>
+  <button (click)="toggleUnconfirmedAppointments()">Prikazi nepotvrdjene preglede</button><br/>
+  <button (click)="toggleDayOffForm()">Prikazi neradne dane</button><br/>
+
+
+  <p *ngIf="dentist">Broj obavljenih pregleda ove godine: {{dentist.brojPregleda}}</p>
   <!-- <button (click)="toggleAppointmentsHistory()">Prikaži preglede</button> -->
 
 </div>
 <div *ngIf="showDayOffForm" class="day-off-form">
-  <label for="datum">Datum:</label>
-  <input type="date" id="datum" [(ngModel)]="selectedDate" />
-  <button (click)="submitDayOff()">Dodaj slobodan dan</button>
-  <button (click)="toggleDayOffForm()">Odustani</button>
-
-  <button (click)="fetchAllDaysOff()">Prikaži sve slobodne dane</button>
+  <!-- <label for="datum">Datum:</label> -->
+  <!-- <input type="date" id="datum" [(ngModel)]="selectedDate" /> -->
+  <!-- <button (click)="submitDayOff()">Dodaj neradan dan</button> -->
+  <!-- <button (click)="toggleDayOffForm()">Odustani</button> -->
+  <!-- <button (click)="fetchAllDaysOff()">Prikaži sve neradne dane</button> -->
   <div *ngIf="daysOff.length > 0" class="day-off-list">
     <h3>Neradni dani:</h3>
     <ul>

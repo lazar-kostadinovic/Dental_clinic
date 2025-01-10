@@ -72,6 +72,7 @@ public class PacijentController : ControllerBase
             Email = pacijent.Email,
             Role = pacijent.Role,
             UkupnoPotroseno = pacijent.UkupnoPotroseno,
+            BrojNedolazaka = pacijent.BrojNedolazaka,
             Dugovanje = pacijent.Dugovanje,
             IstorijaPregleda = pacijent.IstorijaPregleda.Select(id => id.ToString()).ToList()
         };
@@ -89,6 +90,7 @@ public class PacijentController : ControllerBase
             Email = p.Email,
             totalSpent = p.UkupnoPotroseno,
             debt = p.Dugovanje,
+            missedAppointments = p.BrojNedolazaka
         }).ToList();
         return Ok(patients);
     }
@@ -197,15 +199,15 @@ public class PacijentController : ControllerBase
     [HttpPut("changeEmail/{id}/{newEmail}")]
     public ActionResult ChangeEmail(ObjectId id, string newEmail)
     {
-        var existingPacijent = pacijentService.Get(id);
-        if (existingPacijent == null)
+        var pacijent = pacijentService.Get(id);
+        if (pacijent == null)
         {
             return NotFound($"Pacijent with id = {id} not found");
         }
 
-        existingPacijent.Email = newEmail;
+        pacijent.Email = newEmail;
 
-        pacijentService.Update(existingPacijent.Id, existingPacijent);
+        pacijentService.Update(pacijent.Id, pacijent);
 
         return NoContent();
     }
@@ -213,15 +215,32 @@ public class PacijentController : ControllerBase
     [HttpPut("changeAddress/{id}/{adresa}")]
     public ActionResult ChangeAddress(ObjectId id, string adresa)
     {
-        var existingPacijent = pacijentService.Get(id);
-        if (existingPacijent == null)
+        var pacijent = pacijentService.Get(id);
+        if (pacijent == null)
         {
             return NotFound($"Pacijent with id = {id} not found");
         }
 
-        existingPacijent.Adresa = adresa;
+        pacijent.Adresa = adresa;
 
-        pacijentService.Update(existingPacijent.Id, existingPacijent);
+        pacijentService.Update(pacijent.Id, pacijent);
+
+        return NoContent();
+    }
+
+    [Authorize]
+    [HttpPut("incrementmissedAppointments/{id}")]
+    public ActionResult IncrementmissedAppointments(ObjectId id)
+    {
+        var pacijent = pacijentService.Get(id);
+        if (pacijent == null)
+        {
+            return NotFound($"Pacijent with id = {id} not found");
+        }
+
+        pacijent.BrojNedolazaka += 1;
+
+        pacijentService.Update(pacijent.Id, pacijent);
 
         return NoContent();
     }
@@ -229,15 +248,15 @@ public class PacijentController : ControllerBase
     [HttpPut("changeNumber/{id}/{brojTelefona}")]
     public ActionResult ChangeNumber(ObjectId id, string brojTelefona)
     {
-        var existingPacijent = pacijentService.Get(id);
-        if (existingPacijent == null)
+        var pacijent = pacijentService.Get(id);
+        if (pacijent == null)
         {
             return NotFound($"Pacijent with id = {id} not found");
         }
 
-        existingPacijent.BrojTelefona = brojTelefona;
+        pacijent.BrojTelefona = brojTelefona;
 
-        pacijentService.Update(existingPacijent.Id, existingPacijent);
+        pacijentService.Update(pacijent.Id, pacijent);
 
         return NoContent();
     }
@@ -263,11 +282,6 @@ public class PacijentController : ControllerBase
             return NotFound($"Pacijent with Id = {id} not found.");
         }
 
-        // if (amount > pacijent.Dugovanje)
-        // {
-        //     pacijent.Dugovanje = 0;
-        //     pacijent.UkupnoPotroseno += amount;
-        // }
         else
         {
             pacijent.UkupnoPotroseno += amount;

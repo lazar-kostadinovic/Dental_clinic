@@ -60,3 +60,22 @@
 .register-container .btn-submit:hover {
   background-color: #007bb5;
 }
+
+.form-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0px;
+}
+
+.form-group label {
+  font-size: 14px;
+}
+
+.form-group input {
+  flex: 1;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}

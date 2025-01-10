@@ -172,15 +172,15 @@ public class StomatologController : ControllerBase
     [HttpPut("changeEmail/{id}/{newEmail}")]
     public ActionResult ChangeEmail(ObjectId id, string newEmail)
     {
-        var existingStomatolog = stomatologService.Get(id);
-        if (existingStomatolog == null)
+        var stomatolog = stomatologService.Get(id);
+        if (stomatolog == null)
         {
             return NotFound($"Stomatolog with id = {id} not found");
         }
 
-        existingStomatolog.Email = newEmail;
+        stomatolog.Email = newEmail;
 
-        stomatologService.Update(existingStomatolog.Id, existingStomatolog);
+        stomatologService.Update(stomatolog.Id, stomatolog);
 
         return NoContent();
     }
@@ -188,15 +188,15 @@ public class StomatologController : ControllerBase
     [HttpPut("changeAddress/{id}/{adresa}")]
     public ActionResult ChangeAddress(ObjectId id, string adresa)
     {
-        var existingStomatolog = stomatologService.Get(id);
-        if (existingStomatolog == null)
+        var stomatolog = stomatologService.Get(id);
+        if (stomatolog == null)
         {
             return NotFound($"Stomatolog with id = {id} not found");
         }
 
-        existingStomatolog.Adresa = adresa;
+        stomatolog.Adresa = adresa;
 
-        stomatologService.Update(existingStomatolog.Id, existingStomatolog);
+        stomatologService.Update(stomatolog.Id, stomatolog);
 
         return NoContent();
     }
@@ -204,15 +204,15 @@ public class StomatologController : ControllerBase
     [HttpPut("changeNumber/{id}/{brojTelefona}")]
     public ActionResult ChangeNumber(ObjectId id, string brojTelefona)
     {
-        var existingStomatolog = stomatologService.Get(id);
-        if (existingStomatolog == null)
+        var stomatolog = stomatologService.Get(id);
+        if (stomatolog == null)
         {
             return NotFound($"Stomatolog with id = {id} not found");
         }
 
-        existingStomatolog.BrojTelefona = brojTelefona;
+        stomatolog.BrojTelefona = brojTelefona;
 
-        stomatologService.Update(existingStomatolog.Id, existingStomatolog);
+        stomatologService.Update(stomatolog.Id, stomatolog);
 
         return NoContent();
     }
@@ -296,7 +296,7 @@ public class StomatologController : ControllerBase
     }
 
     [HttpPost("addDayOff/{idStomatologa}/{datum}")]
-    public IActionResult AddFreeDay(ObjectId idStomatologa, DateTime datum)
+    public IActionResult AddDayOff(ObjectId idStomatologa, DateTime datum)
     {
         try
         {

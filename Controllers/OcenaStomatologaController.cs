@@ -113,17 +113,17 @@ public class OcenaStomatologaController : ControllerBase
     [HttpPut("{id}/{komentar}/{ocena}")]
     public ActionResult Put(ObjectId id, string komentar, int ocena)
     {
-        var existingReview = ocenaStomatologaService.Get(id);
+        var review = ocenaStomatologaService.Get(id);
 
-        if (existingReview == null)
+        if ( review == null)
         {
             return NotFound($"Pregled with Id = {id} not found");
         }
 
-        existingReview.Komentar = komentar;
-        existingReview.Ocena = ocena;
+         review.Komentar = komentar;
+         review.Ocena = ocena;
 
-        ocenaStomatologaService.Update(id, existingReview);
+        ocenaStomatologaService.Update(id,  review);
 
         return NoContent();
     }

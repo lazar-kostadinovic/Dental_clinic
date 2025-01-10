@@ -1,19 +1,6 @@
 <div class="allAppoitnments">
   <div *ngIf="filteredAppointmentListForToday.length>0" class="appointmentsForToday">
-    <div class="row">
-      <h3>Vasi pregledi za danasnji dan:</h3>
-      <ng-container *ngFor="let pregled of filteredAppointmentListForToday">
-        <div class="appointment">
-          <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
-          <p><strong>Opis:</strong> {{ pregled.opis }}</p>
-          <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
-          <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">
-            Naplati pregled
-          </button>
 
-        </div>
-      </ng-container>
-    </div>
   </div>
   <div *ngIf="showCharge" class="row">
     <h3>Izaberite intervencije:</h3>
@@ -34,6 +21,22 @@
   </div>
 
   <div class="appointments-container" *ngIf="!showCharge">
+    <div class="row">
+      <h3>Vasi pregledi za danasnji dan:</h3>
+      <ng-container *ngFor="let pregled of filteredAppointmentListForToday">
+        <div class="appointment">
+          <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
+          <p><strong>Opis:</strong> {{ pregled.opis }}</p>
+          <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
+          <p><strong>Email:</strong> {{ pregled.emailPacijenta }}</p>
+          <p><strong>Broj telefona:</strong> {{pregled.brojPacijenta }}</p>
+          <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">
+            Naplati pregled
+          </button>
+        </div>
+      </ng-container>
+      <h2 *ngIf="filterAppointmentsForToday.length==0">Nemate zakazanih pregleda za danas.</h2>
+    </div>
     <input list="pacijenti" [(ngModel)]="selectedPatientName" (input)="onPatientSelected()"
       placeholder="Izaberite ili unesite ime pacijenta" />
     <datalist id="pacijenti">
@@ -41,21 +44,45 @@
         {{ pacijent.name }} - {{ pacijent.email }}
       </option>
     </datalist>
+    <div *ngIf="selectedPatientDetails">
+      <h3>Podaci o pacijentu:</h3>
+      <p><strong>Ime:</strong> {{ selectedPatientDetails.ime }} {{ selectedPatientDetails.prezime }}</p>
+      <p><strong>Email:</strong> {{ selectedPatientDetails.email }}</p>
+      <p><strong>Broj telefona:</strong> {{ selectedPatientDetails.brojTelefona }}</p>
+      <p><strong>Ukupno potroseno:</strong> {{ selectedPatientDetails.ukupnoPotroseno|currency:'RSD '}}</p>
+      <p><strong>Dugovanje:</strong> {{ selectedPatientDetails.dugovanje|currency:'RSD '}}</p>
+      <p><strong>Propušteni pregledi:</strong> {{ selectedPatientDetails.brojNedolazaka}}</p>
+    </div>
 
-    <h3>Prošli pregledi</h3>
-    <p *ngIf="!hasPastAppointments">Ovaj pacijent nema prošlih pregleda kod vas</p>
-    <!-- <div class="row" *ngIf="hasPastAppointments">
+
+    <h3 (click)="toggleUpcomingAppointments()" style="cursor: pointer; display: flex; align-items: center;">
+      Predstojeći pregledi
+      <span [ngClass]="{'arrow-up': showUpcomingAppointments, 'arrow-down': !showUpcomingAppointments}"
+        style="margin-left: 10px;">
+        ▼
+      </span>
+    </h3>
+
+
+    <p *ngIf="!hasUpcomingAppointments && showUpcomingAppointments">Ovaj pacijent nema zakazanih pregleda kod vas</p>
+
+    <div class="row" *ngIf="hasUpcomingAppointments && showUpcomingAppointments">
       <ng-container *ngFor="let pregled of filteredAppointmentList">
-        <div *ngIf="pregled.status === 1" class="appointment">
+        <div *ngIf="pregled.status === 0" class="appointment">
           <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
           <p><strong>Opis:</strong> {{ pregled.opis }}</p>
           <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
-          <button (click)="deleteAppointment(pregled.id)">Obriši pregled</button>
-          <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">Naplati pregled </button>
+          <button (click)="cancelAppointment(pregled.id)">Otkaži pregled</button>
         </div>
       </ng-container>
-    </div> -->
-    <div class="row" *ngIf="hasPastAppointments">
+    </div>
+
+    <h3 (click)="togglePastAppointments()" style="cursor: pointer;">
+      Prošli pregledi
+      <span [ngClass]="{'arrow-down': !showPastAppointments, 'arrow-up': showPastAppointments}"> ▼ </span>
+    </h3>
+    <p *ngIf="!hasPastAppointments && showPastAppointments">Ovaj pacijent nema prošlih pregleda kod vas</p>
+    <div class="row" *ngIf="hasPastAppointments && showPastAppointments">
       <ng-container *ngFor="let pregled of filteredAppointmentList">
         <div *ngIf="pregled.status === 1" class="appointment">
           <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
@@ -70,23 +97,13 @@
             </ul>
             <p><strong>Ukupna cena:</strong> {{ pregled.ukupnaCena }} din</p>
           </div>
-          <button *ngIf="!pregled.naplacen" (click)="deleteAppointment(pregled.id)">Obriši pregled</button>
+          <button *ngIf="!pregled.naplacen" (click)="deleteAppointment(pregled.id,pregled.idPacijenta)">Pregled
+            neodradjen</button>
           <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">Naplati pregled</button>
         </div>
       </ng-container>
     </div>
-    
-    <h3>Predstojeći pregledi</h3>
-    <p *ngIf="!hasUpcomingAppointments">Ovaj pacijent nema zakazanih pregleda kod vas</p>
-    <div class="row" *ngIf="hasUpcomingAppointments">
-      <ng-container *ngFor="let pregled of filteredAppointmentList">
-        <div *ngIf="pregled.status === 0" class="appointment">
-          <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
-          <p><strong>Opis:</strong> {{ pregled.opis }}</p>
-          <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
-          <button (click)="cancelAppointment(pregled.id)">Otkaži pregled</button>
-        </div>
-      </ng-container>
-    </div>
+
+
   </div>
 </div>

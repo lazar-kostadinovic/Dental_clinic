@@ -10,6 +10,7 @@ export interface PacijentDTO {
     email: string;
     role: string;
     ukupnoPotroseno: number;
+    brojNedolazaka :number;
     dugovanje: number;
     istorijaPregleda: string[];
   }

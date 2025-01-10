@@ -91,8 +91,8 @@ public class PregledController : ControllerBase
             var drugaSmenaTimeSlots = new List<string> { "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00" };
 
             var allTimeSlots = stomatolog.PrvaSmena ? prvaSmenaTimeSlots : drugaSmenaTimeSlots;
-            var existingAppointments = pregledService.GetStomatologAppointmentsInDateRange(idStomatologa, datum, datum.AddDays(1));
-            var availableTimeSlots = allTimeSlots.Except(existingAppointments.Select(appointment => appointment.Datum.ToUniversalTime().ToString("HH:mm")));
+            var appointments = pregledService.GetStomatologAppointmentsInDateRange(idStomatologa, datum, datum.AddDays(1));
+            var availableTimeSlots = allTimeSlots.Except(appointments.Select(appointment => appointment.Datum.ToUniversalTime().ToString("HH:mm")));
 
             return Ok(availableTimeSlots);
         }
@@ -106,8 +106,8 @@ public class PregledController : ControllerBase
     public ActionResult<IEnumerable<string>> GetAvailableTimeSlots(DateTime datum)
     {
         var allTimeSlots = new List<string> { "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00" };
-        var existingAppointments = pregledService.GetAppointmentsInDateRange(datum.Date, datum.Date.AddDays(1));
-        var existingTimeSlots = existingAppointments.Select(appointment => appointment.Datum.ToUniversalTime().ToString("HH:mm"));
+        var appointments = pregledService.GetAppointmentsInDateRange(datum.Date, datum.Date.AddDays(1));
+        var existingTimeSlots = appointments.Select(appointment => appointment.Datum.ToUniversalTime().ToString("HH:mm"));
         var availableTimeSlots = allTimeSlots.Except(existingTimeSlots);
         return Ok(availableTimeSlots);
     }
@@ -266,16 +266,16 @@ public class PregledController : ControllerBase
     [HttpPut("{id}/{datum}/{opis}")]
     public ActionResult Put(ObjectId id, DateTime datum, string opis)
     {
-        var existingPregled = pregledService.Get(id);
+        var pregled = pregledService.Get(id);
 
-        if (existingPregled == null)
+        if (pregled == null)
         {
             return NotFound($"Pregled with Id = {id} not found");
         }
-        existingPregled.Datum = datum;
-        existingPregled.Opis = opis;
+        pregled.Datum = datum;
+        pregled.Opis = opis;
 
-        pregledService.Update(id, existingPregled);
+        pregledService.Update(id, pregled);
 
         return NoContent();
     }
@@ -283,15 +283,15 @@ public class PregledController : ControllerBase
     [HttpPut("{id}/{opis}")]
     public ActionResult Put(ObjectId id, string opis)
     {
-        var existingPregled = pregledService.Get(id);
+        var pregled = pregledService.Get(id);
 
-        if (existingPregled == null)
+        if (pregled == null)
         {
             return NotFound($"Pregled with Id = {id} not found");
         }
 
-        existingPregled.Opis = opis;
-        pregledService.Update(id, existingPregled);
+        pregled.Opis = opis;
+        pregledService.Update(id, pregled);
 
         return NoContent();
     }
@@ -299,15 +299,15 @@ public class PregledController : ControllerBase
     [HttpPut("updateStatus/{id}/{status}")]
     public ActionResult UpdateStatus(ObjectId id, int status)
     {
-        var existingPregled = pregledService.Get(id);
+        var pregled = pregledService.Get(id);
 
-        if (existingPregled == null)
+        if (pregled == null)
         {
             return NotFound($"Pregled with Id = {id} not found");
         }
 
-        existingPregled.Status = (StatusPregleda)status;
-        pregledService.Update(id, existingPregled);
+        pregled.Status = (StatusPregleda)status;
+        pregledService.Update(id, pregled);
 
         return NoContent();
     }
@@ -315,33 +315,33 @@ public class PregledController : ControllerBase
     // [HttpPut("chargeAppointment/{id}/{patientId}/{price}")]
     // public ActionResult ChargeAppointment(ObjectId id, ObjectId patientId, int price)
     // {
-    //     var existingPregled = pregledService.Get(id);
-    //     if (existingPregled == null)
+    //     var pregled = pregledService.Get(id);
+    //     if (pregled == null)
     //     {
     //         return NotFound($"Pregled with Id = {id} not found");
     //     }
-    //     existingPregled.Naplacen = true;
+    //     pregled.Naplacen = true;
 
     //     var patient = pacijentService.Get(patientId);
     //     patient.Dugovanje += price;
     //     pacijentService.Update(patientId, patient);
 
-    //     pregledService.Update(id, existingPregled);
+    //     pregledService.Update(id, pregled);
     //     return NoContent();
     // }
 
     [HttpPut("chargeAppointment/{id}/{patientId}")]
     public ActionResult ChargeAppointment(ObjectId id, ObjectId patientId, [FromBody] ChargeAppointmentRequest request)
     {
-        var existingPregled = pregledService.Get(id);
-        if (existingPregled == null)
+        var pregled = pregledService.Get(id);
+        if (pregled == null)
         {
             return NotFound($"Pregled with Id = {id} not found");
         }
 
-        existingPregled.Naplacen = true;
-        existingPregled.Intervencije = request.Intervencije;
-        existingPregled.UkupnaCena = request.UkupnaCena;
+        pregled.Naplacen = true;
+        pregled.Intervencije = request.Intervencije;
+        pregled.UkupnaCena = request.UkupnaCena;
 
         var patient = pacijentService.Get(patientId);
         if (patient == null)
@@ -352,7 +352,7 @@ public class PregledController : ControllerBase
         patient.Dugovanje += request.UkupnaCena;
         pacijentService.Update(patientId, patient);
 
-        pregledService.Update(id, existingPregled);
+        pregledService.Update(id, pregled);
 
         return NoContent();
     }
@@ -393,15 +393,15 @@ public class PregledController : ControllerBase
     private bool IsAppointmentConflict(Pregled pregled)
     {
         var stomatolog = stomatologService.Get(pregled.IdStomatologa);
-        if (stomatolog.PredstojeciPregledi.Any(existingAppointmentId =>
-            pregledService.Get(existingAppointmentId)?.Datum == pregled.Datum))
+        if (stomatolog.PredstojeciPregledi.Any(appointmentId =>
+            pregledService.Get(appointmentId)?.Datum == pregled.Datum))
         {
             return true;
         }
 
         var patient = pacijentService.Get(pregled.IdPacijenta);
-        if (patient.IstorijaPregleda.Any(existingAppointmentId =>
-            pregledService.Get(existingAppointmentId)?.Datum == pregled.Datum))
+        if (patient.IstorijaPregleda.Any(appointmentId =>
+            pregledService.Get(appointmentId)?.Datum == pregled.Datum))
         {
             return true;
         }
@@ -432,8 +432,8 @@ public class PregledController : ControllerBase
 
     //         while (true)
     //         {
-    //             var existingAppointments = pregledService.GetStomatologAppointmentsInDateRange(idStomatologa, currentDate, currentDate.AddDays(1));
-    //             var existingTimeSlots = existingAppointments.Select(appointment => appointment.Datum.ToUniversalTime().ToString("HH:mm"));
+    //             var appointments = pregledService.GetStomatologAppointmentsInDateRange(idStomatologa, currentDate, currentDate.AddDays(1));
+    //             var existingTimeSlots = appointments.Select(appointment => appointment.Datum.ToUniversalTime().ToString("HH:mm"));
     //             var availableTimeSlots = allTimeSlots.Except(existingTimeSlots).ToList();
 
     //             if (availableTimeSlots.Any())

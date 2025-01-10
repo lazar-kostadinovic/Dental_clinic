@@ -31,6 +31,7 @@ namespace StomatoloskaOrdinacija.Models
         public string PasswordSalt { get; set; }
         [BsonElement("UkupnoPotroseno")]
         public decimal UkupnoPotroseno { get; set; } = 0;
+        public int BrojNedolazaka { get; set; } = 0;
 
         [BsonElement("Dugovanje")]
         public decimal Dugovanje { get; set; } = 0;
