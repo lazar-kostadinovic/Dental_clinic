@@ -84,9 +84,9 @@ export class ScheduleAppointmentComponent implements OnInit {
 
   scheduleNextAppointment(): void {
     const apiUrl = `http://localhost:5001/Pregled/scheduleNextAvailable/${this.patient.id}`;
-    console.log(apiUrl);
     this.http.post(apiUrl, {}).subscribe({
       next: (response: any) => {
+        console.log(response);
         const scheduledDate = response?.datum;
         const date = new Date(scheduledDate);
 

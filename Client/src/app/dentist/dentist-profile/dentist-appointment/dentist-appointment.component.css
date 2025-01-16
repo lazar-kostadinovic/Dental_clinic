@@ -7,7 +7,7 @@
   justify-content: space-between;
   gap: 20px;
   margin: 20px;
-  padding: 20px;
+  padding: 20px;  
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -40,7 +40,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
-  margin-top: 20px;
+  /* margin-top: 20px; */
   background-color: #ffffff;
   padding: 15px;
   border-radius: 8px;
@@ -123,11 +123,24 @@ strong {
 
 .arrow-down {
   display: inline-block;
-  transform: rotate(0deg);
+  transform: rotate(90deg);
   transition: transform 0.3s;
+
 }
 .arrow-up {
   display: inline-block;
-  transform: rotate(-180deg);
+  transform: rotate(0deg);
   transition: transform 0.3s;
+}
+
+#pacijent {
+  display: block;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 20px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Pv5TzXhD3a7NDRtR1aqxEQfREdceZS11MOnmmMzKzTs=",
+  "Hash": "7AGxS2HH0/FyCHZU2C1mq+JS58uibaj7XR8qomH1TzY=",
   "Source": "StomatoloskaOrdinacija",
   "BasePath": "_content/StomatoloskaOrdinacija",
   "Mode": "Default",
@@ -302,6 +302,25 @@
       "OriginalItemSpec": "wwwroot\\assets\\60d7e424-1348-4c05-9abc-052f09941d8f_slika1.jpg"
     },
     {
+      "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\64dde1d7-cdca-4b2d-ba09-9e47bbbff198_images.jpeg",
+      "SourceId": "StomatoloskaOrdinacija",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\",
+      "BasePath": "_content/StomatoloskaOrdinacija",
+      "RelativePath": "assets/64dde1d7-cdca-4b2d-ba09-9e47bbbff198_images.jpeg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\assets\\64dde1d7-cdca-4b2d-ba09-9e47bbbff198_images.jpeg"
+    },
+    {
       "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\6703ac65-9985-4688-8c8b-c6858a950283_profilna.jpg",
       "SourceId": "StomatoloskaOrdinacija",
       "SourceType": "Discovered",
@@ -433,6 +452,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\assets\\a296f663-0abb-4a74-b06a-4ace0685ae9a_pozadina.png"
+    },
+    {
+      "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\a7cef39d-7d8f-4f26-85b9-b4fd5debd7aa_c94e55f48966daa8c6d8097ff4127026.jpg",
+      "SourceId": "StomatoloskaOrdinacija",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\",
+      "BasePath": "_content/StomatoloskaOrdinacija",
+      "RelativePath": "assets/a7cef39d-7d8f-4f26-85b9-b4fd5debd7aa_c94e55f48966daa8c6d8097ff4127026.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\assets\\a7cef39d-7d8f-4f26-85b9-b4fd5debd7aa_c94e55f48966daa8c6d8097ff4127026.jpg"
     },
     {
       "Identity": "C:\\Users\\Lazar\\Desktop\\Dental clinic\\wwwroot\\assets\\c285aef3-82bb-45e7-a318-99b758514fc6_slika3.jpeg",

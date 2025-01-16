@@ -28,7 +28,7 @@ export class LoginComponent {
 
     console.log(this.loginModel);
     this.http
-      .post<any>('http://localhost:5001/api/Auth', this.loginModel)
+      .post<any>('http://localhost:5001/api/AuthPacijent', this.loginModel)
       .subscribe(
         (response) => {
           localStorage.setItem('token', response.token);

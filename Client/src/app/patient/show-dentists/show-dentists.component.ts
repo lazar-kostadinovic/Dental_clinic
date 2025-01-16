@@ -20,6 +20,7 @@ export class ShowDentistComponent implements OnInit {
   today: string = '';
   imePacijenata: { [key: string]: string } = {};
   selectedSpecijalizacija: string = '';
+  prosecnaOcena:any;
 
   newAppointment = {
     datum: '',
@@ -34,14 +35,14 @@ export class ShowDentistComponent implements OnInit {
   };
 
   specijalizacije = [
-    'Oralni hirurg',
+    'Opsta stomatologija',
+    'Oralna hirugija',
     'Ortodontija',
     'Parodontologija',
     'Endodoncija',
     'Pedijatrijska stomatologija',
     'Protetika',
     'Estetska stomatologija',
-    'Oralna medicina',
   ];
 
   constructor(private http: HttpClient) {}
@@ -58,7 +59,6 @@ export class ShowDentistComponent implements OnInit {
     this.http.get<StomatologDTO[]>(apiUrl).subscribe(
       (data) => {
         this.stomatolozi = data.filter((s) => s.email !== 'admin@gmail.com');
-        console.log('Učitali smo stomatologe:', this.stomatolozi);
       },
       (error) => {
         console.error('Greška prilikom učitavanja stomatologa:', error);
@@ -90,6 +90,7 @@ export class ShowDentistComponent implements OnInit {
                 this.getPacijentName(komentar.idPacijenta);
               }
             });
+            this.getAverageRating(idStomatologa);
           },
           error: (error) => {
             console.error('Greška pri učitavanju komentara:', error);
@@ -128,6 +129,7 @@ export class ShowDentistComponent implements OnInit {
           this.getPacijentName(this.patientId);
         }
 
+        this.getAverageRating(stomatologId);
         this.newComment = { komentar: '', ocena: 0 };
       },
       error: (error) => {
@@ -166,7 +168,7 @@ export class ShowDentistComponent implements OnInit {
       const apiUrl = `http://localhost:5001/Stomatolog/BySpecijalizacija/${this.selectedSpecijalizacija}`;
       this.http.get<StomatologDTO[]>(apiUrl).subscribe(
         (data) => {
-          this.stomatolozi = data;
+          this.stomatolozi = data.filter((s) => s.email !== 'admin@gmail.com');
           console.log('Filtrirani stomatolozi:', this.stomatolozi);
         },
         (error) => {
@@ -184,5 +186,33 @@ export class ShowDentistComponent implements OnInit {
   getSpecijalizacijaLabel(specijalizacija: number): string {
     return this.specijalizacije[specijalizacija] || 'Nepoznato';
   }
+
+ 
+  // getAverageRating(idStomatologa: string) {
+  //   this.http.get(`http://localhost:5001/OcenaStomatologa/getAverage/${idStomatologa}`)
+  //     .subscribe((response) => {
+  //       console.log(response);
+  //       this.prosecnaOcena = response;
+  //     },
+  //     (error) => {
+  //       console.error("Error fetching average rating", error);
+  //     });
+  // }
+
+
+  getAverageRating(idStomatologa: string) {
+    this.http.get(`http://localhost:5001/OcenaStomatologa/getAverage/${idStomatologa}`).subscribe({
+      next: (response) => {
+        
+        this.prosecnaOcena = response;
+
+        console.log(this.prosecnaOcena);
+      },
+      error: (error) => {
+        console.error("Error fetching average rating", error);
+      }
+    });
+  }
+  
   
 }

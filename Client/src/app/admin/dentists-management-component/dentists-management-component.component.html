@@ -1,4 +1,4 @@
-<div class="home-container">
+<div *ngIf="token" class="home-container">
   <div class="header">
     <h3>Naši Stomatolozi</h3>
     <button (click)="navigateToRegisterDentist()">Dodaj novog stomatologa</button>
@@ -24,14 +24,19 @@
           <p>Ukupan broj neradnih dana u ovoj godini: {{ countCurrentYearDaysOff(stomatolog.id) }}</p>
         </div>
         <div class="day-off">
-          <label for="datum">Novi neradni dan:</label>
-          <input type="date" id="datum" [(ngModel)]="selectedDate[stomatolog.id]" [min]="getTodayDate()" />
-          <button (click)="submitDayOff(stomatolog.id)">Dodaj neradan dan</button>
+          <label for="datum">Pocetni datum:</label>
+          <input type="date" id="datum" [(ngModel)]="selectedDateStart[stomatolog.id]" [min]="getTodayDate()" />
+
+          <label for="datum">Krajnji datum:</label>
+          <input type="date" id="datum" [(ngModel)]="selectedDateEnd[stomatolog.id]"
+            [min]="selectedDateStart[stomatolog.id]" />
+          <button (click)="submitDayOff(stomatolog.id)">Dodaj neradne dane</button>
           <button (click)="toggleDayOffVisibility(stomatolog.id)">Sakrij neradne dane</button>
         </div>
 
       </div>
-      <button *ngIf="!showDayOff[stomatolog.id]" (click)="fetchAllDaysOff(stomatolog.id)">Prikaži sve neradnedane</button>
+      <button *ngIf="!showDayOff[stomatolog.id]" (click)="fetchAllDaysOff(stomatolog.id)">Prikaži sve neradne
+        dane</button>
 
       <button (click)="changeShift(stomatolog.id)">Promeni smenu </button>
       <button (click)="deleteDentist(stomatolog.id)" class="delete">Obrisi </button>
@@ -40,10 +45,7 @@
 </div>
 
 <div *ngIf="!token" class="home-container">
-  <div class="header">
-    <h3>Naši Stomatolozi</h3>
-    <br>
-  </div>
+  <h2 style="justify-self: center;">Naši Stomatolozi</h2><br>
   <ul>
     <li *ngFor="let stomatolog of stomatolozi">
       <strong>{{ stomatolog.ime }} {{ stomatolog.prezime }}</strong>

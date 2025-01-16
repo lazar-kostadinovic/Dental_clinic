@@ -6,14 +6,9 @@ namespace StomatoloskaOrdinacija.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class StripeController : ControllerBase
+    public class StripeController(IConfiguration configuration) : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-
-        public StripeController(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
 
         [HttpPost("create-payment-intent")]
         public async Task<IActionResult> CreatePaymentIntent([FromBody] PaymentIntentRequest request)

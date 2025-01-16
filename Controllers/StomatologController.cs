@@ -9,19 +9,12 @@ namespace StomatoloskaOrdinacija.Controllers;
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class StomatologController : ControllerBase
+public class StomatologController(IStomatologService stomatologService, IPacijentService pacijentService, IPregledService pregledService, IConfiguration config) : ControllerBase
 {
-    private readonly IStomatologService stomatologService;
+    private readonly IStomatologService stomatologService = stomatologService;
 
-    private readonly IPacijentService pacijentService;
-    private readonly IPregledService pregledService;
-
-    public StomatologController(IStomatologService stomatologService, IPacijentService pacijentService, IPregledService pregledService, IConfiguration config)
-    {
-        this.stomatologService = stomatologService;
-        this.pacijentService = pacijentService;
-        this.pregledService = pregledService;
-    }
+    private readonly IPacijentService pacijentService = pacijentService;
+    private readonly IPregledService pregledService = pregledService;
 
     [AllowAnonymous]
     [HttpGet]
@@ -286,8 +279,20 @@ public class StomatologController : ControllerBase
     {
         try
         {
+         var stomatolog = await stomatologService.GetStomatologByEmailAsync(resource.Email);
+            var pacijent = await pacijentService.GetPacijentByEmailAsync(resource.Email);
+
+            if (stomatolog != null)
+            {
+                return BadRequest($"Stomatolog sa ovom e-mail adresom vec postoji.");
+            }
+            else if (pacijent != null)
+            {
+                   return BadRequest($"Pacijent sa ovom e-mail adresom vec postoji.");
+            }
+
             var response = await stomatologService.Register(resource);
-            return Ok(response);
+            return Ok(new { message = "Uspešno registrovan nalog." });
         }
         catch (Exception e)
         {
@@ -325,6 +330,50 @@ public class StomatologController : ControllerBase
             return StatusCode(500, ex.Message);
         }
     }
+
+    [HttpPost("addDaysOff/{idStomatologa}/{pocetniDatum}/{krajnjiDatum}")]
+    public IActionResult AddDaysOff(ObjectId idStomatologa, DateTime pocetniDatum, DateTime krajnjiDatum)
+    {
+        try
+        {
+            var stomatolog = stomatologService.Get(idStomatologa);
+            if (stomatolog == null)
+            {
+                return NotFound($"Stomatolog with Id = {idStomatologa} not found");
+            }
+
+            pocetniDatum = DateTime.SpecifyKind(pocetniDatum.Date, DateTimeKind.Utc);
+            krajnjiDatum = DateTime.SpecifyKind(krajnjiDatum.Date, DateTimeKind.Utc);
+
+            if (pocetniDatum > krajnjiDatum)
+            {
+                return BadRequest("Pocetni datum ne moze da bude veci od krajnjeg.");
+            }
+
+            var daniZaDodavanje = Enumerable.Range(0, (krajnjiDatum - pocetniDatum).Days + 1)
+                                             .Select(offset => pocetniDatum.AddDays(offset))
+                                             .ToList();
+
+            var postojeceSlobodniDani = stomatolog.SlobodniDani.Intersect(daniZaDodavanje).ToList();
+
+            if (postojeceSlobodniDani.Any())
+            {
+                return BadRequest($"Neki neradni dani su vec bili dodati {string.Join(", ", postojeceSlobodniDani.Select(d => d.ToShortDateString()))}");
+            }
+
+            if (!stomatologService.SetDaysOff(idStomatologa, daniZaDodavanje))
+            {
+                return BadRequest($"Greska prilikom dodavanja neradnih dana.");
+            }
+
+            return Ok(new { message = $"Dodati neradni dani od {pocetniDatum.ToShortDateString()} do {krajnjiDatum.ToShortDateString()} ." });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+
 
     [AllowAnonymous]
     [HttpGet("GetAllDaysOff/{idStomatologa}")]

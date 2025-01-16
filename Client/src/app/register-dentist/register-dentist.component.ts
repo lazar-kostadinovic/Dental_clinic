@@ -24,17 +24,19 @@ export class RegisterDentistComponent {
   };
 
   specializations = [
-    { id: 0, name: 'Oralni hirurg' },
-    { id: 1, name: 'Ortodontija' },
-    { id: 2, name: 'Parodontologija' },
-    { id: 3, name: 'Endodoncija' },
-    { id: 4, name: 'Pedijatrijska stomatologija' },
-    { id: 5, name: 'Protetika' },
-    { id: 6, name: 'Estetska stomatologija' },
-    { id: 7, name: 'Oralna medicina' },
+    { id: 0, name: 'Opsta stomatologija' },
+    { id: 1, name: 'Oralna hirugija' },
+    { id: 2, name: 'Ortodontija' },
+    { id: 3, name: 'Parodontologija' },
+    { id: 4, name: 'Endodoncija' },
+    { id: 5, name: 'Pedijatrijska stomatologija' },
+    { id: 6, name: 'Protetika' },
+    { id: 7, name: 'Estetska stomatologija' },
   ];
 
   constructor(private http: HttpClient, private router: Router) {}
+
+
 
   onRegister(form: NgForm) {
     if (form.invalid) {
@@ -48,7 +50,6 @@ export class RegisterDentistComponent {
       brojTelefona: this.registrationModel.brojTelefona.toString(),
       specijalizacija: Number(this.registrationModel.specijalizacija),
     };
-  
     this.http.post('http://localhost:5001/Stomatolog/register', payload).subscribe({
       next: (response) => {
         const userConfirmed = window.confirm('Registration successful');
@@ -56,12 +57,12 @@ export class RegisterDentistComponent {
           this.adminProfile();
         }
       },
-      error: (error) =>
-        alert('Stomatolog sa ovom email adresom vec postoji'),
-        // alert(`Registration failed: ${error.error.ErrorMessage}`),
+      error: (error) => {
+          alert(error.error);
+      },
     });
   }
-  
+
   adminProfile() {
     this.router.navigate(['/dentist-management']);
   }

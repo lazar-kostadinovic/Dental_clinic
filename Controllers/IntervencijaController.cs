@@ -10,17 +10,9 @@ namespace StomatoloskaOrdinacija.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class IntervencijaController : ControllerBase
+public class IntervencijaController(ITipIntervencijeService intervencijaService) : ControllerBase
 {
-    private readonly ITipIntervencijeService intervencijaService;
-
-
-
-    public IntervencijaController(ITipIntervencijeService intervencijaService)
-    {
-        this.intervencijaService = intervencijaService;
-
-    }
+    private readonly ITipIntervencijeService intervencijaService = intervencijaService;
 
     [HttpGet]
     public ActionResult<List<TipIntervencije>> Get()

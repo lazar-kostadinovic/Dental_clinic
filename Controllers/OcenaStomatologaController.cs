@@ -10,18 +10,11 @@ namespace StomatoloskaOrdinacija.Controllers;
 // [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class OcenaStomatologaController : ControllerBase
+public class OcenaStomatologaController(IOcenaStomatologaService ocenaStomatologaService, IStomatologService stomatologService, IPacijentService pacijentService) : ControllerBase
 {
-    private readonly IOcenaStomatologaService ocenaStomatologaService;
-    private readonly IStomatologService stomatologService;
-    private readonly IPacijentService pacijentService;
-
-    public OcenaStomatologaController(IOcenaStomatologaService ocenaStomatologaService, IStomatologService stomatologService, IPacijentService pacijentService)
-    {
-        this.ocenaStomatologaService = ocenaStomatologaService;
-        this.stomatologService = stomatologService;
-        this.pacijentService = pacijentService;
-    }
+    private readonly IOcenaStomatologaService ocenaStomatologaService = ocenaStomatologaService;
+    private readonly IStomatologService stomatologService = stomatologService;
+    private readonly IPacijentService pacijentService = pacijentService;
 
     [HttpGet]
     public ActionResult<List<OcenaStomatologa>> Get()
@@ -64,6 +57,33 @@ public class OcenaStomatologaController : ControllerBase
         };
         return ocenaDTO;
     }
+
+    [HttpGet("getAverage/{idStomatologa}")]
+    public ActionResult<double> GetAverage(ObjectId idStomatologa)
+    {
+        var ocene = ocenaStomatologaService.Get();
+        var ukupno = 0;
+        var count = 0;
+
+        foreach (var ocena in ocene)
+        {
+            if (ocena.IdStomatologa == idStomatologa)
+            {
+                ukupno += ocena.Ocena;  
+                count++;  
+            }
+        }
+
+        if (count == 0)
+        {
+            return NotFound($"No reviews found for dentist with Id = {idStomatologa}");
+        }
+
+       var prosek = Math.Round((double)ukupno / count,2); 
+
+        return Ok(prosek);
+    }
+
 
     [HttpPost]
     public ActionResult<OcenaStomatologa> Post([FromBody] OcenaStomatologa ocena)
@@ -115,15 +135,15 @@ public class OcenaStomatologaController : ControllerBase
     {
         var review = ocenaStomatologaService.Get(id);
 
-        if ( review == null)
+        if (review == null)
         {
             return NotFound($"Pregled with Id = {id} not found");
         }
 
-         review.Komentar = komentar;
-         review.Ocena = ocena;
+        review.Komentar = komentar;
+        review.Ocena = ocena;
 
-        ocenaStomatologaService.Update(id,  review);
+        ocenaStomatologaService.Update(id, review);
 
         return NoContent();
     }

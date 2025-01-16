@@ -19,7 +19,8 @@ export class DentistsManagementComponentComponent {
   filteredPatients: any[] = [];
   daysOffMap: { [key: string]: string[] } = {};
   showDayOff: { [key: string]: boolean } = {};
-  selectedDate: { [dentistId: string]: string } = {};
+  selectedDateStart: { [dentistId: string]: string } = {};
+  selectedDateEnd: { [dentistId: string]: string } = {};
 
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -63,10 +64,10 @@ export class DentistsManagementComponentComponent {
           this.showDayOff[dentistId] = true;
         },
         error: (error) => {
-          console.error('Greška prilikom preuzimanja slobodnih dana:', error);
+          console.error('Greška prilikom preuzimanja neradnih dana:', error);
           alert(
             error.error?.message ||
-              'Došlo je do greške prilikom preuzimanja slobodnih dana.'
+              'Došlo je do greške prilikom preuzimanja neradnih dana.'
           );
         },
       });
@@ -88,29 +89,30 @@ export class DentistsManagementComponentComponent {
   }
 
   submitDayOff(dentistId: string): void {
-    const selected = this.selectedDate[dentistId];
-    if (!selected) {
-      alert('Molimo odaberite datum.');
+    const selectedStart = this.selectedDateStart[dentistId];
+    const selectedEnd = this.selectedDateEnd[dentistId];
+    if (!selectedStart||!selectedEnd) {
+      alert('Molimo vas unesite pocetni i krajnji datum.');
       return;
     }
   
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     
-    this.http
-      .post(
-        `http://localhost:5001/Stomatolog/addDayOff/${dentistId}/${selected}`,
-        null,
+    this.http.post(`http://localhost:5001/Stomatolog/addDaysOff/${dentistId}/${selectedStart}/${selectedEnd}`,
+        {},
         { headers }
       )
       .subscribe({
-        next: () => {
-          alert(`Slobodan dan za ${selected} je dodat.`);
-          this.selectedDate[dentistId] = '';
+        next: (response:any) => {
+          alert(`${response.message}`);
+          console.log(response);
+          this.selectedDateStart[dentistId] = '';
+          this.selectedDateEnd[dentistId] = '';
           this.fetchAllDaysOff(dentistId);
         },
         error: (err) => {
-          console.error('Greška prilikom dodavanja slobodnog dana:', err.error);
+          console.error('Greška prilikom dodavanja neradnog dana:', err.error);
           alert(err.error?.message || 'Došlo je do greške prilikom dodavanja.');
         },
       });
@@ -120,18 +122,17 @@ export class DentistsManagementComponentComponent {
     const today = new Date();
     return today.toISOString().split('T')[0];
   }
-  
 
   getSpecijalizacijaLabel(specijalizacija: number): string {
     const specijalizacije = [
-      'Oralni hirurg',
+      'Opsta stomatologija',
+      'Oralna hirugija',
       'Ortodontija',
       'Parodontologija',
       'Endodoncija',
       'Pedijatrijska stomatologija',
       'Protetika',
       'Estetska stomatologija',
-      'Oralna medicina',
     ];
     return specijalizacije[specijalizacija] || 'Nepoznato';
   }

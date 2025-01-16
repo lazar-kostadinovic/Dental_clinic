@@ -9,22 +9,13 @@ namespace StomatoloskaOrdinacija.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PacijentController : ControllerBase
+public class PacijentController(IPacijentService pacijentService, IStomatologService stomatologService, IPregledService pregledService, IConfiguration config) : ControllerBase
 {
-    private readonly IPacijentService pacijentService;
-    private readonly IStomatologService stomatologService;
-    private readonly IPregledService pregledService;
-    private readonly string _pepper;
-    private readonly int _iteration;
-
-    public PacijentController(IPacijentService pacijentService, IStomatologService stomatologService, IPregledService pregledService, IConfiguration config)
-    {
-        this.pacijentService = pacijentService;
-        this.stomatologService = stomatologService;
-        this.pregledService = pregledService;
-        _pepper = config["PasswordHasher:Pepper"];
-        _iteration = config.GetValue<int>("PasswordHasher:Iteration");
-    }
+    private readonly IPacijentService pacijentService = pacijentService;
+    private readonly IStomatologService stomatologService = stomatologService;
+    private readonly IPregledService pregledService = pregledService;
+    private readonly string _pepper = config["PasswordHasher:Pepper"];
+    private readonly int _iteration = config.GetValue<int>("PasswordHasher:Iteration");
 
     [HttpGet]
     public ActionResult<List<Pacijent>> Get()
@@ -88,6 +79,7 @@ public class PacijentController : ControllerBase
             Name = $"{p.Ime} {p.Prezime}",
             Age = p.Godine,
             Email = p.Email,
+            phoneNumber = p.BrojTelefona,
             totalSpent = p.UkupnoPotroseno,
             debt = p.Dugovanje,
             missedAppointments = p.BrojNedolazaka
@@ -330,10 +322,23 @@ public class PacijentController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegistrationModel resource)
     {
-        try
+       try
         {
+            var stomatolog = await stomatologService.GetStomatologByEmailAsync(resource.Email);
+            var pacijent = await pacijentService.GetPacijentByEmailAsync(resource.Email);
+
+            if (stomatolog != null)
+            {
+                return BadRequest($"Stomatolog sa ovom e-mail adresom vec postoji.");
+            }
+            else if (pacijent != null)
+            {
+                   return BadRequest($"Pacijent sa ovom e-mail adresom vec postoji.");
+            }
+
             var response = await pacijentService.Register(resource);
-            return Ok(response);
+
+            return Ok(new { message = "Uspešno registrovan nalog." });
         }
         catch (Exception e)
         {

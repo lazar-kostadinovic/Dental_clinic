@@ -81,9 +81,15 @@ export class PatientAppointmentsComponent implements OnInit {
     }
   }
   sortPregledi(pregledi: PregledDTO[]): PregledDTO[] {
-    return pregledi.sort(
-      (a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime()
-    );
+    const upcoming = pregledi
+      .filter((p) => p.status === 0)
+      .sort((a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime());
+
+    const past = pregledi
+      .filter((p) => p.status === 1)
+      .sort((a, b) => new Date(b.datum).getTime() - new Date(a.datum).getTime());
+
+    return [...upcoming, ...past];
   }
 
   deleteAppointment(id: string) {

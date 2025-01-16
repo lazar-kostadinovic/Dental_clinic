@@ -1,29 +1,29 @@
-
-<div  class="home-container">
-    <div class="header">
+<div class="home-container">
+  <div class="header">
     <br>
     <h3>Naši Pacijenti</h3>
-    </div>
-    <input id="patient" list="pacijenti" [(ngModel)]="selectedPatientName" name="patientName"
-      (ngModelChange)="filterPacijenti()" placeholder="Izaberite ili unesite ime pacijenta" required />
-    <datalist id="pacijenti">
-      <option *ngFor="let patient of pacijenti" [value]="patient.name + ' - ' + patient.email">
-        {{ patient.name }} - {{ patient.email }} 
-      </option>
-  
-    </datalist>
-    <ul>
-      <li *ngFor="let pacijent of filteredPatients">
-        <strong>{{ pacijent.name }} ({{pacijent.age}})</strong><br />
-        <p><strong></strong> {{ pacijent.email }}</p><br />
-        <p><strong>Ukupno potrošeno:</strong>{{ pacijent.totalSpent | currency:'RSD' }}</p><br />
- 
-        <p  [ngClass]="{'error': pacijent.debt > 0}"> Dugovanje: {{ pacijent.debt | currency:'RSD' }} </p>
-        <p>Propušteni pregledi: {{pacijent.missedAppointments}}</p>
-        <button (click)="sendWarning(pacijent.email,pacijent.name,pacijent.debt)">Posalji upozorenje</button>
-        <button (click)="deletePatient(pacijent.id)" class="delete">Obrisi </button>
-      </li>
-    </ul>
   </div>
-  
-  
+  <input id="patient" list="pacijenti" [(ngModel)]="selectedPatientName" name="patientName"
+    (ngModelChange)="filterPacijenti()" placeholder="Izaberite ili unesite ime pacijenta" required />
+  <datalist id="pacijenti">
+    <option *ngFor="let patient of pacijenti" [value]="patient.name + ' - ' + patient.email">
+      {{ patient.name }} - {{ patient.email }}
+    </option>
+
+  </datalist>
+  <ul>
+    <li *ngFor="let pacijent of filteredPatients">
+      <h3>{{ pacijent.name }} </h3>
+      <p>Godine: {{pacijent.age}}</p>
+      <p> {{ pacijent.email }}</p>
+      <p>Broj telefona: {{pacijent.phoneNumber}}</p>
+      <p>Potrošeno: {{ pacijent.totalSpent }} RSD</p>
+
+      <p [ngClass]="{'error': pacijent.debt > 0}"> Dugovanje: {{ pacijent.debt }} RSD </p>
+      <p>Propušteni pregledi: {{pacijent.missedAppointments}}</p>
+      <button (click)="sendWarning(pacijent.email,pacijent.name,pacijent.debt)" class="warning">Posalji
+        upozorenje</button>
+      <button (click)="deletePatient(pacijent.id)" class="delete">Obrisi </button>
+    </li>
+  </ul>
+</div>

@@ -13,23 +13,23 @@
   </div>
   <div *ngIf="dentist">
     <p><strong>Ime:</strong> {{ dentist.ime }}</p>
-    <p><strong>Prezime:</strong> {{ dentist.prezime }}</p>
+    <p><strong>Prezime:</strong> {{ dentist.prezime }}</p>      <!-- ✔️ ✅ ☑️ ✓ -->
     <p><strong>Email:</strong> {{ dentist.email }}<i class="custom-edit-button" (click)="toggleEditEmail()">✎</i></p>
     <div *ngIf="isEditing.email">
       <input type="text" [(ngModel)]="updatedValues.email" placeholder="Unesite novi email" />
-      <button (click)="saveChanges('email')">Potvrdi</button>
+        <i class="custom-edit-button" (click)="saveChanges('email')">✔️</i>
     </div>
     
     <p><strong>Broj Telefona:</strong> {{ dentist.brojTelefona }}<i class="custom-edit-button" (click)="toggleEditNumber()">✎</i></p>
     <div *ngIf="isEditing.brojTelefona">
       <input type="text" [(ngModel)]="updatedValues.brojTelefona" placeholder="Unesite novi broj telefona" />
-      <button (click)="saveChanges('brojTelefona')">Potvrdi</button>
+      <i class="custom-edit-button" (click)="saveChanges('brojTelefona')">✔️</i>
     </div>
     
     <p><strong>Adresa:</strong> {{ dentist.adresa }}<i class="custom-edit-button" (click)="toggleEditAddress()">✎</i></p>
     <div *ngIf="isEditing.adresa">
       <input type="text" [(ngModel)]="updatedValues.adresa" placeholder="Unesite novu adresu" />
-      <button (click)="saveChanges('adresa')">Potvrdi</button>
+      <i class="custom-edit-button" (click)="saveChanges('adresa')">✔️</i>
     </div>
     <p><strong>Trenutna smena:</strong> {{ getDentistShift(dentist.prvaSmena)}}</p>
 

@@ -330,9 +330,21 @@ export class DentistAppointmentComponent {
   }
 
   sortAppointmentsByDate(): void {
-    this.filteredAppointmentList.sort(
-      (a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime()
-    );
+  const upcoming = this.filteredAppointmentList.filter(
+    (a) => a.status === 0
+  );
+  const past = this.filteredAppointmentList.filter(
+    (a) => a.status === 1
+  );
+
+  upcoming.sort(
+    (a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime()
+  ); 
+  past.sort(
+    (a, b) => new Date(b.datum).getTime() - new Date(a.datum).getTime()
+  ); 
+
+  this.filteredAppointmentList = [...upcoming, ...past];
     this.filteredAppointmentListForToday.sort(
       (a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime()
     );

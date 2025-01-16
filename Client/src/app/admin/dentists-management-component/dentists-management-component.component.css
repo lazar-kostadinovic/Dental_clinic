@@ -8,185 +8,188 @@
 }
 
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #ddd;
-    position: relative;
-  }
-  
-  .header button {
-    padding: 8px 16px;
-    font-size: 14px;
-    cursor: pointer;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    margin-bottom: 10px;
-  }
-  
-  .header button:hover {
-    background-color: #0056b3;
-  }
-  
-  .header h3 {
-    margin: 0;
-    font-size: 18px;
-    text-align: center;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  
-  button {
-    width: 200px;
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    text-align: center;
-    transition: background-color 0.3s, transform 0.2s;
-  }
-  
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-  }
-  
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+  position: relative;
+}
+
+.header button {
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.header button:hover {
+  background-color: #0056b3;
+}
+
+.header h3 {
+  margin: 0;
+  color: #333;
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  margin-bottom: 20px;
+  transform: translateX(-50%);
+}
+
+button {
+  width: 200px;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+li {
+  background-color: #ffffff;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s;
+  width: calc(33% - 15px);
+  box-sizing: border-box;
+  text-align: center;
+}
+
+li:hover {
+  background-color: #f1f1f1;
+}
+
+@media (max-width: 768px) {
   li {
-    background-color: #ffffff;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s;
-    width: calc(33% - 15px);
-    box-sizing: border-box;
+    width: calc(50% - 15px);
   }
+}
 
-  li:hover {
-    background-color: #f1f1f1;
-  }
-  @media (max-width: 768px) {
-    li {
-      width: calc(50% - 15px);
-    }
-  }
-  
-  @media (max-width: 480px) {
-    li {
-      width: 100%;
-    }
-  }
-  
-  
-  
-  
-  .dentist-image {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #ddd;
-  }
-  
-
-  strong {
-    color: #555;
-    font-size: 18px;
-    text-align: center; 
-  }
-  
-  button.delete {
-    width: 130px;
-    background-color: #ff4d4f;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s, transform 0.2s;
-  }
-  
-  button.delete:hover {
-    background-color: #d9363e;
-  }
-  
-  button.delete:active {
-    transform: scale(0.98);
-  }
-
-  .day-off-list {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 16px;
-    margin-top: 16px;
+@media (max-width: 480px) {
+  li {
     width: 100%;
   }
-  
-  .day-off-item {
-    display: inline-block;
-    background-color: #f0f8ff;
-    border: 1px solid #b0c4de;
-    border-radius: 4px;
-    padding: 6px 12px;
-    margin: 1px;
-    font-size: 14px;
-    color: #333;
-  }
-  
-  .day-off-summary {
-    margin-top: 12px;
-    font-size: 14px;
-    font-weight: bold;
-  }
-  
-  input[type="date"] {
-    margin-top: 8px;
-    margin-right: 8px;
-    padding: 6px 12px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-  }
+}
 
-  .day-off {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    margin-top: 16px;
-  }
-  
-  input[type="date"], button {
-    width: auto;
-    max-width: 300px;
-    padding: 8px 16px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-    text-align: center;
-  }
-  
-  .day-off label {
-    font-size: 14px;
-    margin-bottom: 4px;
-  }
-  
+
+
+
+.dentist-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+
+strong {
+  color: #555;
+  font-size: 18px;
+  text-align: center;
+}
+
+button.delete {
+  width: 130px;
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+button.delete:hover {
+  background-color: #d9363e;
+}
+
+button.delete:active {
+  transform: scale(0.98);
+}
+
+.day-off-list {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+  width: 100%;
+}
+
+.day-off-item {
+  display: inline-block;
+  background-color: #f0f8ff;
+  border: 1px solid #b0c4de;
+  border-radius: 4px;
+  padding: 6px 12px;
+  margin: 1px;
+  font-size: 14px;
+  color: #333;
+}
+
+.day-off-summary {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+input[type="date"] {
+  margin-top: 8px;
+  margin-right: 8px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.day-off {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+input[type="date"],
+button {
+  width: auto;
+  max-width: 300px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  text-align: center;
+}
+
+.day-off label {
+  font-size: 14px;
+  margin-bottom: 4px;
+}

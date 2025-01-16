@@ -97,6 +97,9 @@ button:disabled {
   display: block;
   color: #555;
 }
+ input{
+  margin: 5px;
+ }
 
 .day-off-form input[type="date"] {
   padding: 8px;

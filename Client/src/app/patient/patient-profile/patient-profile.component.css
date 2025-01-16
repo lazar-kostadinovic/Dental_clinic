@@ -1,4 +1,4 @@
-.prvi{
+.home-container{
   display: flex;
   flex-direction: row;
 }
@@ -12,7 +12,6 @@
   margin: 5px;
   flex-shrink: 0;
 }
-
 
 .profile-container h2 {
   text-align: center;
@@ -68,7 +67,6 @@ button {
   width: 230px;
   display: inline-block
 }
-
 
 button:hover {
   background-color: #0056b3;
@@ -181,3 +179,6 @@ button:disabled {
   background-color: #f1fff1;
 }
 
+input{
+  margin: 6px;
+}

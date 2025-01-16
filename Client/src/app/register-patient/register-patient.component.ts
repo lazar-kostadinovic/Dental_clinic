@@ -35,17 +35,16 @@ export class RegisterPatientComponent {
       email: this.registrationModel.email.toLowerCase(),
       brojTelefona: this.registrationModel.brojTelefona.toString(),
     };
-    this.http
-      .post('http://localhost:5001/Pacijent/register', payload)
-      .subscribe({
+    this.http.post('http://localhost:5001/Pacijent/register', payload).subscribe({
         next: (response) => {
           const userConfirmed = window.confirm('Registration successful');
           if (userConfirmed) {
             this.router.navigate(['/home']);
           }
         },
-        error: (error) =>
-          alert(`Registration failed: ${error.error.ErrorMessage}`),
+        error: (error) => {
+          alert(error.error);
+      },
       });
   }
 }

@@ -77,10 +77,7 @@ export class UnconfirmedAppointmentsComponent {
       return;
     }
   
-    this.http
-      .put(
-        `http://localhost:5001/Pregled/assignDentist/${appointmentId}/${this.dentistId}`,
-        {},
+    this.http.put(`http://localhost:5001/Pregled/assignDentist/${appointmentId}/${this.dentistId}`, {},
         {
           headers: {
             Authorization: `Bearer ${this.token}`,
@@ -105,8 +102,10 @@ export class UnconfirmedAppointmentsComponent {
           this.appointmentTaken.emit();
         },
         error: (error) => {
-          console.error('Greška pri preuzimanju pregleda:', error);
-          alert('Došlo je do greške prilikom preuzimanja pregleda.');
+          console.error('Greška pri preuzimanju pregleda:', error.error);
+    
+          const errorMessage = error.error?.message || 'Došlo je do greške prilikom preuzimanja pregleda.';
+          alert(`Greška: ${error.error}`);
         },
       });
   }

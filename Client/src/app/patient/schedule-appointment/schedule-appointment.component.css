@@ -1,6 +1,8 @@
 .home-container {
-  width: 80%;
-  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 20px ;
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;

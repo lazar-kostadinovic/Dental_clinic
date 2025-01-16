@@ -128,6 +128,15 @@ namespace StomatoloskaOrdinacija.Services
 
             return result.ModifiedCount > 0;
         }
+          public bool SetDaysOff(ObjectId stomatologId, List<DateTime> daysOff)
+        {
+            var filter = Builders<Stomatolog>.Filter.Eq(s => s.Id, stomatologId);
+            var update = Builders<Stomatolog>.Update.AddToSetEach(s => s.SlobodniDani, daysOff.Select(d => d.Date));
+
+            var result = _stomatolozi.UpdateOne(filter, update);
+            return result.ModifiedCount > 0;
+        }
+
 
     }
 }

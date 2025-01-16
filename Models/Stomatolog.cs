@@ -50,5 +50,5 @@ public enum Specijalizacija
     PedijatrijskaStomatologija,
     Protetika,
     EstetskaStomatologija,
-    OralnaMedicina,
+    OpstaStomatologija,
 }

@@ -316,17 +316,17 @@ export class DentistProfileComponent {
   }
 
   toggleEditEmail() {
-    this.isEditing.email=true;
+    this.isEditing.email=!this.isEditing.email;
     this.isEditing.adresa=false;
     this.isEditing.brojTelefona=false;
   }
   toggleEditNumber() {
-    this.isEditing.brojTelefona=true;
+    this.isEditing.brojTelefona= !this.isEditing.brojTelefona;
     this.isEditing.adresa=false;
     this.isEditing.email=false;
   }
   toggleEditAddress() {
-    this.isEditing.adresa=true;
+    this.isEditing.adresa=!this.isEditing.adresa;
     this.isEditing.email=false;
     this.isEditing.brojTelefona=false;
   }

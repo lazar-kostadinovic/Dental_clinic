@@ -1,4 +1,4 @@
-<div class="prvi">
+<div class="home-container">
   <div class="profile-container" *ngIf="patient">
     <h2>Profil pacijenta</h2>
     <div class="profile-image">
@@ -21,21 +21,21 @@
     <p><strong>Email:</strong> {{ patient.email }}<i class="custom-edit-button" (click)="toggleEditEmail()">✎</i></p>
     <div *ngIf="isEditing.email">
       <input type="text" [(ngModel)]="updatedValues.email" placeholder="Unesite novi email" />
-      <button (click)="saveChanges('email')">Potvrdi</button>
+      <i class="custom-edit-button" (click)="saveChanges('email')">✔️</i>
     </div>
 
     <p><strong>Broj Telefona:</strong> {{ patient.brojTelefona }}<i class="custom-edit-button"
         (click)="toggleEditNumber()">✎</i></p>
     <div *ngIf="isEditing.brojTelefona">
       <input type="text" [(ngModel)]="updatedValues.brojTelefona" placeholder="Unesite novi broj telefona" />
-      <button (click)="saveChanges('brojTelefona')">Potvrdi</button>
+      <i class="custom-edit-button" (click)="saveChanges('brojTelefona')">✔️</i>
     </div>
 
     <p><strong>Adresa:</strong> {{ patient.adresa }}<i class="custom-edit-button" (click)="toggleEditAddress()">✎</i>
     </p>
     <div *ngIf="isEditing.adresa">
       <input type="text" [(ngModel)]="updatedValues.adresa" placeholder="Unesite novu adresu" />
-      <button (click)="saveChanges('adresa')">Potvrdi</button>
+      <i class="custom-edit-button" (click)="saveChanges('adresa')">✔️</i>
     </div>
 
     <!-- <button *ngIf="!showButtons()" (click)="toggleAppointments()">Prikazi preglede</button><br>
@@ -45,7 +45,7 @@
 
     <button (click)="toggleAppointments()">Prikazi preglede</button><br>
     <button (click)="toggleUnconfirmed()">Prikazi nepotvrdjene preglede</button> <br>
-    <button (click)="toggleSchedule()">Zakazi pregled</button> <br>
+  <button (click)="toggleSchedule()">Zakazi pregled</button> <br>
     <button (click)="toggleDentists()">Prikazi stomatologe</button><br>
 
     <p><strong>Vase dugovanje: {{patient.dugovanje}}</strong></p>

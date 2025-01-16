@@ -20,8 +20,10 @@
   }
   
   .login-container input {
-    width: 100%;
+    /* width: %; */
     padding: 8px;
+    height: 40px;
+    width: 240px;
     margin-top: 5px;
     box-sizing: border-box;
   }

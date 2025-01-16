@@ -18,5 +18,7 @@ namespace StomatoloskaOrdinacija.Services
         Task<bool> Register(RegistrationModelStomatolog resource);
         bool SetDayOff(ObjectId stomatologId, DateTime day);
         bool ChangeShift(ObjectId stomatologId);
+        bool SetDaysOff(ObjectId stomatologId, List<DateTime> daysOff);
+
     }
 }

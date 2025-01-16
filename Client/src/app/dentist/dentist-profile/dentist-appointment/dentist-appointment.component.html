@@ -35,7 +35,7 @@
           </button>
         </div>
       </ng-container>
-      <h2 *ngIf="filterAppointmentsForToday.length==0">Nemate zakazanih pregleda za danas.</h2>
+      <h2 *ngIf="filteredAppointmentListForToday.length==0">Nemate zakazanih pregleda za danas.</h2>
     </div>
     <input list="pacijenti" [(ngModel)]="selectedPatientName" (input)="onPatientSelected()"
       placeholder="Izaberite ili unesite ime pacijenta" />

@@ -1,6 +1,7 @@
 <div class="home-container">
-  <h3>Zakazivanje pregleda</h3>
+
   <div class="appointment-form">
+    <h3>Zakazivanje pregleda</h3>
     <form (ngSubmit)="scheduleAppointment()">
       <label for="datum">Datum:</label>
       <input id="datum" type="date" [(ngModel)]="newAppointment.datum" name="datum" required [min]="today"
@@ -18,7 +19,7 @@
 
       <button type="submit">Zakaži</button>
       <button type="button" (click)="closeForm()">Otkaži</button> <br>
-      <button (click)="scheduleNextAppointment()">Zakazi prvi slobodan termin</button>
     </form>
+    <button (click)="scheduleNextAppointment()">Zakazi prvi slobodan termin</button>
   </div>
 </div>

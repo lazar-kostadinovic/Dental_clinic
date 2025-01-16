@@ -12,16 +12,10 @@ namespace StomatoloskaOrdinacija.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthPacijentController(IConfiguration config, IPacijentService pacijent) : ControllerBase
     {
-        private readonly IConfiguration _config;
-        private readonly IPacijentService _pacijent;
-
-        public AuthController(IConfiguration config, IPacijentService pacijent)
-        {
-            _config = config;
-            _pacijent = pacijent;
-        }
+        private readonly IConfiguration _config = config;
+        private readonly IPacijentService _pacijent = pacijent;
 
         [HttpPost]
         public async Task<IActionResult> Authenticate([FromBody] LoginModel login)

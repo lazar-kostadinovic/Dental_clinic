@@ -12,16 +12,10 @@ namespace StomatoloskaOrdinacija.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class EmailControler : ControllerBase
+    public class EmailControler(IConfiguration config, EmailService email) : ControllerBase
     {
-        private readonly IConfiguration _config;
-        private readonly EmailService _emailService;
-
-        public EmailControler(IConfiguration config, EmailService email)
-        {
-            _config = config;
-            _emailService = email;
-        }
+        private readonly IConfiguration _config = config;
+        private readonly EmailService _emailService = email;
 
         [Authorize]
         [HttpPost("sendCancellationEmail")]
@@ -74,10 +68,13 @@ namespace StomatoloskaOrdinacija.Controllers
         {
             try
             {
+                DateTime appointmentDate = DateTime.Parse(request.AppointmentDate);
+                string formattedDate = appointmentDate.ToString("yyyy-MM-dd 'od' HH:mm:ss");
+
                 await _emailService.SendEmailAsync(
                     request.ToEmail,
                     "Pregled preuzet",
-                    $"Poštovani {request.PatientName},<br><br>Vaš pregled zakazan za {request.AppointmentDate} je preuzet od strane stomatologa {request.DentistName}.<br><br>S poštovanjem,<br>Vaša ordinacija"
+                    $"Poštovani {request.PatientName},<br><br>Vaš pregled zakazan za {formattedDate} je preuzet od strane stomatologa {request.DentistName}.<br><br>S poštovanjem,<br>Vaša ordinacija"
                 );
                 return Ok(new { message = "Email sent successfully." });
             }
@@ -86,6 +83,7 @@ namespace StomatoloskaOrdinacija.Controllers
                 return StatusCode(500, $"Error sending email: {ex.Message}");
             }
         }
+
     }
 
     public class CancellationEmailRequest
