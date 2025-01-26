@@ -2,21 +2,24 @@
   <div *ngIf="filteredAppointmentListForToday.length>0" class="appointmentsForToday">
 
   </div>
-  <div *ngIf="showCharge" class="row">
-    <h3>Izaberite intervencije:</h3>
-    <div *ngFor="let intervencija of interventionsList; let i = index" class="appointment">
-      <label>
-        <input type="checkbox" [(ngModel)]="intervencija.selected" />
-        {{ intervencija.naziv }} - {{ intervencija.cena }} din
-      </label>
+  <div *ngIf="showCharge" class="interventions">
+    <button class="closeChargeBtn" (click)="closeCharge()">Vrati se nazad</button>
+    <div class="row">
+      <h3>Izaberite intervencije:</h3>
+      <div *ngFor="let intervencija of interventionsList; let i = index" class="appointment">
+        <label>
+          <input type="checkbox" [(ngModel)]="intervencija.selected" />
+          {{ intervencija.naziv }} - {{ intervencija.cena }} din
+        </label>
+        <br>
+        <input type="number" [(ngModel)]="intervencija.kolicina" [disabled]="!intervencija.selected" min="1" step="1"
+          style="width: 50px; margin-left: 12px;margin-right: 12px; margin-top: 5px; margin-bottom: 5px;border: 1px solid darkgray; justify-self: center;" />
 
-      <input type="number" [(ngModel)]="intervencija.kolicina" [disabled]="!intervencija.selected" min="1" step="1"
-        style="width: 60px; margin-left: 10px;" />
-
-    </div>
-    <div *ngIf="calculateTotal() > 0" class="total-price">
-      <h4>Ukupna cena: {{ calculateTotal() }} din</h4>
-      <button (click)="chargeAppointment()">Naplati</button>
+      </div>
+      <div *ngIf="calculateTotal() > 0" class="total-price">
+        <h4>Ukupna cena: {{ calculateTotal() }} din</h4>
+        <button (click)="chargeAppointment()">Naplati</button>
+      </div>
     </div>
   </div>
 
@@ -24,20 +27,25 @@
     <div class="row">
       <h3>Vasi pregledi za danasnji dan:</h3>
       <ng-container *ngFor="let pregled of filteredAppointmentListForToday">
+
         <div class="appointment">
           <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
           <p><strong>Opis:</strong> {{ pregled.opis }}</p>
           <p><strong>Pacijent:</strong> {{ pregled.imePacijenta }}</p>
           <p><strong>Email:</strong> {{ pregled.emailPacijenta }}</p>
           <p><strong>Broj telefona:</strong> {{pregled.brojPacijenta }}</p>
-          <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">
-            Naplati pregled
-          </button>
+          <div class="buttons">
+            <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">
+              Naplati pregled
+            </button>
+            <button *ngIf="!pregled.naplacen" (click)="deleteAppointment(pregled.id,pregled.idPacijenta)">Pregled
+              neodradjen</button>
+          </div>
         </div>
       </ng-container>
       <h2 *ngIf="filteredAppointmentListForToday.length==0">Nemate zakazanih pregleda za danas.</h2>
     </div>
-    <input list="pacijenti" [(ngModel)]="selectedPatientName" (input)="onPatientSelected()"
+    <input id="unosPacijenta" list="pacijenti" [(ngModel)]="selectedPatientName" (input)="onPatientSelected()"
       placeholder="Izaberite ili unesite ime pacijenta" />
     <datalist id="pacijenti">
       <option *ngFor="let pacijent of pacijentList" [value]="pacijent.name + ' - ' + pacijent.email">
@@ -46,13 +54,35 @@
     </datalist>
     <div *ngIf="selectedPatientDetails">
       <h3>Podaci o pacijentu:</h3>
-      <p><strong>Ime:</strong> {{ selectedPatientDetails.ime }} {{ selectedPatientDetails.prezime }}</p>
-      <p><strong>Email:</strong> {{ selectedPatientDetails.email }}</p>
-      <p><strong>Broj telefona:</strong> {{ selectedPatientDetails.brojTelefona }}</p>
-      <p><strong>Ukupno potroseno:</strong> {{ selectedPatientDetails.ukupnoPotroseno|currency:'RSD '}}</p>
-      <p><strong>Dugovanje:</strong> {{ selectedPatientDetails.dugovanje|currency:'RSD '}}</p>
-      <p><strong>Propušteni pregledi:</strong> {{ selectedPatientDetails.brojNedolazaka}}</p>
+      <div class="info">
+        <div class="info-div">
+          <p><strong>Ime:</strong> {{ selectedPatientDetails.ime }} {{ selectedPatientDetails.prezime
+            }}({{selectedPatientDetails.godine}})</p>
+          <p><strong>Email:</strong> {{ selectedPatientDetails.email }}</p>
+          <p><strong>Broj telefona:</strong> {{ selectedPatientDetails.brojTelefona }}</p>
+        </div>
+        <br>
+        <div class="info-div">
+          <p><strong>Ukupno potroseno:</strong> {{ selectedPatientDetails.ukupnoPotroseno|currency:'RSD '}}</p>
+          <p><strong>Dugovanje:</strong> {{ selectedPatientDetails.dugovanje|currency:'RSD '}}</p>
+          <p><strong>Propušteni pregledi:</strong> {{ selectedPatientDetails.brojNedolazaka}}</p>
+        </div>
+      </div>
     </div>
+    <!--     
+    <div *ngIf="selectedPatientDetails">
+      <h3>Podaci o pacijentu:</h3>
+      <div class="row">
+        <div>
+          <p><strong>Ime:</strong> {{ selectedPatientDetails.ime }} {{ selectedPatientDetails.prezime }}</p>
+          <p><strong>Email:</strong> {{ selectedPatientDetails.email }}</p>
+          <p><strong>Broj telefona:</strong> {{ selectedPatientDetails.brojTelefona }}</p>
+          <p><strong>Ukupno potroseno:</strong> {{ selectedPatientDetails.ukupnoPotroseno|currency:'RSD '}}</p>
+          <p><strong>Dugovanje:</strong> {{ selectedPatientDetails.dugovanje|currency:'RSD '}}</p>
+          <p><strong>Propušteni pregledi:</strong> {{ selectedPatientDetails.brojNedolazaka}}</p>
+        </div>
+      </div>
+    </div> -->
 
 
     <h3 (click)="toggleUpcomingAppointments()" style="cursor: pointer; display: flex; align-items: center;">
@@ -97,9 +127,13 @@
             </ul>
             <p><strong>Ukupna cena:</strong> {{ pregled.ukupnaCena }} din</p>
           </div>
-          <button *ngIf="!pregled.naplacen" (click)="deleteAppointment(pregled.id,pregled.idPacijenta)">Pregled
-            neodradjen</button>
-          <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">Naplati pregled</button>
+          <div class="buttons">
+            <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">
+              Naplati pregled
+            </button>
+            <button *ngIf="!pregled.naplacen" (click)="deleteAppointment(pregled.id,pregled.idPacijenta)">Pregled
+              neodradjen</button>
+          </div>
         </div>
       </ng-container>
     </div>

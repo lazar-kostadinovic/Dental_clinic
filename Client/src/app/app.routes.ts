@@ -12,10 +12,12 @@ import { InterventionsManagementComponentComponent } from './admin/interventions
 import { ContactComponent } from './contact/contact.component';
 import { ScheduleAppointmentComponent } from './patient/schedule-appointment/schedule-appointment.component';
 import { DentistScheduleComponent } from './dentist/dentist-profile/dentist-schedule/dentist-schedule.component';
+import { ShowDentistComponent } from './show-dentist/show-dentist.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent},
   { path: 'contact', component: ContactComponent},
+  { path: 'show-dentist', component: ShowDentistComponent},
   { path: 'login', component: LoginComponent },
   { path: 'register-dentist', component: RegisterDentistComponent },
   { path: 'register-patient', component: RegisterPatientComponent},

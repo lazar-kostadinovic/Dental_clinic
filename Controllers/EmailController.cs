@@ -26,7 +26,7 @@ namespace StomatoloskaOrdinacija.Controllers
                 await _emailService.SendEmailAsync(
                     request.ToEmail,
                     "Pregled otkazan",
-                    $"Poštovani {request.PatientName},<br><br>Vaš pregled zakazan za {request.AppointmentDate} je otkazan.<br><br>S poštovanjem,<br>Vaša ordinacija"
+                    $"Poštovani {request.PatientName},<br><br>Vaš pregled zakazan za {request.AppointmentDate} je otkazan.<br>За више информација обратите се стоматологу {request.DentistName} на број {request.DentistPhoneNumber}<br><br>S poštovanjem,<br>Vaša ordinacija"
                 );
                 return Ok(new { message = "Email sent successfully." });
             }
@@ -88,21 +88,23 @@ namespace StomatoloskaOrdinacija.Controllers
 
     public class CancellationEmailRequest
     {
-        public string ToEmail { get; set; }
-        public string PatientName { get; set; }
-        public string AppointmentDate { get; set; }
+        public required string ToEmail { get; set; }
+        public required string PatientName { get; set; }
+        public required string AppointmentDate { get; set; }
+        public required string DentistPhoneNumber { get; set; }
+        public required string DentistName { get; set; }
     }
     public class WarningEmailRequest
     {
-        public string ToEmail { get; set; }
-        public string PatientName { get; set; }
-        public decimal Debt { get; set; }
+        public required string ToEmail { get; set; }
+        public required string PatientName { get; set; }
+        public required decimal Debt { get; set; }
     }
     public class AppointmentTakenEmailRequest
     {
-        public string ToEmail { get; set; }
-        public string PatientName { get; set; }
-        public string AppointmentDate { get; set; }
-        public string DentistName { get; set; }
+        public required string ToEmail { get; set; }
+        public required string PatientName { get; set; }
+        public required string AppointmentDate { get; set; }
+        public required string DentistName { get; set; }
     }
 }

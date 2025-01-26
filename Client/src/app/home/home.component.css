@@ -7,6 +7,8 @@
   border-radius: 8px;
   padding: 20px;
   text-align: center;
+  width: 600px;
+  height: 400px;
 }
 .carousel-caption h1 {
   font-size: 3em;
@@ -51,8 +53,12 @@ h1, h5 {
   }
 }
 
+/* .carousel-item {
+  height: 126.2vh;
+} */
+
 .carousel-item {
-  height: 126vh;
+  height: 89.3vh;
 }
 
 .carousel-item img {

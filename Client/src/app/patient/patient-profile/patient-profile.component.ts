@@ -8,8 +8,7 @@ import { Router } from '@angular/router';
 import { StripeService } from '../../services/stripe.service';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { FormsModule } from '@angular/forms';
-import { ShowDentistComponent } from '../show-dentists/show-dentists.component';
-import { UnconfirmedAppointmentsComponent } from '../patient-appointments/unconfirmed-appointments/unconfirmed-appointments.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-patient-profile',
@@ -20,8 +19,6 @@ import { UnconfirmedAppointmentsComponent } from '../patient-appointments/unconf
     ScheduleAppointmentComponent,
     PatientAppointmentsComponent,
     FormsModule,
-    ShowDentistComponent,
-    UnconfirmedAppointmentsComponent
   ],
   templateUrl: './patient-profile.component.html',
   styleUrls: ['./patient-profile.component.css'],
@@ -31,7 +28,6 @@ export class PatientProfileComponent {
   email: string | null = null;
 
   showUnconfirmed = false;
-  showDentists = false;
   showSchedule = false;
   isPaymentFormVisible = false;
   isPaymentProcessing = false;
@@ -42,13 +38,13 @@ export class PatientProfileComponent {
 
   isEditing = {
     email: false,
-    brojTelefona: false,
+    telefon: false,
     adresa: false,
   };
 
   updatedValues = {
     email: '',
-    brojTelefona: '',
+    telefon: '',
     adresa: '',
   };
 
@@ -71,7 +67,7 @@ export class PatientProfileComponent {
       'pk_test_51QTXIkG3cGPJ8wzKPtQCYQ5GT5MShiYx6YSxgKz2TWJ5MSWEXfeMlXcBUFvjnGjx73ct443JR2Q9hPOmCuNdlMVt00IuWYFTZW'
     ).then((stripe) => {
       if (!stripe) {
-        alert('Stripe nije učitan.');
+        Swal.fire('Greška', 'Stripe nije učitan.', 'error');
         return;
       }
       this.stripe = stripe;
@@ -81,15 +77,17 @@ export class PatientProfileComponent {
   handlePayment() {
     this.isPaymentFormVisible = true;
     this.isPaymentProcessing = false;
+    this.showSchedule=false;
+    this.showUnconfirmed=false;
     setTimeout(() => {
       this.loadStripeCardElement();
     }, 300);
   }
 
   loadStripeCardElement() {
-    if (!this.stripe || this.cardMounted) {
-      return;
-    }
+    // if (!this.stripe || this.cardMounted) {
+    //   return;
+    // }
 
     const elements = this.stripe.elements();
     this.card = elements.create('card');
@@ -99,7 +97,7 @@ export class PatientProfileComponent {
 
   payNow() {
     if (!this.stripe || !this.card || this.paymentAmount <= 0) {
-      alert('Molimo vas unesite validan iznos.');
+      Swal.fire('Upozorenje', 'Molimo vas unesite validan iznos.', 'warning');
       return;
     }
 
@@ -121,20 +119,20 @@ export class PatientProfileComponent {
             this.isPaymentProcessing = false;
 
             if (result.error) {
-              alert(`Došlo je do greške: ${result.error.message}`);
+              Swal.fire('Greška', `Došlo je do greške: ${result.error.message}`, 'error');
             } else if (result.paymentIntent?.status === 'succeeded') {
-              alert('Plaćanje uspešno izvršeno!');
+              Swal.fire('', 'Plaćanje uspešno izvršeno!', 'success');
               this.reducePatientDebt(this.patient.id, this.paymentAmount);
-              this.paymentAmount = 0;    
-              this.card.destroy(); 
-              this.cardMounted = false; 
-              this.isPaymentFormVisible = false; 
+              this.paymentAmount = 0;
+              this.card.destroy();
+              this.cardMounted = false;
+              this.isPaymentFormVisible = false;
             }
           });
       })
       .catch((err) => {
         console.error('Greška prilikom kreiranja Payment Intenta:', err);
-        alert('Došlo je do greške prilikom plaćanja.');
+        Swal.fire('Greška', 'Došlo je do greške prilikom plaćanja.', 'error');
         this.isPaymentProcessing = false;
       });
 
@@ -151,12 +149,12 @@ export class PatientProfileComponent {
         next: (response: any) => {
           this.patient.dugovanje -= amount;
           console.log('proba');
-          alert(response.message);
+          Swal.fire('', response.message, 'success');
         },
         error: (err) => {
           console.error('Greška prilikom smanjenja dugovanja:', err);
-          alert('Došlo je do greške prilikom ažuriranja dugovanja.');
-        },
+          Swal.fire('Greška', 'Došlo je do greške prilikom ažuriranja dugovanja.', 'error');
+          },
       });
   }
 
@@ -180,35 +178,28 @@ export class PatientProfileComponent {
   }
 
   toggleUnconfirmed() {
-    this.showUnconfirmed=!this.showUnconfirmed;
-    this.showDentists = false;
+    this.showUnconfirmed=true;
     this.showSchedule = false;
+    this.isPaymentFormVisible=false;
     this.fetchPatientProfile();
   }
 
   toggleSchedule() {
-    this.showSchedule = !this.showSchedule;
-    this.showDentists = false;
+    this.showSchedule = true;
     this.showUnconfirmed = false;
-    this.fetchPatientProfile();
-  }
-
-  toggleDentists() {
-    this.showDentists = !this.showDentists;
-    this.showSchedule = false;
-    this.showUnconfirmed = false;
+    this.isPaymentFormVisible=false;
     this.fetchPatientProfile();
   }
 
   toggleAppointments() {
-    this.showDentists = false;
     this.showSchedule = false;
     this.showUnconfirmed = false;
+    this.isPaymentFormVisible=false;
     this.fetchPatientProfile();
   }
 
   // showButtons() {
-  //   if (!this.showDentists && !this.showSchedule && !this.showUnconfirmed) {
+  //   if (!this.showSchedule && !this.showUnconfirmed) {
   //     return true;
   //   } else return false;
   // }
@@ -264,43 +255,48 @@ export class PatientProfileComponent {
   }
 
   deleteAccount() {
-    const confirmation = window.confirm(
-      'Da li ste sigurni da zelite da obriste svoj profil?'
-    );
-    if (!confirmation) {
-      return;
-    }
-
-    this.http
-      .delete(`http://localhost:5001/Pacijent/${this.patient.id}`)
-      .subscribe({
-        next: () => {
-          alert('obrisan profil');
-          this.router.navigate(['/home']);
-        },
-        error: (error) => {
-          console.error('Greska prilikom birsanja profila:', error);
-        },
-      });
-    localStorage.removeItem('token');
-    localStorage.removeItem('email');
-    localStorage.removeItem('role');
+    Swal.fire({
+      title: 'Potvrda',
+      text: 'Da li ste sigurni da želite da obrišete svoj profil?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Da, obriši',
+      cancelButtonText: 'Ne',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.http
+          .delete(`http://localhost:5001/Pacijent/${this.patient.id}`)
+          .subscribe({
+            next: () => {
+              Swal.fire('', 'Vaš profil je obrisan.', 'success');
+              this.router.navigate(['/home']);
+            },
+            error: (error) => {
+              console.error('Greška prilikom brisanja profila:', error);
+              Swal.fire('Greška', 'Došlo je do greške prilikom brisanja profila.', 'error');
+            },
+          });
+        localStorage.removeItem('token');
+        localStorage.removeItem('email');
+        localStorage.removeItem('role');
+      }
+    });
   }
 
   toggleEditEmail() {
     this.isEditing.email=!this.isEditing.email;
     this.isEditing.adresa = false;
-    this.isEditing.brojTelefona = false;
+    this.isEditing.telefon = false;
   }
   toggleEditNumber() {
-    this.isEditing.brojTelefona= !this.isEditing.brojTelefona;
+    this.isEditing.telefon= !this.isEditing.telefon;
     this.isEditing.adresa = false;
     this.isEditing.email = false;
   }
   toggleEditAddress() {
     this.isEditing.adresa=!this.isEditing.adresa;
     this.isEditing.email = false;
-    this.isEditing.brojTelefona = false;
+    this.isEditing.telefon = false;
   }
 
   saveChanges(field: string) {
@@ -311,8 +307,8 @@ export class PatientProfileComponent {
       case 'email':
         endpoint = `changeEmail/${this.patient.id}/${this.updatedValues.email}`;
         break;
-      case 'brojTelefona':
-        endpoint = `changeNumber/${this.patient.id}/${this.updatedValues.brojTelefona}`;
+      case 'telefon':
+        endpoint = `changeNumber/${this.patient.id}/${this.updatedValues.telefon}`;
         break;
       case 'adresa':
         endpoint = `changeAddress/${this.patient.id}/${this.updatedValues.adresa}`;
@@ -326,11 +322,11 @@ export class PatientProfileComponent {
       next: () => {
         (this.patient as any)[field] = this.updatedValues[field];
         this.isEditing[field] = false;
-        alert(`${field} uspešno ažurirano!`);
+        Swal.fire("",`${field} uspešno ažuriran!`,"success");
         if (field === 'email') {
           localStorage.setItem('email', this.updatedValues.email);
-          this.fetchPatientProfile();
         }
+        this.fetchPatientProfile();
       },
       error: (err) => {
         console.error(`Greška pri ažuriranju ${field}:`, err);

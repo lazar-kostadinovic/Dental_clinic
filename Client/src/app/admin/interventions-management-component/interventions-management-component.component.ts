@@ -13,8 +13,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class InterventionsManagementComponentComponent implements OnInit {
   interventionsList: IntervencijaDTO[] = [];
-  
-  // Define an object to store new intervention data
+
   newIntervention = {
     naziv: '',
     cena: null as number | null,
@@ -35,7 +34,6 @@ export class InterventionsManagementComponentComponent implements OnInit {
             ...intervencija,
             selected: false,
           }));
-          console.log('Učitana lista intervencija:', this.interventionsList);
         },
         error: (error) => {
           console.error('Greška pri učitavanju intervencija:', error);
@@ -67,14 +65,12 @@ export class InterventionsManagementComponentComponent implements OnInit {
       });
   }
 
-  // Method to handle adding a new intervention
   addNewIntervention() {
     if (!this.newIntervention.naziv || this.newIntervention.cena === null) {
       alert('Molimo unesite naziv i cenu za novu intervenciju.');
       return;
     }
 
-    // Make the POST request to add the new intervention
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
@@ -89,9 +85,9 @@ export class InterventionsManagementComponentComponent implements OnInit {
       .post('http://localhost:5001/Intervencija', newIntervention, { headers })
       .subscribe({
         next: () => {
-          this.fetchAllInterventions();  // Reload the interventions list
+          this.fetchAllInterventions();
           alert('Nova intervencija je uspešno dodata!');
-          this.newIntervention = { naziv: '', cena: null };  // Reset the form
+          this.newIntervention = { naziv: '', cena: null };
         },
         error: (err) => {
           console.error('Greška pri dodavanju nove intervencije:', err);

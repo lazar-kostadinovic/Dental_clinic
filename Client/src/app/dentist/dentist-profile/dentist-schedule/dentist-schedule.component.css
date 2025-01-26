@@ -92,3 +92,14 @@ button:disabled {
   color: #721c24;
 }
 
+.debt {
+  margin-top: 10px; /* Prostor između textarea i upozorenja */
+  padding: 10px; /* Unutrašnji razmak za bolje čitljivost */
+  background-color: #ffe4e1; /* Svetlo crvena pozadina za vizuelno isticanje */
+  color: #d32f2f; /* Tamnocrvena boja teksta za upozorenje */
+  border: 1px solid #d32f2f; /* Obrub u istoj boji kao tekst */
+  border-radius: 5px; /* Zaobljeni uglovi */
+  font-weight: bold; /* Podebljan tekst */
+  font-size: 0.9rem; /* Veličina teksta */
+  text-align: center; /* Poravnanje teksta na sredinu */
+}

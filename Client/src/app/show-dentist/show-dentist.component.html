@@ -1,0 +1,78 @@
+<div class="home-container">
+  <div class="dentist-view-container">
+    <div class="comments-section" *ngIf="selectedStomatologForComments">
+      <div class="selected-dentist" *ngIf="selectedStomatolog">
+        <div class="dentist-card">
+          <img [src]="getImageUrl(selectedStomatolog.slika)" alt="Profilna slika" class="dentist-image" />
+          <div class="dentist-info">
+            <h3>{{ selectedStomatolog.ime }} {{ selectedStomatolog.prezime }}</h3>
+            <p>Specijalizacija: {{ getSpecijalizacijaLabel(selectedStomatolog.specijalizacija,selectedStomatolog.ime) }}
+            </p>
+            <p>Email: {{ selectedStomatolog.email }}</p>
+            <p>Telefon: {{ selectedStomatolog.brojTelefona }}</p>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="comments" *ngIf="selectedStomatolog">
+        <h4>
+          Komentari za {{ selectedStomatolog.ime }} {{ selectedStomatolog.prezime }}
+          <span *ngIf="selectedStomatolog.komentariStomatologa.length > 0">
+            ({{ prosecnaOcena }}/5)
+          </span>
+        </h4>
+        <ul>
+          <li *ngFor="let komentar of komentariStomatologa.slice(0, komentarLimit)">
+            <strong>{{ komentar.ocena }}/5 {{ imePacijenata[komentar.idPacijenta] }}</strong>
+            <p>{{ komentar.datum | date }}</p>
+            <p>{{ komentar.komentar }}</p>
+          </li>
+        </ul>
+        <button *ngIf="komentariStomatologa.length > komentarLimit" (click)="loadMoreComments()">
+          Prikaži ostale komentare
+        </button>
+
+        <h5>Dodaj komentar</h5>
+        <textarea [(ngModel)]="newComment.komentar" placeholder="Unesite komentar"></textarea>
+        <div>
+          <label>Ocena:</label>
+          <span *ngFor="let star of [1, 2, 3, 4, 5]">
+            <i class="star" [ngClass]="{ selected: newComment.ocena >= star }" (click)="newComment.ocena = star">★</i>
+          </span>
+        </div>
+        <button (click)="addComment(selectedStomatologForComments)">Dodaj komentar</button>
+        <button (click)="closeReviews()">Zatvori komentare</button>
+      </div>
+    </div>
+
+
+    <div class="container" *ngIf="!selectedStomatologForComments">
+      <div>
+        <h3 style="text-align: center;">Naši Stomatolozi</h3>
+        <div class="filter-container">
+          <label for="specijalizacija">Filter po specijalizaciji:</label>
+          <select id="specijalizacija" [(ngModel)]="selectedSpecijalizacija" (change)="filterBySpecijalizacija()">
+            <option value="">Sve specijalizacije</option>
+            <option *ngFor="let spec of specijalizacije; let i = index" [value]="i">
+              {{ spec }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="dentists-container">
+        <div *ngFor="let stomatolog of stomatolozi" class="dentist-card"
+          (click)="showReviews(stomatolog.komentariStomatologa, stomatolog.id)">
+          <img [src]="getImageUrl(stomatolog.slika)" alt="Profilna slika" class="dentist-image" />
+          <div class="dentist-info">
+            <h3>{{ stomatolog.ime }} {{ stomatolog.prezime }}</h3>
+            <p>Specijalizacija: {{ getSpecijalizacijaLabel(stomatolog.specijalizacija,stomatolog.ime) }}</p>
+            <p>Email: {{ stomatolog.email }}</p>
+            <p>Telefon: {{ stomatolog.brojTelefona }}</p>
+            <button>Prikaži utiske ostalih korisnika</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

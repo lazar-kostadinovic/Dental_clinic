@@ -2,6 +2,9 @@
   display: flex;
   width: 100%;
   flex-grow: 1;
+  transform: scale(0.85);
+  transform-origin: top left;
+  height: 105%;
 }
 
 .showAppointments {
@@ -11,6 +14,7 @@
 }
 
 .profile-container {
+  background-color: #f9f9f9;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;

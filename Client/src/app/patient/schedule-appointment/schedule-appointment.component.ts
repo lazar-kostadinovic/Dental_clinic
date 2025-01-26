@@ -6,6 +6,7 @@ import { StomatologDTO } from '../../models/stomatologDTO.model';
 import { forkJoin } from 'rxjs';
 import { KomentarDTO } from '../../models/komentarDTO';
 import { PacijentDTO } from '../../models/pacijentDTO.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-schedule-appointment',
@@ -117,26 +118,33 @@ export class ScheduleAppointmentComponent implements OnInit {
       !this.newAppointment.vreme ||
       !this.newAppointment.opis
     ) {
-      console.log(  this.patient.id,
-        this.newAppointment.datum ,
-        this.newAppointment.vreme ,
-        this.newAppointment.opis);
-      alert('Molimo popunite sve podatke.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Greška!',
+        text: 'Molimo popunite sve podatke.',
+      });
       return;
     }
-
+  
     const dateTimeString = `${this.newAppointment.datum}T${this.newAppointment.vreme}`;
     const apiUrl = `http://localhost:5001/Pregled/schedule/${this.patient.id}/${dateTimeString}/${this.newAppointment.opis}`;
     console.log(apiUrl);
     this.http.post(apiUrl, {}).subscribe({
-      next: (response:any) => {
-        const newAppointmentId = response.id; 
-        console.log('Pregled zakazan uspešno:', response);
-        this.appointmentScheduled.emit(newAppointmentId);
-        alert('Pregled je zakazan uspešno!');
+      next: (response: any) => {
+        Swal.fire({
+          icon: 'success',
+          title: '',
+          text: 'Pregled je zakazan uspešno!',
+        });
+        this.appointmentScheduled.emit(response.id);
         this.closeForm();
       },
       error: (error) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Greška!',
+          text: 'Došlo je do greške pri zakazivanju pregleda.',
+        });
         console.error('Greška pri zakazivanju pregleda:', error);
       },
     });

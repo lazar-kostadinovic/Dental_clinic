@@ -4,6 +4,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PregledDTO } from '../../models/pregledDTO.model';
 import { DateService } from '../../shared/date.service';
 import { forkJoin, map, switchMap } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-unconfirmed-appointments',
@@ -19,7 +20,7 @@ export class UnconfirmedAppointmentsComponent {
   @Input() dentistName!: string;
   @Output() appointmentTaken = new EventEmitter<void>();
   token = localStorage.getItem('token');
-  daysOff: string[] = []; 
+  daysOff: string[] = [];
 
   constructor(private http: HttpClient, private dateService: DateService) {}
 
@@ -28,56 +29,53 @@ export class UnconfirmedAppointmentsComponent {
     this.fetchAllDaysOff();
   }
 
-
-
   fetchAllDaysOff(): void {
-      const token = localStorage.getItem('token');
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
-      this.http
-        .get<string[]>(
-          `http://localhost:5001/Stomatolog/GetAllDaysOff/${this.dentistId}`,
-          { headers }
-        )
-        .subscribe({
-          next: (daysOff) => {
-            this.daysOff = daysOff;
-            console.log(daysOff);
-          },
-          error: (error) => {
-            console.error('Greška prilikom preuzimanja slobodnih dana:', error);
-            alert(
-              error.error?.message ||
-                'Došlo je do greške prilikom preuzimanja slobodnih dana.'
-            );
-          },
-        });
-    }
-  
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http
+      .get<string[]>(
+        `http://localhost:5001/Stomatolog/GetAllDaysOff/${this.dentistId}`,
+        { headers }
+      )
+      .subscribe({
+        next: (daysOff) => {
+          this.daysOff = daysOff;
+          console.log(daysOff);
+        },
+        error: (error) => {
+          console.error('Greška prilikom preuzimanja slobodnih dana:', error);
+          alert(
+            error.error?.message ||
+              'Došlo je do greške prilikom preuzimanja slobodnih dana.'
+          );
+        },
+      });
+  }
 
   takeAppointment(appointmentId: string) {
-
     const confirmedAppointment = this.unconfirmedAppointments.find(
       (appointment) => appointment.id === appointmentId
     );
-    
+
     if (!confirmedAppointment) {
       alert('Pregled nije pronađen.');
       return;
     }
-    
 
     const fullDate = confirmedAppointment.datum.toString();
     const date = new Date(fullDate).toISOString().split('T')[0];
     console.log(date.toString());
 
-  
     if (this.daysOff.includes(date.toString())) {
       alert('Odabrali ste ovaj dan za slobodan. Pregled nije moguće preuzeti.');
       return;
     }
-  
-    this.http.put(`http://localhost:5001/Pregled/assignDentist/${appointmentId}/${this.dentistId}`, {},
+
+    this.http
+      .put(
+        `http://localhost:5001/Pregled/assignDentist/${appointmentId}/${this.dentistId}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${this.token}`,
@@ -86,40 +84,38 @@ export class UnconfirmedAppointmentsComponent {
       )
       .subscribe({
         next: () => {
-          alert('Uspešno ste preuzeli pregled.');
-  
+          Swal.fire('','Uspešno ste preuzeli pregled.','success');
+
           this.unconfirmedAppointments = this.unconfirmedAppointments.filter(
             (app) => app.id !== confirmedAppointment.id
           );
-  
+
           this.sendAppointmentTakenEmail({
             toEmail: 'kostadinovicl999@gmail.com',
             patientName: confirmedAppointment.imePacijenta,
             appointmentDate: confirmedAppointment.datum,
             dentistName: this.dentistName,
           });
-  
+
           this.appointmentTaken.emit();
         },
         error: (error) => {
-          console.error('Greška pri preuzimanju pregleda:', error.error);
-    
-          const errorMessage = error.error?.message || 'Došlo je do greške prilikom preuzimanja pregleda.';
-          alert(`Greška: ${error.error}`);
+          Swal.fire('',`${error.error}`,'error');
         },
       });
   }
-  
 
   sendAppointmentTakenEmail(emailRequest: {
     toEmail?: string;
     patientName?: string;
     appointmentDate?: Date;
     dentistName?: string;
-  })
-   {
+  }) {
     console.log(emailRequest);
-    this.http.post('http://localhost:5001/api/EmailControler/sendAppointmentTakenEmail',emailRequest,
+    this.http
+      .post(
+        'http://localhost:5001/api/EmailControler/sendAppointmentTakenEmail',
+        emailRequest,
         {
           headers: {
             Authorization: `Bearer ${this.token}`,
@@ -171,6 +167,7 @@ export class UnconfirmedAppointmentsComponent {
             'Nepotvrđeni pregledi sa imenima pacijenata:',
             this.unconfirmedAppointments
           );
+          this.sortUnconfirmedAppointments();
         },
         error: (error) => {
           console.error('Greška pri dobijanju nepotvrđenih pregleda:', error);
@@ -180,5 +177,12 @@ export class UnconfirmedAppointmentsComponent {
 
   formatDate(utcDate: Date): string {
     return this.dateService.formatDate(utcDate);
+  }
+
+  sortUnconfirmedAppointments() {
+    console.log("sortiram");
+    this.unconfirmedAppointments.sort(
+      (a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime()
+    );
   }
 }

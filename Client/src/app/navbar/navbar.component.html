@@ -31,25 +31,26 @@
 
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm px-5 py-3 py-lg-0">
   <a href="index.html" class="navbar-brand p-0">
-      <h1 class="m-0 text-primary"><i class="fa fa-tooth me-2"></i>DentalClinic</h1>
+      <h2 class="m-0 text-primary"><i class="fa fa-tooth me-2"></i>DentalClinic</h2>
   </a>
   <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
       <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarCollapse">
       <div class="navbar-nav ms-auto py-0">
-          <a *ngIf="!isAdmin" routerLink="/home" routerLinkActive="active" class="nav-item nav-link">Početna</a>
-          <a *ngIf="!isAdmin" routerLink="/contact" routerLinkActive="active" class="nav-item nav-link">Kontakt</a>
-          <a *ngIf="isAdmin||!isLoggedIn()" routerLink="/dentist-management" routerLinkActive="active" class="nav-item nav-link">Prikazi stomatologe</a>
-          <a *ngIf="isAdmin" routerLink="/patient-management" routerLinkActive="active" class="nav-item nav-link">Prikazi pacijente</a>
-          <a *ngIf="isAdmin" routerLink="/interventions-management" routerLinkActive="active" class="nav-item nav-link">Prikazi intervencije</a>
-          <a *ngIf="isLoggedIn() && !isAdmin" [routerLink]="getProfileLink()" routerLinkActive="active" class="nav-item nav-link">Moj Profil</a>
-          <a *ngIf="!isLoggedIn()" routerLink="/login" routerLinkActive="active" class="nav-item nav-link">Prijava</a>
-          <a *ngIf="isLoggedIn()"  (click)="logout()" routerLinkActive="active" class="nav-item nav-link">Logout</a>
-          <!-- <a *ngIf="!isLoggedIn()" routerLink="/register-patient" routerLinkActive="active" class="nav-item nav-link">Registracija</a> -->
+          <a *ngIf="!isAdmin" routerLink="/home" routerLinkActive="active" class="nav-item nav-link">POČETNA</a>
+          <a *ngIf="!isAdmin" routerLink="/contact" routerLinkActive="active" class="nav-item nav-link">KONTAKT</a>
+          <a *ngIf="!isLoggedIn()||isPatient" routerLink="/show-dentist" routerLinkActive="active" class="nav-item nav-link">PRIKAZI STOMATOLOGE</a>
+          <a *ngIf="isAdmin" routerLink="/dentist-management" routerLinkActive="active" class="nav-item nav-link">PRIKAZI STOMATOLOGE</a>
+          <a *ngIf="isAdmin" routerLink="/patient-management" routerLinkActive="active" class="nav-item nav-link">PRIKAZI PACIJENTE</a>
+          <a *ngIf="isAdmin" routerLink="/interventions-management" routerLinkActive="active" class="nav-item nav-link">PRIKAZI INTERVENCIJE</a>
+          <a *ngIf="isLoggedIn() && !isAdmin" [routerLink]="getProfileLink()" routerLinkActive="active" class="nav-item nav-link">MOJ PROFIL</a>
+          <a *ngIf="!isLoggedIn()" routerLink="/login" routerLinkActive="active" class="nav-item nav-link">PRIJAVA</a>
+          <a *ngIf="isLoggedIn()"  (click)="logout()" routerLinkActive="active" class="nav-item nav-link">ODJAVA</a>
+          <a *ngIf="!isLoggedIn()" routerLink="/register-patient" routerLinkActive="active" class="nav-item nav-link">REGISTRACIJA</a>
      
       </div>
       <button type="button" class="btn text-dark" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fa fa-search"></i></button>
-      <a *ngIf=isPatient routerLink="/patient-schedule" class="btn btn-primary py-2 px-4 ms-3">Zakazi pregled</a>
+      <a *ngIf="isPatient" routerLink="/patient-schedule" class="btn btn-primary py-2 px-4 ms-3">Zakazi pregled</a>
   </div>
 </nav>

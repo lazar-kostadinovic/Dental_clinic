@@ -9,13 +9,11 @@ namespace StomatoloskaOrdinacija.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PacijentController(IPacijentService pacijentService, IStomatologService stomatologService, IPregledService pregledService, IConfiguration config) : ControllerBase
+public class PacijentController(IPacijentService pacijentService, IStomatologService stomatologService, IPregledService pregledService) : ControllerBase
 {
     private readonly IPacijentService pacijentService = pacijentService;
     private readonly IStomatologService stomatologService = stomatologService;
     private readonly IPregledService pregledService = pregledService;
-    private readonly string _pepper = config["PasswordHasher:Pepper"];
-    private readonly int _iteration = config.GetValue<int>("PasswordHasher:Iteration");
 
     [HttpGet]
     public ActionResult<List<Pacijent>> Get()
@@ -65,6 +63,7 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
             UkupnoPotroseno = pacijent.UkupnoPotroseno,
             BrojNedolazaka = pacijent.BrojNedolazaka,
             Dugovanje = pacijent.Dugovanje,
+            Godine = pacijent.Godine,
             IstorijaPregleda = pacijent.IstorijaPregleda.Select(id => id.ToString()).ToList()
         };
         return pacijentDTO;
@@ -294,20 +293,20 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
         {
             return NotFound(new { message = $"Pacijent with Id = {id} not found" });
         }
-        var pregledi = pregledService.GetByStomatologId(id);
+        var pregledi = pregledService.GetByPacijentId(id);
 
         foreach (var pregled in pregledi)
         {
-            var patientId = pregled.IdPacijenta;
+            var stomatologId = pregled.IdStomatologa;
 
-            if (!pacijentService.RemoveAppointment(patientId, pregled.Id))
+            if (!stomatologService.RemoveAppointment(stomatologId, pregled.Id))
             {
-                return NotFound(new { message = $"Failed to remove appointment with Id = {pregled.Id} from patient with Id = {patientId}" });
+                return NotFound(new { message = $"Failed to remove appointment with Id = {pregled.Id} from stomatolog with Id = {stomatologId}" });
             }
 
-            if (!stomatologService.RemoveAppointment(id, pregled.Id))
+            if (!pacijentService.RemoveAppointment(id, pregled.Id))
             {
-                return NotFound(new { message = $"Failed to remove appointment with Id = {pregled.Id} from stomatolog with Id = {id}" });
+                return NotFound(new { message = $"Failed to remove appointment with Id = {pregled.Id} from patient with Id = {id}" });
             }
 
             pregledService.Remove(pregled.Id);

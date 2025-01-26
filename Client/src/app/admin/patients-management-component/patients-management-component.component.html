@@ -5,11 +5,10 @@
   </div>
   <input id="patient" list="pacijenti" [(ngModel)]="selectedPatientName" name="patientName"
     (ngModelChange)="filterPacijenti()" placeholder="Izaberite ili unesite ime pacijenta" required />
-  <datalist id="pacijenti">
+  <datalist id="pacijentii">
     <option *ngFor="let patient of pacijenti" [value]="patient.name + ' - ' + patient.email">
       {{ patient.name }} - {{ patient.email }}
     </option>
-
   </datalist>
   <ul>
     <li *ngFor="let pacijent of filteredPatients">

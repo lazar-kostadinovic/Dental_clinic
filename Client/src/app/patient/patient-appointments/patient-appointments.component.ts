@@ -40,7 +40,7 @@ export class PatientAppointmentsComponent implements OnInit {
   }
   
   fetchPatientHistory() {
-    console.log('fecujem');
+    //console.log('fecujem');
     const pregledRequests = this.appointmentIds.map((id) =>
       this.http
         .get<PregledDTO>(`http://localhost:5001/Pregled/getPregledDTO/${id}`)
@@ -65,14 +65,14 @@ export class PatientAppointmentsComponent implements OnInit {
     );
 
     if (pregledRequests.length > 0) {
-      console.log(pregledRequests);
+      //console.log(pregledRequests);
       forkJoin(pregledRequests).subscribe({
         next: (pregledi) => {
           this.pregledList = this.sortPregledi(pregledi);
           this.unconfirmedAppointments = pregledi.filter(
             (pregled) => !pregled.idStomatologa
           );
-          console.log(this.unconfirmedAppointments);
+          //console.log(this.unconfirmedAppointments);
         },
         error: (error) => {
           console.error('Error fetching pregledi or stomatologs:', error);
@@ -94,7 +94,7 @@ export class PatientAppointmentsComponent implements OnInit {
 
   deleteAppointment(id: string) {
     const token = localStorage.getItem('token') || '';
-    console.log(token);
+    //console.log(token);
 
     this.http
       .delete(`http://localhost:5001/Pregled/${id}`, {
@@ -121,7 +121,7 @@ export class PatientAppointmentsComponent implements OnInit {
 
   cancelAppointment(id: string) {
     const token = localStorage.getItem('token') || '';
-    console.log(token);
+    //console.log(token);
 
     this.http
       .delete(`http://localhost:5001/Pregled/${id}`, {
@@ -170,7 +170,7 @@ export class PatientAppointmentsComponent implements OnInit {
 
     this.http.put(apiUrl, {}).subscribe({
       next: (response) => {
-        console.log('Pregled uspešno ažuriran:', response);
+        //console.log('Pregled uspešno ažuriran:', response);
         alert('Pregled je ažuriran!');
         this.isUpdateFormVisible0 = false;
         this.isUpdateFormVisible1 = false;
@@ -184,7 +184,7 @@ export class PatientAppointmentsComponent implements OnInit {
   }
 
   refreshPregledList() {
-    console.log('Proba osvežavanja liste pregleda');
+    //console.log('Proba osvežavanja liste pregleda');
     this.fetchPatientHistory();
   }
 }

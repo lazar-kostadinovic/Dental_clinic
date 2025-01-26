@@ -1,6 +1,6 @@
 :host {
   font-family: Arial, sans-serif;
-  background-color: #fafafa;
+  /* background-color: #fafafa; */
   display: flex;
   justify-content: center;
   margin: 20px;
@@ -9,7 +9,7 @@
 .register-container {
   width: 100%;
   max-width: 300px;
-  background: white;
+  background-color: #f9f9f9;
   padding: 20px;
   border: 1px solid #dbdbdb;
   text-align: left;

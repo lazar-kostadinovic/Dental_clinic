@@ -7,6 +7,8 @@ import { DateService } from '../../../shared/date.service';
 import { FormsModule } from '@angular/forms';
 import { IntervencijaDTO } from '../../../models/intervencijaDTO';
 import { PacijentDTO } from '../../../models/pacijentDTO.model';
+import Swal from 'sweetalert2';
+import { StomatologDTO } from '../../../models/stomatologDTO.model';
 
 @Component({
   selector: 'app-dentist-appointment',
@@ -19,6 +21,8 @@ export class DentistAppointmentComponent {
   @Input() appointmentIds: string[] = [];
   @Input() dentistId!: string;
   @Output() appointmentsUpdated = new EventEmitter<string[]>();
+  dentistPhoneNumber?: string;
+  dentistName?: string;
   appointmentList: PregledDTO[] = [];
   interventionsList: IntervencijaDTO[] = [];
   filteredAppointmentList: PregledDTO[] = [];
@@ -51,7 +55,16 @@ export class DentistAppointmentComponent {
     this.fetchAllPatients();
   }
 
-  
+  getDentistInfo(){
+    this.http.get(`http://localhost:5001/Stomatolog/getStomatologDTO/${this.dentistId}`).subscribe({
+      next:(stom:any)=>{
+
+        this.dentistPhoneNumber=stom.brojTelefona;
+        this.dentistName=stom.ime+' '+stom.prezime;
+        console.log(this.dentistName);
+      }
+    })
+  }
 
   formatDate(utcDate: Date): string {
     return this.dateService.formatDate(utcDate);
@@ -118,7 +131,7 @@ export class DentistAppointmentComponent {
 
     this.updateAppointmentIndicators();
     this.appointmentsForToday = true;
-    console.log(this.filteredAppointmentListForToday);
+    //console.log(this.filteredAppointmentListForToday);
     this.sortAppointmentsByDate();
   }
 
@@ -136,7 +149,7 @@ export class DentistAppointmentComponent {
       .subscribe({
         next: (patients) => {
           this.pacijentList = patients;
-          console.log(this.pacijentList);
+          //console.log(this.pacijentList);
         },
         error: (error) => {
           console.error('Error fetching patients:', error);
@@ -154,7 +167,7 @@ export class DentistAppointmentComponent {
             selected: false,
             kolicina: 1,
           }));
-          console.log('Učitana lista intervencija:', this.interventionsList);
+          //console.log('Učitana lista intervencija:', this.interventionsList);
         },
         error: (error) => {
           console.error('Greška pri učitavanju intervencija:', error);
@@ -217,7 +230,7 @@ export class DentistAppointmentComponent {
 
   deleteAppointment(id: string,patientId:string){
     const token = localStorage.getItem('token') || '';
-    console.log(token);
+    //console.log(token);
 
     this.http
       .delete(`http://localhost:5001/Pregled/${id}`, {
@@ -237,7 +250,7 @@ export class DentistAppointmentComponent {
           this.appointmentsUpdated.emit(this.appointmentIds);
           this.filterAppointmentsForToday();
           this.incrementMissedAppointments(patientId);
-          alert('Pregled je uspešno obrisan.');
+          Swal.fire('', 'Pregled je obrisan a pacijentu dodat izostanak sa pregleda.', 'success');
         },
         error: (error) => {
           console.error('Greška pri brisanju pregleda:', error);
@@ -256,7 +269,7 @@ export class DentistAppointmentComponent {
       })
       .subscribe({
         next: () => {
-          console.log(`Broj nedolazaka za pacijenta sa ID-jem ${patientId} je povećan.`);
+          //console.log(`Broj nedolazaka za pacijenta sa ID-jem ${patientId} je povećan.`);
         },
         error: (error) => {
           console.error('Greška pri povećanju broja nedolazaka:', error);
@@ -265,14 +278,15 @@ export class DentistAppointmentComponent {
   }
 
   cancelAppointment(id: string) {
+    this.getDentistInfo();
+
     const pregled = this.appointmentList.find((p) => p.id === id);
     if (!pregled) return;
 
     const token = localStorage.getItem('token') || '';
-    console.log(token);
+    //console.log(token);
 
-    this.http
-      .delete(`http://localhost:5001/Pregled/${id}`, {
+    this.http .delete(`http://localhost:5001/Pregled/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -292,9 +306,10 @@ export class DentistAppointmentComponent {
             toEmail: 'kostadinovicl999@gmail.com',
             patientName: pregled.imePacijenta,
             appointmentDate: this.formatDate(pregled.datum),
-          };
+            dentistPhoneNumber: this.dentistPhoneNumber,
+            dentistName:this.dentistName      };
 
-          console.log(emailPayload);
+          //console.log(emailPayload);
           this.http
             .post(
               'http://localhost:5001/api/EmailControler/sendCancellationEmail',
@@ -307,9 +322,8 @@ export class DentistAppointmentComponent {
             )
             .subscribe({
               next: () =>
-                alert(
-                  'Pregled je uspešno obrisan i email je poslat pacijentu.'
-                ),
+                Swal.fire
+               ('', 'Pregled je otkazan i email je poslat pacijentu.','success'),
               error: (error) =>
                 console.error('Greška pri slanju emaila:', error),
             });
@@ -382,15 +396,15 @@ export class DentistAppointmentComponent {
       )
       .subscribe({
         next: () => {
-          alert('Pregled je uspešno naplaćen!');
-          console.log(intervencije, ukupnaCena);
+          Swal.fire('', 'Pregled je uspešno naplaćen.', 'success');
+          ////console.log(intervencije, ukupnaCena);
           this.fetchPatientHistory();
           this.showCharge = false;
           this.selectedPregled = null;
         },
         error: (err) => {
           console.error('Greška pri naplati pregleda:', err);
-          alert('Došlo je do greške pri naplati.');
+          Swal.fire('', 'Došlo je do greške pri naplati.', 'error');
         },
       });
     this.fetchPatientHistory();
@@ -402,5 +416,8 @@ export class DentistAppointmentComponent {
 
   toggleUpcomingAppointments() {
     this.showUpcomingAppointments = !this.showUpcomingAppointments;
+  }
+  closeCharge(){
+    this.showCharge=false;
   }
 }

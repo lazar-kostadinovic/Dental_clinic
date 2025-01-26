@@ -8,11 +8,12 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-dentists-management-component',
   standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './dentists-management-component.component.html',
   styleUrl: './dentists-management-component.component.css',
 })
 export class DentistsManagementComponentComponent {
+  selectedDentistId?: string;
   stomatolozi: StomatologDTO[] = [];
   pacijenti: any[] = [];
   token = localStorage.getItem('token');
@@ -21,7 +22,8 @@ export class DentistsManagementComponentComponent {
   showDayOff: { [key: string]: boolean } = {};
   selectedDateStart: { [dentistId: string]: string } = {};
   selectedDateEnd: { [dentistId: string]: string } = {};
-
+  activeDentistId: string | null = null;
+  activeDentist: StomatologDTO | null = null;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -36,7 +38,6 @@ export class DentistsManagementComponentComponent {
         this.stomatolozi = data.filter(
           (stomatolog) => stomatolog.email !== 'admin@gmail.com'
         );
-        console.log('Učitali smo stomatologe:', this.stomatolozi);
       },
       (error) => {
         console.error('Greška prilikom učitavanja stomatologa:', error);
@@ -45,10 +46,11 @@ export class DentistsManagementComponentComponent {
   }
 
   fetchAllDaysOff(dentistId: string): void {
+    this.setActiveDentist(dentistId);
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const currentYear = new Date().getFullYear();
-  
+
     this.http
       .get<string[]>(
         `http://localhost:5001/Stomatolog/GetAllDaysOff/${dentistId}`,
@@ -72,17 +74,30 @@ export class DentistsManagementComponentComponent {
         },
       });
   }
-  
+
+  setActiveDentist(dentistId: string): void {
+    this.activeDentistId = dentistId;
+    this.activeDentist =
+      this.stomatolozi.find((d) => d.id === dentistId) || null;
+  }
+
+  resetActiveDentist(): void {
+    this.activeDentist = null;
+  }
 
   toggleDayOffVisibility(dentistId: string): void {
     this.showDayOff[dentistId] = !this.showDayOff[dentistId];
   }
-  
+
+  closeActiveDentist(): void {
+    this.activeDentistId = null;
+  }
+
   countCurrentYearDaysOff(dentistId: string): number {
     const currentYear = new Date().getFullYear();
     const daysOff = this.daysOffMap[dentistId] || [];
     return daysOff.filter((dateString) => {
-      const parts = dateString.split('.').map((part) => part.trim()); 
+      const parts = dateString.split('.').map((part) => part.trim());
       const year = parseInt(parts[2], 10);
       return year === currentYear;
     }).length;
@@ -91,22 +106,23 @@ export class DentistsManagementComponentComponent {
   submitDayOff(dentistId: string): void {
     const selectedStart = this.selectedDateStart[dentistId];
     const selectedEnd = this.selectedDateEnd[dentistId];
-    if (!selectedStart||!selectedEnd) {
+    if (!selectedStart || !selectedEnd) {
       alert('Molimo vas unesite pocetni i krajnji datum.');
       return;
     }
-  
+
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
-    this.http.post(`http://localhost:5001/Stomatolog/addDaysOff/${dentistId}/${selectedStart}/${selectedEnd}`,
+
+    this.http
+      .post(
+        `http://localhost:5001/Stomatolog/addDaysOff/${dentistId}/${selectedStart}/${selectedEnd}`,
         {},
         { headers }
       )
       .subscribe({
-        next: (response:any) => {
+        next: (response: any) => {
           alert(`${response.message}`);
-          console.log(response);
           this.selectedDateStart[dentistId] = '';
           this.selectedDateEnd[dentistId] = '';
           this.fetchAllDaysOff(dentistId);
@@ -117,7 +133,7 @@ export class DentistsManagementComponentComponent {
         },
       });
   }
-  
+
   getTodayDate(): string {
     const today = new Date();
     return today.toISOString().split('T')[0];

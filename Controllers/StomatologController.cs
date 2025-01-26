@@ -9,10 +9,9 @@ namespace StomatoloskaOrdinacija.Controllers;
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class StomatologController(IStomatologService stomatologService, IPacijentService pacijentService, IPregledService pregledService, IConfiguration config) : ControllerBase
+public class StomatologController(IStomatologService stomatologService, IPacijentService pacijentService, IPregledService pregledService) : ControllerBase
 {
     private readonly IStomatologService stomatologService = stomatologService;
-
     private readonly IPacijentService pacijentService = pacijentService;
     private readonly IPregledService pregledService = pregledService;
 

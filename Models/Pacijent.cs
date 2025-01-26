@@ -46,6 +46,7 @@ namespace StomatoloskaOrdinacija.Models
     public enum UserRole
     {
         Pacijent,
-        Stomatolog
+        Stomatolog,
+        Administrator
     }
 }

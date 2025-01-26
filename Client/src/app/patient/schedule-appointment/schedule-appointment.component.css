@@ -1,8 +1,13 @@
+:host{
+  align-self: center;
+  justify-content: center;
+  transform: translateX();
+}
 .home-container {
   display: flex;
   justify-content: center;
   width: 100%;
-  margin: 20px ;
+  margin: 16px ;
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;

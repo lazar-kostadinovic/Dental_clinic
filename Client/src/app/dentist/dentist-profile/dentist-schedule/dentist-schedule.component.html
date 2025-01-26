@@ -8,16 +8,12 @@
     <datalist id="pacijenti">
       <option *ngFor="let patient of patients" [value]="patient.name + ' - ' + patient.email">
         {{ patient.name }} - {{ patient.email }} 
-        <div *ngIf="patient.debt>0">
-          Ovaj pacijent ima dugovanje od {{patient.debt}}
-  
-        </div>
       </option>
   
     </datalist>
 
     <label for="datum">Datum:</label>
-    <input id="datum" type="date" [(ngModel)]="newAppointment.datum" name="datum" required [min]="tomorrow"
+    <input id="datum" type="date" [(ngModel)]="newAppointment.datum" name="datum" required 
       [ngClass]="{ 'disabled-day': isDayDisabled(newAppointment.datum) }"
       (change)="loadAvailableTimeSlots(dentistId, newAppointment.datum)" />
 
@@ -31,6 +27,9 @@
 
     <label for="opis">Opis:</label>
     <textarea id="opis" [(ngModel)]="newAppointment.opis" name="opis" required></textarea>
+    <div *ngIf="selectedPatientDebt > 0" class="debt">
+      Ovaj pacijent ima dugovanje od {{ selectedPatientDebt }}.
+    </div>
 
     <button type="submit" [disabled]="isDayDisabled(newAppointment.datum)">Zakazi</button>
     <button type="button" (click)="resetForm()">Odustani</button>

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register-patient',
@@ -26,7 +27,8 @@ export class RegisterPatientComponent {
 
   onRegister(form: NgForm) {
     if (form.invalid) {
-      alert('Molimo vas da popunite sva polja ispravno.');
+      // alert('Molimo vas da popunite sva polja ispravno.');
+      Swal.fire('','Molimo vas da unesete sva polja ispravno','warning')
       return;
     }
 
@@ -36,15 +38,28 @@ export class RegisterPatientComponent {
       brojTelefona: this.registrationModel.brojTelefona.toString(),
     };
     this.http.post('http://localhost:5001/Pacijent/register', payload).subscribe({
-        next: (response) => {
-          const userConfirmed = window.confirm('Registration successful');
-          if (userConfirmed) {
+      next: (response) => {
+        Swal.fire({
+          title: 'Registracija uspešna!',
+          text: 'Da li želite da nastavite na početnu stranicu?',
+          icon: 'success',
+          showCancelButton: true,
+          confirmButtonText: 'Da, nastavi',
+          cancelButtonText: 'Ne, ostani ovde'
+        }).then((result) => {
+          if (result.isConfirmed) {
             this.router.navigate(['/home']);
           }
-        },
-        error: (error) => {
-          alert(error.error);
+        });
       },
+      error: (error) => {
+        Swal.fire({
+          title: 'Greška!',
+          text: error.error || 'Došlo je do greške tokom registracije.',
+          icon: 'error',
+          confirmButtonText: 'U redu'
+        });
+      }      
       });
   }
 }

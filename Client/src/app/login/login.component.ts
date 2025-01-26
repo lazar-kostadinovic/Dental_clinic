@@ -34,11 +34,13 @@ export class LoginComponent {
           localStorage.setItem('token', response.token);
           localStorage.setItem('email', this.loginModel.email);
           localStorage.setItem('role', "pacijent");
-          this.router.navigate(['/home']);
+          this.router.navigate(['/patient-profile']);
         },
         (error) => {
           if (error.status === 401 || error.status === 500) {
+            this.tryLoginAsAdmin();
             this.tryLoginAsStomatolog();
+
           } else {
             this.errorMessage = 'Pogrešni podaci. Pokušajte ponovo.';
           }
@@ -54,7 +56,38 @@ export class LoginComponent {
           localStorage.setItem('token', response.token);
           localStorage.setItem('email', this.loginModel.email);
           localStorage.setItem('role', "stomatolog");
-          this.router.navigate(['/home']);
+   
+          if(this.loginModel.email=='admin@gmail.com'){
+            this.router.navigate(['/dentist-management']);
+          }
+          else{
+            this.router.navigate(['/dentist-profile']);
+          }
+        },
+        (error) => {
+          this.errorMessage = 'Pogrešni podaci. Pokušajte ponovo.';
+        }
+      );
+  }
+
+  tryLoginAsAdmin() {
+    this.http
+      .post<any>('http://localhost:5001/api/AuthAdmin', this.loginModel)
+      .subscribe(
+        (response) => {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('email', this.loginModel.email);
+          localStorage.setItem('role', "admin");
+   
+          if(this.loginModel.email=='admin@gmail.com'){
+            this.router.navigate(['/dentist-management']);
+          }
+          else if(this.loginModel.email=='adminn@gmail.com'){
+            this.router.navigate(['/dentist-management']);
+          }
+          else{
+            this.router.navigate(['/dentist-profile']);
+          }
         },
         (error) => {
           this.errorMessage = 'Pogrešni podaci. Pokušajte ponovo.';

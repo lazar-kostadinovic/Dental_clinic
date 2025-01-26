@@ -58,7 +58,7 @@ export class DentistProfileComponent {
 
   onAppointmentsUpdated(updatedIds: string[]) {
     this.dentist.predstojeciPregledi = updatedIds; 
-    console.log('Roditelj dobio ažuriranu listu ID-ova:', this.dentist.predstojeciPregledi);
+    //console.log('Roditelj dobio ažuriranu listu ID-ova:', this.dentist.predstojeciPregledi);
   }
   onApointmentCanceled(): void {
     this.showAppointments=true;
@@ -91,7 +91,7 @@ export class DentistProfileComponent {
       .subscribe({
         next: (dentistData) => {
           this.dentist = dentistData;
-          console.log(this.dentist);
+          //console.log(this.dentist);
         },
         error: (error) => {
           console.error('Error fetching dentist profile:', error);
@@ -118,7 +118,7 @@ export class DentistProfileComponent {
         )
         .subscribe({
           next: (response: any) => {
-            console.log('Image uploaded successfully:', response);
+            //console.log('Image uploaded successfully:', response);
             this.dentist.slika = response.fileName;
           },
           error: (err) => {
@@ -236,12 +236,12 @@ export class DentistProfileComponent {
   
   //   const token = localStorage.getItem('token');
   //   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  //   console.log(token);
+  //   //console.log(token);
   
   //   this.http.post(`http://localhost:5001/Stomatolog/addDayOff/${this.dentist.id}/${this.selectedDate}`,null, { headers })
   //     .subscribe({
   //       next: (response: any) => {
-  //         console.log('Slobodan dan uspešno dodat:', response);
+  //         //console.log('Slobodan dan uspešno dodat:', response);
   //         alert(`Slobodan dan za ${this.selectedDate} je dodat.`);
   //         this.selectedDate = null;
   //         // this.showDayOffForm = false;
@@ -258,6 +258,7 @@ export class DentistProfileComponent {
   fetchAllDaysOff(): void {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const currentYear = new Date().getFullYear(); 
   
     this.http
       .get<string[]>(
@@ -268,6 +269,7 @@ export class DentistProfileComponent {
         next: (daysOff) => {
           this.daysOff = daysOff
             .map((day) => new Date(day))
+            .filter((date) => date.getFullYear() === currentYear)
             .sort((a, b) => a.getTime() - b.getTime()) 
             .map((date) => date.toLocaleDateString('sr-RS'));
         },
@@ -285,7 +287,7 @@ export class DentistProfileComponent {
   countCurrentYearDaysOff(): number {
     const currentYear = new Date().getFullYear();
     return this.daysOff.filter((dateString) => {
-      console.log(dateString);
+      //console.log(dateString);
       const parts = dateString.split('.').map(part => part.trim()); 
       const year = parseInt(parts[2], 10);
       return year === currentYear;
@@ -306,7 +308,7 @@ export class DentistProfileComponent {
       .subscribe({
         next: () => {
           alert('Promenjena smena stomatologa');
-          console.log(this.dentist.prvaSmena);
+          //console.log(this.dentist.prvaSmena);
           this.fetchDentistProfile();
         },
         error: (error) => {

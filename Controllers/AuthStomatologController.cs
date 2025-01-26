@@ -34,9 +34,9 @@ namespace StomatoloskaOrdinacija.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Email, stomatolog.Email),
-                    new Claim(ClaimTypes.Name, stomatolog.Ime),
-                    new Claim(ClaimTypes.Role,stomatolog.Role.ToString())
+                    new(ClaimTypes.Email, stomatolog.Email),
+                    new(ClaimTypes.Name, stomatolog.Ime),
+                    new(ClaimTypes.Role,stomatolog.Role.ToString())
                     
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(15),

@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.FileProviders;
+using Ambulanta.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,7 @@ builder.Services.Configure<StripeSettings>(
 
 builder.Services.AddScoped<IStomatologService, StomatologService>();
 builder.Services.AddScoped<IPacijentService, PacijentService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IPregledService, PregledService>();
 builder.Services.AddScoped<IOcenaStomatologaService, OcenaStomatologaService>();
 builder.Services.AddScoped<ITipIntervencijeService, TipIntervencijeService>();

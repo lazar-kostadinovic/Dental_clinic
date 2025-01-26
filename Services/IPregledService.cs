@@ -8,6 +8,7 @@ namespace StomatoloskaOrdinacija.Services
         List<Pregled> Get();
         Pregled Get(ObjectId id);
         List<Pregled> GetByStomatologId(ObjectId stomatologId);
+        List<Pregled> GetByPacijentId(ObjectId pacijentId);
         Pregled Create(Pregled pregled);
         void Update(ObjectId id, Pregled pregled);
         void UpdatePregledStatuses();
