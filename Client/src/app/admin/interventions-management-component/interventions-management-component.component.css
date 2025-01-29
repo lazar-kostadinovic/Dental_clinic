@@ -23,7 +23,7 @@
   padding: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.3s;
-  width: calc(33% - 20px);
+  width: calc(25% - 20px);
   box-sizing: border-box;
   text-align: center;
 }
@@ -43,12 +43,13 @@ label {
 }
 
 .price-input {
-  width: 80%;
+  width: 70%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
   text-align: center;
+  margin-bottom: 5px;
 }
 
 button {
@@ -90,6 +91,7 @@ button:active {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
+  justify-self: center;
 }
 
 .new-intervention-form input {

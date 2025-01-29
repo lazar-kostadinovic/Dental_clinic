@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
 import { StomatologDTO } from '../../models/stomatologDTO.model';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-patients-management-component',
@@ -68,42 +69,53 @@ export class PatientsManagementComponentComponent {
         }
       )
       .subscribe({
-        next: () => alert('Upozorednje je uspešno poslato pacijentu.'),
+        next: () =>
+          Swal.fire('', 'Upozorednje je uspešno poslato pacijentu.', 'success'),
         error: (error) => console.error('Greška pri slanju emaila:', error),
       });
   }
 
   deletePatient(pacijentId: string) {
     if (!this.token) {
-      alert('Token nije pronađen!');
-      return;
-    }
-    const confirmation = window.confirm(
-      'Da li ste sigurni da želite da obrišete ovog pacijenta?'
-    );
-
-    if (!confirmation) {
+      Swal.fire('', 'Token nije pronađen!');
       return;
     }
 
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${this.token}`,
+    Swal.fire({
+      title: 'Da li ste sigurni?',
+      text: 'Da li ste sigurni da želite da obrišete ovog stomatologa?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Obriši',
+      cancelButtonText: 'Odustani',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const headers = new HttpHeaders({
+          Authorization: `Bearer ${this.token}`,
+        });
+
+        this.http
+          .delete(`http://localhost:5001/Pacijent/${pacijentId}`, { headers })
+          .subscribe({
+            next: () => {
+              this.pacijenti = this.pacijenti.filter(
+                (pacijent) => pacijent.id !== pacijentId
+              );
+              this.filterPacijenti();
+              Swal.fire('', 'Pacijent je uspesno obrisan.', 'success');
+            },
+            error: (error) => {
+              console.error('Greska pri brisanju pacijenta', error);
+              Swal.fire(
+                'Greška',
+                'Došlo je do greške pri brisanju pacijenta.',
+                'error'
+              );
+            },
+          });
+      }
     });
-
-    this.http
-      .delete(`http://localhost:5001/Pacijent/${pacijentId}`, { headers })
-      .subscribe({
-        next: () => {
-          this.pacijenti = this.pacijenti.filter(
-            (pacijent) => pacijent.id !== pacijentId
-          );
-          this.filterPacijenti();
-          alert('Pacijent je uspesno obrisan.');
-        },
-        error: (error) => {
-          console.error('Greska pri brisanju pacijenta', error);
-          alert('Došlo je do greške pri brisanju pacijenta.');
-        },
-      });
   }
 }

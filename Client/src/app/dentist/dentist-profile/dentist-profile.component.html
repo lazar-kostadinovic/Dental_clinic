@@ -83,5 +83,5 @@
 
 <div *ngIf="showAppointments" class="showAppointments">
   <app-dentist-appointment *ngIf="dentist" [appointmentIds]="dentist.predstojeciPregledi" [dentistId]="dentist.id"
-    (appointmentsUpdated)="onAppointmentsUpdated($event)"></app-dentist-appointment>
+    (appointmentsUpdated)="onAppointmentsUpdated($event)" (appointmentCharged)="onAppointmentCharged()"></app-dentist-appointment>
 </div>

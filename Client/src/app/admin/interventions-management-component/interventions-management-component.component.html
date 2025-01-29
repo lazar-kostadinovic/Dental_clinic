@@ -1,24 +1,24 @@
 <div class="home-container">
-<div class="row">
-    <div *ngFor="let intervencija of interventionsList; let i = index" class="appointment">
-        <label>
-            <span *ngIf="!intervencija.selected">{{ intervencija.naziv }} - {{ intervencija.cena }} din 
-                <i *ngIf="!intervencija.selected" class="custom-edit-button" (click)="togglePriceChange(i)">✎</i></span>
-         
+    <div class="row">
+        <div *ngFor="let intervencija of interventionsList; let i = index" class="appointment">
+            <label>
+                <span>{{ intervencija.naziv }} - {{ intervencija.cena }} din
+                    <i class="custom-edit-button" (click)="togglePriceChange(i)">✎</i>
+                </span>
 
-            <input *ngIf="intervencija.selected" [(ngModel)]="intervencija.cena" type="number" class="price-input"
-                placeholder="Unesite novu cenu" />
-
-            <button *ngIf="intervencija.selected" (click)="saveChanges(intervencija.id, intervencija.cena)">Potvrdi</button>
-
-            <!-- <i *ngIf="!intervencija.selected" class="custom-edit-button" (click)="deleteIntervention(intervencija.id)">🗑️</i> -->
+                <div class="price-container">
+                    <input *ngIf="intervencija.selected" [(ngModel)]="intervencija.cena" type="number"
+                        class="price-input" placeholder="Unesite novu cenu" />
+                    <i *ngIf="intervencija.selected" class="confirm-icon"
+                        (click)="saveChanges(intervencija.id, intervencija.cena)">✔️</i>
+                </div>
+            </label>
             <button (click)="deleteIntervention(intervencija.id)">Obrisi</button>
-        </label>
+        </div>
     </div>
-</div>
-<div class="new-intervention-form">
-    <input type="text" [(ngModel)]="newIntervention.naziv" placeholder="Naziv intervencije" />
-    <input type="number" [(ngModel)]="newIntervention.cena" placeholder="Cena" />
-    <button (click)="addNewIntervention()">Dodaj novu intervenciju</button>
-</div>
+    <div class="new-intervention-form">
+        <input type="text" [(ngModel)]="newIntervention.naziv" placeholder="Naziv intervencije" />
+        <input type="number" [(ngModel)]="newIntervention.cena" placeholder="Cena" />
+        <button (click)="addNewIntervention()">Dodaj novu intervenciju</button>
+    </div>
 </div>

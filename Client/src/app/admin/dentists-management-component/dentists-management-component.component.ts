@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-dentists-management-component',
@@ -24,6 +25,10 @@ export class DentistsManagementComponentComponent {
   selectedDateEnd: { [dentistId: string]: string } = {};
   activeDentistId: string | null = null;
   activeDentist: StomatologDTO | null = null;
+  stomatoloziPrvaSmena: any[] = [];
+  stomatoloziDrugaSmena: any[] = [];
+  showPrvaSmena: boolean = true;
+  showDrugaSmena: boolean = true;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -35,14 +40,22 @@ export class DentistsManagementComponentComponent {
     const apiUrl = 'http://localhost:5001/Stomatolog/getDTOs';
     this.http.get<StomatologDTO[]>(apiUrl).subscribe(
       (data) => {
-        this.stomatolozi = data.filter(
-          (stomatolog) => stomatolog.email !== 'admin@gmail.com'
-        );
+        this.stomatolozi = data;
+        this.stomatoloziPrvaSmena = this.stomatolozi.filter(s => s.prvaSmena);
+        this.stomatoloziDrugaSmena = this.stomatolozi.filter(s => !s.prvaSmena);
       },
       (error) => {
         console.error('Greška prilikom učitavanja stomatologa:', error);
       }
     );
+  }
+
+  toggleShift(shift: string): void {
+    if (shift === 'prvaSmena') {
+      this.showPrvaSmena = !this.showPrvaSmena;
+    } else if (shift === 'drugaSmena') {
+      this.showDrugaSmena = !this.showDrugaSmena;
+    }
   }
 
   fetchAllDaysOff(dentistId: string): void {
@@ -67,9 +80,9 @@ export class DentistsManagementComponentComponent {
         },
         error: (error) => {
           console.error('Greška prilikom preuzimanja neradnih dana:', error);
-          alert(
+          Swal.fire('',
             error.error?.message ||
-              'Došlo je do greške prilikom preuzimanja neradnih dana.'
+              'Došlo je do greške prilikom preuzimanja neradnih dana.','error'
           );
         },
       });
@@ -107,7 +120,7 @@ export class DentistsManagementComponentComponent {
     const selectedStart = this.selectedDateStart[dentistId];
     const selectedEnd = this.selectedDateEnd[dentistId];
     if (!selectedStart || !selectedEnd) {
-      alert('Molimo vas unesite pocetni i krajnji datum.');
+      Swal.fire('','Molimo vas unesite pocetni i krajnji datum.','warning');
       return;
     }
 
@@ -122,14 +135,13 @@ export class DentistsManagementComponentComponent {
       )
       .subscribe({
         next: (response: any) => {
-          alert(`${response.message}`);
+          Swal.fire('',`${response.message}`,'success');
           this.selectedDateStart[dentistId] = '';
           this.selectedDateEnd[dentistId] = '';
           this.fetchAllDaysOff(dentistId);
         },
         error: (err) => {
-          console.error('Greška prilikom dodavanja neradnog dana:', err.error);
-          alert(err.error?.message || 'Došlo je do greške prilikom dodavanja.');
+          Swal.fire('',`Greška prilikom dodavanja neradnog dana:${err.error}`,'error');
         },
       });
   }
@@ -155,36 +167,54 @@ export class DentistsManagementComponentComponent {
 
   deleteDentist(stomatologId: string) {
     if (!this.token) {
-      alert('Token nije pronađen!');
-      return;
-    }
-    const confirmation = window.confirm(
-      'Da li ste sigurni da želite da obrišete ovog stomatologa?'
-    );
-
-    if (!confirmation) {
-      return;
-    }
-
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${this.token}`,
-    });
-
-    this.http
-      .delete(`http://localhost:5001/Stomatolog/${stomatologId}`, { headers })
-      .subscribe({
-        next: () => {
-          this.stomatolozi = this.stomatolozi.filter(
-            (stomatolog) => stomatolog.id !== stomatologId
-          );
-          alert('Stomatolog je uspesno obrisan.');
-        },
-        error: (error) => {
-          console.error('Greska pri brisanju stomatologa', error);
-          alert('Došlo je do greške pri brisanju stomatologa.');
-        },
+      Swal.fire({
+        icon: 'warning',
+        title: 'Token nije pronađen!',
       });
+      return;
+    }
+
+    Swal.fire({
+      title: 'Da li ste sigurni?',
+      text: 'Da li ste sigurni da želite da obrišete ovog stomatologa?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Obriši',
+      cancelButtonText: 'Odustani',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const headers = new HttpHeaders({
+          Authorization: `Bearer ${this.token}`,
+        });
+
+        this.http
+          .delete(`http://localhost:5001/Stomatolog/${stomatologId}`, { headers })
+          .subscribe({
+            next: () => {
+              this.stomatolozi = this.stomatolozi.filter(
+                (stomatolog) => stomatolog.id !== stomatologId
+              );
+              Swal.fire({
+                icon: 'success',
+                title: 'Uspeh!',
+                text: 'Stomatolog je uspešno obrisan.',
+              });
+            },
+            error: (error) => {
+              console.error('Greška pri brisanju stomatologa', error);
+              Swal.fire({
+                icon: 'error',
+                title: 'Greška!',
+                text: 'Došlo je do greške pri brisanju stomatologa.',
+              });
+            },
+          });
+      }
+    });
   }
+
 
   changeShift(stomatologId: string) {
     const headers = new HttpHeaders({
@@ -198,11 +228,11 @@ export class DentistsManagementComponentComponent {
       )
       .subscribe({
         next: () => {
-          alert('Promenjena smena stomatologa');
+          Swal.fire('','Promenjena smena stomatologa','success');
           this.loadStomatolozi();
         },
         error: (error) => {
-          alert('Greska prilikom menjanja smene');
+          Swal.fire('','Greska prilikom menjanja smene','error');
         },
       });
   }

@@ -21,6 +21,7 @@ export class DentistAppointmentComponent {
   @Input() appointmentIds: string[] = [];
   @Input() dentistId!: string;
   @Output() appointmentsUpdated = new EventEmitter<string[]>();
+  @Output() appointmentCharged = new EventEmitter<void>();
   dentistPhoneNumber?: string;
   dentistName?: string;
   appointmentList: PregledDTO[] = [];
@@ -397,10 +398,10 @@ export class DentistAppointmentComponent {
       .subscribe({
         next: () => {
           Swal.fire('', 'Pregled je uspešno naplaćen.', 'success');
-          ////console.log(intervencije, ukupnaCena);
           this.fetchPatientHistory();
           this.showCharge = false;
           this.selectedPregled = null;
+          this.appointmentCharged.emit();
         },
         error: (err) => {
           console.error('Greška pri naplati pregleda:', err);

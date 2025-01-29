@@ -13,5 +13,7 @@ namespace StomatoloskaOrdinacija.Models
         public string Naziv { get; set; }
         [BsonElement("Cena")]
         public int Cena { get; set; }
+        [BsonElement("Kolicina")]
+        public int Kolicina { get; set; }
     }
 }

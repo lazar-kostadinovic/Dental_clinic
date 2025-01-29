@@ -125,7 +125,7 @@ public class PregledController(IPregledService pregledService, IStomatologServic
 
         var appointments = pregledService.GetAppointmentsInDateRange(datum.Date, datum.Date.AddDays(1));
 
-    
+
         var appointmentCounts = appointments
             .GroupBy(appointment => appointment.Datum.ToUniversalTime().ToString("HH:mm"))
             .ToDictionary(group => group.Key, group => group.Count());
@@ -361,6 +361,15 @@ public class PregledController(IPregledService pregledService, IStomatologServic
         patient.Dugovanje += request.UkupnaCena;
         pacijentService.Update(patientId, patient);
 
+        if (pregled.IdStomatologa != null)
+        {
+            var stomatolog = stomatologService.Get(pregled.IdStomatologa);
+            if (stomatolog != null)
+            {
+                stomatolog.BrojPregleda += 1;
+                stomatologService.Update((ObjectId)pregled.IdStomatologa, stomatolog);
+            }
+        }
         pregledService.Update(id, pregled);
 
         return NoContent();

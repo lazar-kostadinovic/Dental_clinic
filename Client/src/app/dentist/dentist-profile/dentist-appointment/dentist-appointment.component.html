@@ -128,11 +128,8 @@
             <p><strong>Ukupna cena:</strong> {{ pregled.ukupnaCena }} din</p>
           </div>
           <div class="buttons">
-            <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">
-              Naplati pregled
-            </button>
-            <button *ngIf="!pregled.naplacen" (click)="deleteAppointment(pregled.id,pregled.idPacijenta)">Pregled
-              neodradjen</button>
+            <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)"> Naplati pregled </button>
+            <button *ngIf="!pregled.naplacen" (click)="deleteAppointment(pregled.id,pregled.idPacijenta)">Pregled neodradjen</button>
           </div>
         </div>
       </ng-container>

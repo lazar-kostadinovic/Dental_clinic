@@ -3,6 +3,7 @@ import { IntervencijaDTO } from '../../models/intervencijaDTO';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-interventions-management-component',
@@ -56,18 +57,18 @@ export class InterventionsManagementComponentComponent implements OnInit {
       .subscribe({
         next: () => {
           this.fetchAllInterventions();
-          alert(`Cena uspešno ažurirana!`);
+          Swal.fire('',`Cena uspešno ažurirana!`,'success');
         },
         error: (err) => {
           console.error(`Greška pri ažuriranju cene:`, err);
-          alert(`Došlo je do greške pri ažuriranju cene.`);
+          Swal.fire('',`Došlo je do greške pri ažuriranju cene.`,'error');
         },
       });
   }
 
   addNewIntervention() {
     if (!this.newIntervention.naziv || this.newIntervention.cena === null) {
-      alert('Molimo unesite naziv i cenu za novu intervenciju.');
+      Swal.fire('','Molimo unesite naziv i cenu za novu intervenciju.','warning');
       return;
     }
 
@@ -86,37 +87,52 @@ export class InterventionsManagementComponentComponent implements OnInit {
       .subscribe({
         next: () => {
           this.fetchAllInterventions();
-          alert('Nova intervencija je uspešno dodata!');
+          Swal.fire('','Nova intervencija je uspešno dodata!','success');
           this.newIntervention = { naziv: '', cena: null };
         },
         error: (err) => {
           console.error('Greška pri dodavanju nove intervencije:', err);
-          alert('Došlo je do greške pri dodavanju nove intervencije.');
+          Swal.fire('','Došlo je do greške pri dodavanju nove intervencije.','error');
         },
       });
   }
 
-  deleteIntervention(id:string){
+  deleteIntervention(id: string) {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
-    const confirmation = window.confirm( 'Da li ste sigurni da želite da obrišete ovu intervenciju?')
-   
-    if (!confirmation) {
-      return;
-    }
-    this.http.delete(`http://localhost:5001/Intervencija/${id}`, { headers })
-    .subscribe({
-      next: () => {
-        this.interventionsList = this.interventionsList.filter((intervencija) => intervencija.id !== id);
-        alert('Intervencija je uspesno obrisana.');
-      },
-      error: (error) => {
-        console.error('Greska pri brisanju intervencije', error);
-        alert('Došlo je do greške pri brisanju intervencije.');
-      },
+  
+    Swal.fire({
+      title: 'Da li ste sigurni?',
+      text: 'Da li želite da obrišete ovu intervenciju?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Obriši',
+      cancelButtonText: 'Odustani',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.http.delete(`http://localhost:5001/Intervencija/${id}`, { headers })
+          .subscribe({
+            next: () => {
+              this.interventionsList = this.interventionsList.filter(
+                (intervencija) => intervencija.id !== id
+              );
+              Swal.fire('', 'Intervencija je uspešno obrisana.', 'success');
+            },
+            error: (error) => {
+              console.error('Greška pri brisanju intervencije:', error);
+              Swal.fire(
+                '',
+                'Došlo je do greške pri brisanju intervencije.',
+                'error'
+              );
+            },
+          });
+      }
     });
-
   }
+  
 }
