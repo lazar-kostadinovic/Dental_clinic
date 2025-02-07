@@ -12,6 +12,6 @@ export interface StomatologDTO {
   slobodnidani: Date[];
   brojPregleda: Date[];
   ukupanBrojPregleda: Date[];
-  predstojeciPregledi: string[];
+  pregledi: string[];
   komentariStomatologa: string[];
 }

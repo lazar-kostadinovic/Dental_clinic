@@ -2,7 +2,6 @@ using StomatoloskaOrdinacija.Models;
 using StomatoloskaOrdinacija.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using StomatoloskaOrdinacija.DTOs;
 
 namespace StomatoloskaOrdinacija.Controllers;
@@ -22,7 +21,7 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Pacijent> Get(ObjectId id)
+    public ActionResult<Pacijent> Get(int id)
     {
         var pacijent = pacijentService.Get(id);
 
@@ -37,9 +36,9 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
     public ActionResult<PacijentDTO> Get(string id)
     {
 
-        if (!ObjectId.TryParse(id, out var objectId))
+        if (!int.TryParse(id, out var objectId))
         {
-            return BadRequest("Invalid ObjectId format.");
+            return BadRequest("Invalid int format.");
         }
 
         var pacijent = pacijentService.Get(objectId);
@@ -64,7 +63,8 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
             BrojNedolazaka = pacijent.BrojNedolazaka,
             Dugovanje = pacijent.Dugovanje,
             Godine = pacijent.Godine,
-            IstorijaPregleda = pacijent.IstorijaPregleda.Select(id => id.ToString()).ToList()
+            // Pregledi = pacijent.Pregledi.Select(id => id.ToString()).ToList()
+            Pregledi = pacijentService.GetPreglediIdsForPacijent(pacijent.Id)
         };
         return pacijentDTO;
     }
@@ -78,6 +78,7 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
             Name = $"{p.Ime} {p.Prezime}",
             Age = p.Godine,
             Email = p.Email,
+            Slika = p.Slika,
             phoneNumber = p.BrojTelefona,
             totalSpent = p.UkupnoPotroseno,
             debt = p.Dugovanje,
@@ -108,7 +109,8 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
             Role = pacijent.Role,
             UkupnoPotroseno = pacijent.UkupnoPotroseno,
             Dugovanje = pacijent.Dugovanje,
-            IstorijaPregleda = pacijent.IstorijaPregleda.Select(id => id.ToString()).ToList()
+            // Pregledi = pacijent.Pregledi.Select(id => id.ToString()).ToList()
+            Pregledi = pacijentService.GetPreglediIdsForPacijent(pacijent.Id),
         };
         return Ok(pacijentDTO);
     }
@@ -137,9 +139,9 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
             return BadRequest("Naziv fajla slike ne može biti prazan.");
         }
 
-        if (!ObjectId.TryParse(id, out var objectId))
+        if (!int.TryParse(id, out var objectId))
         {
-            return BadRequest("Invalid ObjectId format.");
+            return BadRequest("Invalid int format.");
         }
 
         var pacijent = pacijentService.Get(objectId);
@@ -160,14 +162,14 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
     }
 
     [HttpPost("uploadSlika/{id}")]
-    public IActionResult UploadSlika(string id, IFormFile file)
+    public IActionResult UploadSlika(int id, IFormFile file)
     {
         if (file == null || file.Length == 0)
         {
             return BadRequest("File is empty.");
         }
 
-        var patient = pacijentService.Get(new ObjectId(id));
+        var patient = pacijentService.Get(id);
         if (patient == null)
         {
             return NotFound($"Pacijent with Id = {id} not found.");
@@ -188,7 +190,7 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
     }
 
     [HttpPut("changeEmail/{id}/{newEmail}")]
-    public ActionResult ChangeEmail(ObjectId id, string newEmail)
+    public ActionResult ChangeEmail(int id, string newEmail)
     {
         var pacijent = pacijentService.Get(id);
         if (pacijent == null)
@@ -204,7 +206,7 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
     }
 
     [HttpPut("changeAddress/{id}/{adresa}")]
-    public ActionResult ChangeAddress(ObjectId id, string adresa)
+    public ActionResult ChangeAddress(int id, string adresa)
     {
         var pacijent = pacijentService.Get(id);
         if (pacijent == null)
@@ -221,7 +223,7 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
 
     [Authorize]
     [HttpPut("incrementmissedAppointments/{id}")]
-    public ActionResult IncrementmissedAppointments(ObjectId id)
+    public ActionResult IncrementmissedAppointments(int id)
     {
         var pacijent = pacijentService.Get(id);
         if (pacijent == null)
@@ -237,7 +239,7 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
     }
 
     [HttpPut("changeNumber/{id}/{brojTelefona}")]
-    public ActionResult ChangeNumber(ObjectId id, string brojTelefona)
+    public ActionResult ChangeNumber(int id, string brojTelefona)
     {
         var pacijent = pacijentService.Get(id);
         if (pacijent == null)
@@ -261,9 +263,9 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
             return BadRequest("Iznos mora biti veći od nule.");
         }
 
-        if (!ObjectId.TryParse(id, out var objectId))
+        if (!int.TryParse(id, out var objectId))
         {
-            return BadRequest("Invalid ObjectId format.");
+            return BadRequest("Invalid int format.");
         }
 
         var pacijent = pacijentService.Get(objectId);
@@ -285,7 +287,7 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
     }
 
     [HttpDelete("{id}")]
-    public ActionResult Delete(ObjectId id)
+    public ActionResult Delete(int id)
     {
         var pacijent = pacijentService.Get(id);
 
@@ -299,7 +301,7 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
         {
             var stomatologId = pregled.IdStomatologa;
 
-            if (!stomatologService.RemoveAppointment(stomatologId, pregled.Id))
+            if (!stomatologService.RemoveAppointment((int)stomatologId, pregled.Id))
             {
                 return NotFound(new { message = $"Failed to remove appointment with Id = {pregled.Id} from stomatolog with Id = {stomatologId}" });
             }
@@ -321,7 +323,7 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegistrationModel resource)
     {
-       try
+        try
         {
             var stomatolog = await stomatologService.GetStomatologByEmailAsync(resource.Email);
             var pacijent = await pacijentService.GetPacijentByEmailAsync(resource.Email);
@@ -332,7 +334,7 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
             }
             else if (pacijent != null)
             {
-                   return BadRequest($"Pacijent sa ovom e-mail adresom vec postoji.");
+                return BadRequest($"Pacijent sa ovom e-mail adresom vec postoji.");
             }
 
             var response = await pacijentService.Register(resource);

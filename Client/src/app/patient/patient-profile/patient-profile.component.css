@@ -1,60 +1,31 @@
+
 .home-container {
+  font-family: Arial, sans-serif;
+  padding: 0px;
+  margin: 0 auto;
   display: flex;
-  flex-direction: row;
-  width: 100%;
-  flex-grow: 1;
   transform: scale(0.85);
   transform-origin: top left;
-  height: 100%;
+  width: 150%;
 }
 
 .profile-container {
-  background-color: #f9f9f9;
-  width: 350px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  text-align: left;
-  margin: 5px;
-  flex-shrink: 0;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 10px;
   height: 100%;
 }
 
-.profile-container h2 {
-  text-align: center;
-}
-
-.profile-container p {
-  font-size: 16px;
-  line-height: 1.5;
-  margin-bottom: 10px;
-}
-
-.profile-container h3 {
-  margin-top: 20px;
-}
-
-.loading {
-  text-align: center;
-  font-size: 18px;
-  padding: 20px;
-}
-
-.patient-profile {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.error {
-  background-color: red;
-}
-
 .profile-image {
-  margin-bottom: 15px;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.patient-image {
+.profile-image img {
+  cursor: pointer;
+  transition: border-color 0.3s ease;
   width: 150px;
   height: 150px;
   object-fit: cover;
@@ -62,108 +33,182 @@
   border: 2px solid #ccc;
 }
 
-button {
-  padding: 10px 15px;
-  margin-top: 10px;
-  background-color: #007bff;
+.profile-image img:hover {
+  border-color: #2980b9;
+}
+
+.profile-image button {
+  background-color: #3498db;
   color: white;
   border: none;
-  border-radius: 4px;
+  padding: 10px 15px;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 14px;
-  text-align: center;
-  width: 230px;
-  display: inline-block
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #0056b3;
+.profile-image button:hover {
+  background-color: #2980b9;
 }
 
-button:active {
-  transform: scale(0.98);
+.profile-container p {
+  margin: 10px 0;
+  color: #34495e;
 }
 
-button.error {
-  background-color: #dc3545;
-}
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.edit-icon {
-  cursor: pointer;
-  margin-left: 10px;
-  color: #007bff;
-}
-
-.edit-icon:hover {
-  color: #0056b3;
+.profile-container strong {
+  color: #2c3e50;
 }
 
 .custom-edit-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border: none;
-  border-radius: 50%;
-  background-color: #f0f0f0;
-  color: #555;
-  font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
-  margin-left: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-left: 10px;
+  color: #3498db;
+  transition: color 0.3s ease;
 }
 
 .custom-edit-button:hover {
-  background-color: #e0e0e0;
-  color: #000;
+  color: #2980b9;
 }
 
-.custom-edit-button:active {
-  background-color: #ccc;
-}
-
-.custom-edit-button i {
-  font-style: normal;
-  font-size: 18px;
-}
-
-
-.payment-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+input[type="text"],
+input[type="number"] {
   width: 100%;
-  max-width: 400px;
-  margin: 15px;
-  /* margin-top: 10px; */
-  height: 250px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  height: 30px;
+}
+
+button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 5px 0;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+button.error {
+  background-color: #e74c3c;
+}
+
+button.error:hover {
+  background-color: #c0392b;
+}
+/* 
+.payment-form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  min-width: 400px;
+  height: fit-content;
 }
 
 .payment-form label {
-  font-weight: bold;
-  margin-bottom: 5px;
+  display: block;
+  margin-bottom: 10px;
+  color: #2c3e50;
 }
 
-.payment-form input[type="number"] {
+.payment-form input {
   width: 100%;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.payment-form button {
+  background-color: #27ae60;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.payment-form button:hover {
+  background-color: #219653;
+}
+
+.payment-form button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+} */
+.payment-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  height: 150%;
+  transform: translate(-250px,-250px);
+}
+
+.payment-modal {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.payment-form input,
+.payment-form button {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.payment-form button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
   padding: 10px;
+  cursor: pointer;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.payment-form button:disabled {
+  background-color: #ccc;
+}
+
+.payment-form button:last-child {
+  background-color: #f44336;
+}
+
+
+p strong {
+  color: #2c3e50;
+}
+
+p strong.error {
+  color: #e74c3c;
+}
+
+app-patient-appointments {
+  margin-top: 20px;
+}
+
+app-schedule-appointment {
+  margin-top: 20px;
+}
+
+.edit{
+  display: flex;
 }
 
 #card-element {
@@ -179,16 +224,3 @@ button:disabled {
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
 }
 
-.StripeElement--invalid {
-  border-color: #f44336;
-  background-color: #fff1f1;
-}
-
-.StripeElement--valid {
-  border-color: #4caf50;
-  background-color: #f1fff1;
-}
-
-input {
-  margin: 6px;
-}

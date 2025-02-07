@@ -1,54 +1,44 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace StomatoloskaOrdinacija.Models
 {
-    [BsonIgnoreExtraElements]
 
     public class Stomatolog
     {
-        [BsonId]
-        public ObjectId Id { get; set; }
-        [BsonElement("Slika")]
+        [Key]
+        public int Id { get; set; }
         public string Slika { get; set; }
-        [BsonElement("Ime")]
         public string Ime { get; set; }
-        [BsonElement("Prezime")]
         public string Prezime { get; set; }
-        [BsonElement("Adresa")]
         public string Adresa { get; set; }
-        [BsonElement("Email")]
         public string Email { get; set; }
         public string Password { get; set; }
         public string PasswordSalt { get; set; }
-
-        [BsonElement("BrojTelefona")]
         public string BrojTelefona { get; set; }
-        [BsonElement("Role")]
         public UserRole Role { get; set; }
-        [BsonElement("Specijalizacija")]
         public Specijalizacija Specijalizacija { get; set; }
-        [BsonElement("PrvaSmena")]
         public bool PrvaSmena { get; set; } = true;
         public int BrojPregleda { get; set; }
         public int UkupanBrojPregleda { get; set; }
-
-        [BsonElement("SlobodniDani")]
         public List<DateTime> SlobodniDani { get; set; } = new List<DateTime>();
-        [BsonElement("PredstojeciPregledi")]
-        public List<ObjectId> PredstojeciPregledi { get; set; } = new List<ObjectId>();
-        public List<ObjectId> KomentariStomatologa { get; set; } = new List<ObjectId>();
-
+        [JsonIgnore]
+        public List<Pregled> Pregledi { get; set; } = new List<Pregled>();
+        [JsonIgnore]
+        public List<OcenaStomatologa> KomentariStomatologa { get; set; } = new List<OcenaStomatologa>();
     }
-}
-public enum Specijalizacija
-{
-    OralniHirurg,
-    Ortodontija,
-    Parodontologija,
-    Endodoncija,
-    PedijatrijskaStomatologija,
-    Protetika,
-    EstetskaStomatologija,
-    OpstaStomatologija,
+
+
+    public enum Specijalizacija
+    {
+        OralniHirurg,
+        Ortodontija,
+        Parodontologija,
+        Endodoncija,
+        PedijatrijskaStomatologija,
+        Protetika,
+        EstetskaStomatologija,
+        OpstaStomatologija,
+    }
 }

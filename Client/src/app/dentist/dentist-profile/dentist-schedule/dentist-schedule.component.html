@@ -1,5 +1,5 @@
 <div class="appointment-form">
-  <h3>Zakazivanje pregleda</h3>
+  <h3>📅 Zakazivanje pregleda</h3>
   <form (ngSubmit)="submitAppointment()">
     <label for="patient">Pacijent:</label>
 
@@ -7,17 +7,18 @@
       (input)="onPatientSelected()" placeholder="Izaberite ili unesite ime pacijenta" required />
     <datalist id="pacijenti">
       <option *ngFor="let patient of patients" [value]="patient.name + ' - ' + patient.email">
-        {{ patient.name }} - {{ patient.email }} 
+        {{ patient.name }} - {{ patient.email }}
       </option>
-  
+
     </datalist>
 
-    <label for="datum">Datum:</label>
-    <input id="datum" type="date" [(ngModel)]="newAppointment.datum" name="datum" required 
+    <label for="datum">📆 Datum:</label>
+    <input id="datum" type="date" [(ngModel)]="newAppointment.datum" name="datum" required
       [ngClass]="{ 'disabled-day': isDayDisabled(newAppointment.datum) }"
       (change)="loadAvailableTimeSlots(dentistId, newAppointment.datum)" />
 
-    <label for="vreme">Vreme:</label>
+
+      <label for="vreme">⏰ Vreme:</label>
 
     <select id="vreme" [(ngModel)]="newAppointment.vreme" name="vreme" required>
       <option *ngFor="let timeSlot of availableTimeSlots" [value]="timeSlot">
@@ -25,14 +26,16 @@
       </option>
     </select>
 
-    <label for="opis">Opis:</label>
+    <label for="opis">📝 Opis problema:</label>
     <textarea id="opis" [(ngModel)]="newAppointment.opis" name="opis" required></textarea>
     <div *ngIf="selectedPatientDebt > 0" class="debt">
       Ovaj pacijent ima dugovanje od {{ selectedPatientDebt }}.
     </div>
 
-    <button type="submit" [disabled]="isDayDisabled(newAppointment.datum)">Zakazi</button>
-    <button type="button" (click)="resetForm()">Odustani</button>
+    <div class="form-buttons">
+      <button type="submit" [disabled]="isDayDisabled(newAppointment.datum)">✅ Zakaži</button>
+      <button type="button" (click)="resetForm()">❌ Odustani</button>
+    </div>
   </form>
   <!-- <div *ngIf="daysOff.length > 0" class="day-off-list">
     <h3>Neradni dani:</h3>
@@ -41,3 +44,5 @@
     </ul>
   </div> -->
 </div>
+
+

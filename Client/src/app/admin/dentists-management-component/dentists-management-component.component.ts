@@ -50,14 +50,15 @@ export class DentistsManagementComponentComponent {
     );
   }
 
-  toggleShift(shift: string): void {
+
+  toggleShift(shift: string) {
     if (shift === 'prvaSmena') {
       this.showPrvaSmena = !this.showPrvaSmena;
     } else if (shift === 'drugaSmena') {
       this.showDrugaSmena = !this.showDrugaSmena;
     }
   }
-
+  
   fetchAllDaysOff(dentistId: string): void {
     this.setActiveDentist(dentistId);
     const token = localStorage.getItem('token');
@@ -195,7 +196,9 @@ export class DentistsManagementComponentComponent {
             next: () => {
               this.stomatolozi = this.stomatolozi.filter(
                 (stomatolog) => stomatolog.id !== stomatologId
+        
               );
+              this.loadStomatolozi();
               Swal.fire({
                 icon: 'success',
                 title: 'Uspeh!',

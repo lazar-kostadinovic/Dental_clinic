@@ -1,3 +1,6 @@
+<div class="home-container">
+
+
 <div class="profile-container">
   <h2>Profil stomatologa</h2>
   <div class="profile-image" *ngIf="dentist">
@@ -15,21 +18,21 @@
     <p><strong>Ime:</strong> {{ dentist.ime }}</p>
     <p><strong>Prezime:</strong> {{ dentist.prezime }}</p> <!-- ✔️ ✅ ☑️ ✓ -->
     <p><strong>Email:</strong> {{ dentist.email }}<i class="custom-edit-button" (click)="toggleEditEmail()">✎</i></p>
-    <div *ngIf="isEditing.email">
+    <div class="edit" *ngIf="isEditing.email">
       <input type="text" [(ngModel)]="updatedValues.email" placeholder="Unesite novi email" />
       <i class="custom-edit-button" (click)="saveChanges('email')">✔️</i>
     </div>
 
     <p><strong>Broj Telefona:</strong> {{ dentist.brojTelefona }}<i class="custom-edit-button"
         (click)="toggleEditNumber()">✎</i></p>
-    <div *ngIf="isEditing.brojTelefona">
+    <div class="edit" *ngIf="isEditing.brojTelefona">
       <input type="text" [(ngModel)]="updatedValues.brojTelefona" placeholder="Unesite novi broj telefona" />
       <i class="custom-edit-button" (click)="saveChanges('brojTelefona')">✔️</i>
     </div>
 
     <p><strong>Adresa:</strong> {{ dentist.adresa }}<i class="custom-edit-button" (click)="toggleEditAddress()">✎</i>
     </p>
-    <div *ngIf="isEditing.adresa">
+    <div class="edit" *ngIf="isEditing.adresa">
       <input type="text" [(ngModel)]="updatedValues.adresa" placeholder="Unesite novu adresu" />
       <i class="custom-edit-button" (click)="saveChanges('adresa')">✔️</i>
     </div>
@@ -59,7 +62,7 @@
   <!-- <button (click)="toggleDayOffForm()">Odustani</button> -->
   <!-- <button (click)="fetchAllDaysOff()">Prikaži sve neradne dane</button> -->
   <div *ngIf="daysOff.length > 0" class="day-off-list">
-    <h3>Neradni dani:</h3>
+    <h3>Iskorišćeni neradni dani u tekućoj godini:</h3>
     <ul>
       <li *ngFor="let day of daysOff">{{ day }}</li>
     </ul>
@@ -82,6 +85,7 @@
 </div>
 
 <div *ngIf="showAppointments" class="showAppointments">
-  <app-dentist-appointment *ngIf="dentist" [appointmentIds]="dentist.predstojeciPregledi" [dentistId]="dentist.id"
+  <app-dentist-appointment *ngIf="dentist" [appointmentIds]="dentist.pregledi" [dentistId]="dentist.id"
     (appointmentsUpdated)="onAppointmentsUpdated($event)" (appointmentCharged)="onAppointmentCharged()"></app-dentist-appointment>
+</div>
 </div>

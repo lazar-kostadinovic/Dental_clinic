@@ -14,10 +14,10 @@ namespace StomatoloskaOrdinacija.DTOs
         public string BrojTelefona { get; set; }
         public string Email { get; set; }
         public decimal UkupnoPotroseno { get; set; }
-        public int BrojNedolazaka { get; set; } 
+        public int BrojNedolazaka { get; set; }
         public decimal Dugovanje { get; set; }
         public UserRole Role { get; set; }
-
-        public List<string> IstorijaPregleda { get; set; }
+        public List<int> Pregledi { get; set; } = new List<int>();
+        public List<Pregled> PreglediObj { get; set; } = new List<Pregled>();
     }
 }

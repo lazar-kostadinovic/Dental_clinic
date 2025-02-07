@@ -38,13 +38,22 @@
             <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)">
               Naplati pregled
             </button>
-            <button *ngIf="!pregled.naplacen" (click)="deleteAppointment(pregled.id,pregled.idPacijenta)">Pregled
-              neodradjen</button>
+            <button *ngIf="!pregled.naplacen" (click)="deleteAppointment(pregled.id,pregled.idPacijenta)">Pregled neobavljen</button>
+          </div>
+          <div *ngIf="pregled.naplacen">
+            <p><strong>Intervencije:</strong></p>
+            <ul>
+              <li *ngFor="let intervencija of pregled.intervencije">
+                {{ intervencija.naziv }} - {{ intervencija.cena }} din x {{ intervencija.kolicina }} 
+              </li>
+            </ul>
+            <p><strong>Ukupna cena:</strong> {{ calculateTotalForAppointment(pregled) }} din</p>
           </div>
         </div>
       </ng-container>
       <h2 *ngIf="filteredAppointmentListForToday.length==0">Nemate zakazanih pregleda za danas.</h2>
     </div>
+    <h3>Pretrazi pacijenta:</h3>
     <input id="unosPacijenta" list="pacijenti" [(ngModel)]="selectedPatientName" (input)="onPatientSelected()"
       placeholder="Izaberite ili unesite ime pacijenta" />
     <datalist id="pacijenti">
@@ -63,11 +72,19 @@
         </div>
         <br>
         <div class="info-div">
-          <p><strong>Ukupno potroseno:</strong> {{ selectedPatientDetails.ukupnoPotroseno|currency:'RSD '}}</p>
-          <p><strong>Dugovanje:</strong> {{ selectedPatientDetails.dugovanje|currency:'RSD '}}</p>
-          <p><strong>Propušteni pregledi:</strong> {{ selectedPatientDetails.brojNedolazaka}}</p>
+          <p><strong>Ukupno potrošeno:</strong> {{ selectedPatientDetails.ukupnoPotroseno | currency:'RSD '}}</p>
+          <p><strong>Dugovanje:</strong> {{ selectedPatientDetails.dugovanje | currency:'RSD '}}</p>
+          <p><strong>Propušteni pregledi:</strong> {{ selectedPatientDetails.brojNedolazaka }}</p>
+        </div>
+      
+        <div class="info-div">
+          <p><strong>Smanji dugovanje(platio kešom):</strong></p>
+          <input type="number" [(ngModel)]="iznosZaSmanjenje" min="0">
+          <button (click)="reducePatientDebt(selectedPatientDetails.id,iznosZaSmanjenje)">Smanji</button>
         </div>
       </div>
+      
+     
     </div>
     <!--     
     <div *ngIf="selectedPatientDetails">
@@ -122,14 +139,14 @@
             <p><strong>Intervencije:</strong></p>
             <ul>
               <li *ngFor="let intervencija of pregled.intervencije">
-                {{ intervencija.naziv }} - {{ intervencija.cena }} din x {{ intervencija.kolicina }}
+                {{ intervencija.naziv }} - {{ intervencija.cena }} din x {{ intervencija.kolicina }} 
               </li>
             </ul>
-            <p><strong>Ukupna cena:</strong> {{ pregled.ukupnaCena }} din</p>
+            <p><strong>Ukupna cena:</strong> {{ calculateTotalForAppointment(pregled) }} din</p>
           </div>
           <div class="buttons">
             <button *ngIf="!pregled.naplacen" (click)="toggleCharge(pregled)"> Naplati pregled </button>
-            <button *ngIf="!pregled.naplacen" (click)="deleteAppointment(pregled.id,pregled.idPacijenta)">Pregled neodradjen</button>
+            <button *ngIf="!pregled.naplacen" (click)="deleteAppointment(pregled.id,pregled.idPacijenta)">Pregled neobavljen</button>
           </div>
         </div>
       </ng-container>

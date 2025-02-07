@@ -1,25 +1,41 @@
 <div class="home-container">
+  <div class="instructions">
+    <h2>🔹 Kako zakazati pregled? 🔹</h2>
+    <p>
+      Rezervisanje termina je sada brzo i jednostavno! 🚀
+      Samo izaberite datum, vreme i opišite svoj problem, a mi ćemo se pobrinuti za sve ostalo.
+    </p>
+    <p>
+      📩 Nakon što podnesete zahtev, vaš termin će se pojaviti u listi nepotvrđenih pregleda.
+      Kada ga stomatolog pregleda i potvrdi, dobićete email obaveštenje o zakazanom terminu. ✅
+    </p>
+    <!-- <p>
+      ⏳ Nemate vremena da birate? Kliknite na dugme ispod i sistem će vam automatski dodeliti prvi slobodan termin!
+    </p> -->
+  </div>
 
   <div class="appointment-form">
-    <h3>Zakazivanje pregleda</h3>
+    <h3>📅 Zakazivanje pregleda</h3>
     <form (ngSubmit)="scheduleAppointment()">
-      <label for="datum">Datum:</label>
+      <label for="datum">📆 Datum:</label>
       <input id="datum" type="date" [(ngModel)]="newAppointment.datum" name="datum" required [min]="today"
-        (change)="loadAvailableTimeSlots( newAppointment.datum)" />
-
-      <label for="vreme">Vreme:</label>
+        (change)="loadAvailableTimeSlots(newAppointment.datum)" />
+  
+      <label for="vreme">⏰ Vreme:</label>
       <select id="vreme" [(ngModel)]="newAppointment.vreme" name="vreme" required>
         <option *ngFor="let timeSlot of availableTimeSlots" [value]="timeSlot">
           {{ timeSlot }}
         </option>
       </select>
-
-      <label for="opis">Opis:</label>
+  
+      <label for="opis">📝 Opis problema:</label>
       <textarea id="opis" [(ngModel)]="newAppointment.opis" name="opis" required></textarea>
-
-      <button type="submit">Zakaži</button>
-      <button type="button" (click)="closeForm()">Otkaži</button> <br>
+  
+      <div class="form-buttons">
+        <button type="submit">✅ Zakaži</button>
+        <button type="button" (click)="closeForm()">❌ Otkaži</button>
+      </div>
     </form>
-    <button (click)="scheduleNextAppointment()">Zakazi prvi slobodan termin</button>
+    <!-- <button class="lastButton" (click)="scheduleNextAppointment()">⚡ Zakaži prvi slobodan termin</button> -->
   </div>
 </div>

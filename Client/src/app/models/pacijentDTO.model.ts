@@ -12,7 +12,7 @@ export interface PacijentDTO {
     ukupnoPotroseno: number;
     brojNedolazaka :number;
     dugovanje: number;
-    istorijaPregleda: string[];
+    pregledi: string[];
   }
   
   

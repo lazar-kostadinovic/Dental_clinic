@@ -1,3 +1,5 @@
+using StomatoloskaOrdinacija.Models;
+
 namespace StomatoloskaOrdinacija.DTOs
 {
     public class PregledDTO
@@ -9,9 +11,10 @@ namespace StomatoloskaOrdinacija.DTOs
         public DateTime Datum { get; set; }
         public bool Naplacen { get; set; }
         public string Opis { get; set; }
-        public StatusPregleda Status { get; set; }
-        public List<Intervencija> Intervencije { get; set; }
         public int UkupnaCena { get; set; }
+        public StatusPregleda Status { get; set; }
+        public List<PregledIntervencijaDTO> Intervencije { get; set; }
+
     }
 }
 

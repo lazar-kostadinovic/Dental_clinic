@@ -2,7 +2,8 @@
   <div class="dentist-view-container">
     <div class="comments-section" *ngIf="selectedStomatologForComments">
       <div class="selected-dentist" *ngIf="selectedStomatolog">
-        <div class="dentist-card">
+        <button (click)="closeReviews()">Vrati se nazad</button>
+        <div class="dentist-card-selected">
           <img [src]="getImageUrl(selectedStomatolog.slika)" alt="Profilna slika" class="dentist-image" />
           <div class="dentist-info">
             <h3>{{ selectedStomatolog.ime }} {{ selectedStomatolog.prezime }}</h3>
@@ -16,9 +17,10 @@
 
 
       <div class="comments" *ngIf="selectedStomatolog">
+        
         <h4>
           Komentari za {{ selectedStomatolog.ime }} {{ selectedStomatolog.prezime }}
-          <span *ngIf="selectedStomatolog.komentariStomatologa.length > 0">
+          <span *ngIf="selectedStomatolog.komentariStomatologa">
             ({{ prosecnaOcena }}/5)
           </span>
         </h4>
@@ -33,6 +35,7 @@
           Prikaži ostale komentare
         </button>
 
+        <section *ngIf="patientId">
         <h5>Dodaj komentar</h5>
         <textarea [(ngModel)]="newComment.komentar" placeholder="Unesite komentar"></textarea>
         <div>
@@ -42,7 +45,7 @@
           </span>
         </div>
         <button (click)="addComment(selectedStomatologForComments)">Dodaj komentar</button>
-        <button (click)="closeReviews()">Zatvori komentare</button>
+      </section>
       </div>
     </div>
 
@@ -51,7 +54,7 @@
       <div>
         <h3 style="text-align: center;">Naši Stomatolozi</h3>
         <div class="filter-container">
-          <label for="specijalizacija">Filter po specijalizaciji:</label>
+          <!-- <label for="specijalizacija">Filter po specijalizaciji:</label> -->
           <select id="specijalizacija" [(ngModel)]="selectedSpecijalizacija" (change)="filterBySpecijalizacija()">
             <option value="">Sve specijalizacije</option>
             <option *ngFor="let spec of specijalizacije; let i = index" [value]="i">
@@ -69,7 +72,7 @@
             <p>Specijalizacija: {{ getSpecijalizacijaLabel(stomatolog.specijalizacija,stomatolog.ime) }}</p>
             <p>Email: {{ stomatolog.email }}</p>
             <p>Telefon: {{ stomatolog.brojTelefona }}</p>
-            <button>Prikaži utiske ostalih korisnika</button>
+            <button *ngIf="patientId">Prikaži utiske ostalih korisnika</button>
           </div>
         </div>
       </div>

@@ -2,7 +2,6 @@ using System.Globalization;
 using StomatoloskaOrdinacija.Models;
 using StomatoloskaOrdinacija.Services;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using StomatoloskaOrdinacija.DTOs;
 using Microsoft.AspNetCore.Authorization;
 
@@ -10,11 +9,12 @@ namespace StomatoloskaOrdinacija.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PregledController(IPregledService pregledService, IStomatologService stomatologService, IPacijentService pacijentService) : ControllerBase
+public class PregledController(IPregledService pregledService, IStomatologService stomatologService, IPacijentService pacijentService, IPregledIntervencijaService pregledIntervencijaService) : ControllerBase
 {
     private readonly IPregledService pregledService = pregledService;
     private readonly IStomatologService stomatologService = stomatologService;
     private readonly IPacijentService pacijentService = pacijentService;
+    private readonly IPregledIntervencijaService pregledIntervencijaService = pregledIntervencijaService;
 
     [HttpGet]
     public ActionResult<List<Pregled>> Get()
@@ -23,7 +23,7 @@ public class PregledController(IPregledService pregledService, IStomatologServic
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Pregled> Get(ObjectId id)
+    public ActionResult<Pregled> Get(int id)
     {
         var pregled = pregledService.Get(id);
 
@@ -39,9 +39,9 @@ public class PregledController(IPregledService pregledService, IStomatologServic
     public ActionResult<PregledDTO> GetPregledDTO(string id)
     {
         pregledService.UpdatePregledStatuses();
-        if (!ObjectId.TryParse(id, out var objectId))
+        if (!int.TryParse(id, out var objectId))
         {
-            return BadRequest("Invalid ObjectId format.");
+            return BadRequest("Invalid int format.");
         }
 
         var pregled = pregledService.Get(objectId);
@@ -61,7 +61,7 @@ public class PregledController(IPregledService pregledService, IStomatologServic
             Datum = pregled.Datum,
             Opis = pregled.Opis,
             Status = pregled.Status,
-            Intervencije = pregled.Intervencije,
+            Intervencije = pregledService.GetIntervencijeZaPregled(pregled.Id),
             UkupnaCena = pregled.UkupnaCena
 
         };
@@ -69,7 +69,7 @@ public class PregledController(IPregledService pregledService, IStomatologServic
     }
 
     // [HttpGet("availableTimeSlots/{idStomatologa}/{datum}")]
-    // public ActionResult<IEnumerable<string>> GetAvailableTimeSlots(ObjectId idStomatologa, DateTime datum)
+    // public ActionResult<IEnumerable<string>> GetAvailableTimeSlots(int idStomatologa, DateTime datum)
     // {
     //     try
     //     {
@@ -95,7 +95,7 @@ public class PregledController(IPregledService pregledService, IStomatologServic
     // }
 
     [HttpGet("availableTimeSlots/{idStomatologa}/{datum}")]
-    public ActionResult<IEnumerable<string>> GetAvailableTimeSlots(ObjectId idStomatologa, DateTime datum)
+    public ActionResult<IEnumerable<string>> GetAvailableTimeSlots(int idStomatologa, DateTime datum)
     {
         try
         {
@@ -138,7 +138,7 @@ public class PregledController(IPregledService pregledService, IStomatologServic
 
 
     [HttpPut("assignDentist/{idPregleda}/{idStomatologa}")]
-    public ActionResult AssignDentist(ObjectId idPregleda, ObjectId idStomatologa)
+    public ActionResult AssignDentist(int idPregleda, int idStomatologa)
     {
         var pregled = pregledService.Get(idPregleda);
 
@@ -159,10 +159,7 @@ public class PregledController(IPregledService pregledService, IStomatologServic
         }
 
         stomatologService.GetAndUpdate(idStomatologa, pregled.Id);
-
-        var stomatolog = stomatologService.Get(idStomatologa);
-        stomatolog.BrojPregleda += 1;
-        stomatologService.Update(idStomatologa, stomatolog);
+    
 
         pregled.IdStomatologa = idStomatologa;
         pregledService.Update(idPregleda, pregled);
@@ -179,7 +176,7 @@ public class PregledController(IPregledService pregledService, IStomatologServic
     }
 
     [HttpPost("schedule/{idPacijenta}/{datum}/{opis}")]
-    public async Task<ActionResult> ScheduleAppointment(ObjectId idPacijenta, DateTime datum, string opis)
+    public async Task<ActionResult> ScheduleAppointment(int idPacijenta, DateTime datum, string opis)
     {
         var emailPacijenta = await pacijentService.GetEmailByIdAsync(idPacijenta);
         var pregled = new Pregled
@@ -205,11 +202,6 @@ public class PregledController(IPregledService pregledService, IStomatologServic
             return NotFound("Patient not found");
         }
 
-        // if (IsAppointmentConflict(pregled))
-        // {
-        //     return BadRequest("Appointment time conflict");
-        // }
-
         pregledService.Create(pregled);
         pacijentService.GetAndUpdate(pregled.IdPacijenta, pregled.Id);
         var response = new
@@ -229,7 +221,7 @@ public class PregledController(IPregledService pregledService, IStomatologServic
     }
 
     [HttpPost("schedule/{idStomatologa}/{idPacijenta}/{datum}/{opis}")]
-    public async Task<ActionResult> ScheduleAppointment(ObjectId idStomatologa, ObjectId idPacijenta, DateTime datum, string opis)
+    public async Task<ActionResult> ScheduleAppointment(int idStomatologa, int idPacijenta, DateTime datum, string opis)
     {
         var emailPacijenta = await pacijentService.GetEmailByIdAsync(idPacijenta);
 
@@ -266,11 +258,6 @@ public class PregledController(IPregledService pregledService, IStomatologServic
             return NotFound("Patient not found");
         }
 
-        // if (IsAppointmentConflict(pregled))
-        // {
-        //     return BadRequest("Appointment time conflict");
-        // }
-
         pregledService.Create(pregled);
         pacijentService.GetAndUpdate(pregled.IdPacijenta, pregled.Id);
         stomatologService.GetAndUpdate(pregled.IdStomatologa, pregled.Id);
@@ -291,7 +278,7 @@ public class PregledController(IPregledService pregledService, IStomatologServic
 
 
     [HttpPut("{id}/{datum}/{opis}")]
-    public ActionResult Put(ObjectId id, DateTime datum, string opis)
+    public ActionResult Put(int id, DateTime datum, string opis)
     {
         var pregled = pregledService.Get(id);
 
@@ -308,7 +295,7 @@ public class PregledController(IPregledService pregledService, IStomatologServic
     }
 
     [HttpPut("{id}/{opis}")]
-    public ActionResult Put(ObjectId id, string opis)
+    public ActionResult Put(int id, string opis)
     {
         var pregled = pregledService.Get(id);
 
@@ -324,7 +311,7 @@ public class PregledController(IPregledService pregledService, IStomatologServic
     }
 
     [HttpPut("updateStatus/{id}/{status}")]
-    public ActionResult UpdateStatus(ObjectId id, int status)
+    public ActionResult UpdateStatus(int id, int status)
     {
         var pregled = pregledService.Get(id);
 
@@ -340,7 +327,7 @@ public class PregledController(IPregledService pregledService, IStomatologServic
     }
 
     [HttpPut("chargeAppointment/{id}/{patientId}")]
-    public ActionResult ChargeAppointment(ObjectId id, ObjectId patientId, [FromBody] ChargeAppointmentRequest request)
+    public ActionResult ChargeAppointment(int id, int patientId, [FromBody] ChargeAppointmentRequest request)
     {
         var pregled = pregledService.Get(id);
         if (pregled == null)
@@ -348,18 +335,29 @@ public class PregledController(IPregledService pregledService, IStomatologServic
             return NotFound($"Pregled with Id = {id} not found");
         }
 
-        pregled.Naplacen = true;
-        pregled.Intervencije = request.Intervencije;
-        pregled.UkupnaCena = request.UkupnaCena;
-
         var patient = pacijentService.Get(patientId);
         if (patient == null)
         {
             return NotFound($"Patient with Id = {patientId} not found");
         }
 
+        pregled.Naplacen = true;
+        pregled.UkupnaCena = request.UkupnaCena;
+
         patient.Dugovanje += request.UkupnaCena;
         pacijentService.Update(patientId, patient);
+
+        var pregledIntervencije = request.Intervencije.Select(i => new PregledIntervencija
+        {
+            PregledId = id,
+            IntervencijaId = i.IntervencijaId,
+            Kolicina = i.Kolicina
+        }).ToList();
+
+        foreach (var pregledIntervencija in pregledIntervencije)
+        {
+            pregledIntervencijaService.Create(pregledIntervencija);
+        }
 
         if (pregled.IdStomatologa != null)
         {
@@ -367,9 +365,10 @@ public class PregledController(IPregledService pregledService, IStomatologServic
             if (stomatolog != null)
             {
                 stomatolog.BrojPregleda += 1;
-                stomatologService.Update((ObjectId)pregled.IdStomatologa, stomatolog);
+                stomatologService.Update((int)pregled.IdStomatologa, stomatolog);
             }
         }
+
         pregledService.Update(id, pregled);
 
         return NoContent();
@@ -378,8 +377,9 @@ public class PregledController(IPregledService pregledService, IStomatologServic
 
     [Authorize]
     [HttpDelete("{id}")]
-    public ActionResult Delete(ObjectId id)
+    public ActionResult Delete(int id)
     {
+
         var pregled = pregledService.Get(id);
 
         if (pregled == null)
@@ -387,49 +387,14 @@ public class PregledController(IPregledService pregledService, IStomatologServic
             return NotFound($"Pregled with Id = {id} not found");
         }
 
-        var patientId = pregled.IdPacijenta;
-        var stomatologId = pregled.IdStomatologa;
+        pregledService.Remove(id);
 
-        if (!pacijentService.RemoveAppointment(patientId, id))
-        {
-            return NotFound($"Patient with Id = {patientId} or appointment with Id = {id} not found");
-        }
-        if (stomatologId != null)
-        {
-            stomatologService.RemoveAppointment(stomatologId, id);
-            pregledService.Remove(id);
-            return Ok(new { message = $"Pregled with Id = {id} deleted" });
-        }
-        else
-        {
-            pregledService.Remove(id);
-            return Ok(new { message = $"Pregled with Id = {id} deleted" });
-        }
-
-    }
-
-    private bool IsAppointmentConflict(Pregled pregled)
-    {
-        var stomatolog = stomatologService.Get(pregled.IdStomatologa);
-        if (stomatolog.PredstojeciPregledi.Any(appointmentId =>
-            pregledService.Get(appointmentId)?.Datum == pregled.Datum))
-        {
-            return true;
-        }
-
-        var patient = pacijentService.Get(pregled.IdPacijenta);
-        if (patient.IstorijaPregleda.Any(appointmentId =>
-            pregledService.Get(appointmentId)?.Datum == pregled.Datum))
-        {
-            return true;
-        }
-
-        return false;
+        return Ok(new { message = $"Pregled with Id = {id} deleted" });
     }
 
 
     [HttpPost("scheduleNextAvailable/{idPacijenta}")]
-    public async Task<ActionResult> ScheduleNextAvailable(ObjectId idPacijenta)
+    public async Task<ActionResult> ScheduleNextAvailable(int idPacijenta)
     {
         try
         {
@@ -520,5 +485,25 @@ public class PregledController(IPregledService pregledService, IStomatologServic
 
         return Ok(unconfirmedAppointmentsDTO);
     }
+
+    // [HttpGet("intervencijeZaPregled/{pregledId}")]
+    // public ActionResult<List<Intervencija>> GetIntervencijeZaPregled(int pregledId)
+    // {
+    //     try
+    //     {
+    //         var intervencije = pregledService.GetIntervencijeZaPregled(pregledId);
+
+    //         if (intervencije == null || !intervencije.Any())
+    //         {
+    //             return NotFound($"Nema pronađenih intervencija za pregled sa Id = {pregledId}.");
+    //         }
+
+    //         return Ok(intervencije);
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         return StatusCode(500, ex.Message);
+    //     }
+    // }
 
 }

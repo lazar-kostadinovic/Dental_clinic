@@ -5,24 +5,31 @@
   </div>
   <input id="patient" list="pacijenti" [(ngModel)]="selectedPatientName" name="patientName"
     (ngModelChange)="filterPacijenti()" placeholder="Izaberite ili unesite ime pacijenta" required />
-  <datalist id="pacijentii">
+  <datalist>
     <option *ngFor="let patient of pacijenti" [value]="patient.name + ' - ' + patient.email">
       {{ patient.name }} - {{ patient.email }}
     </option>
   </datalist>
   <ul>
     <li *ngFor="let pacijent of filteredPatients">
-      <h3>{{ pacijent.name }} </h3>
-      <p>Godine: {{pacijent.age}}</p>
-      <p> {{ pacijent.email }}</p>
-      <p>Broj telefona: {{pacijent.phoneNumber}}</p>
-      <p>Potrošeno: {{ pacijent.totalSpent }} RSD</p>
+      <img [src]="getImageUrl(pacijent.slika)" alt="Profilna slika" class="patient-image" />
+      <div>
+        <h3>{{ pacijent.name }} </h3>
+        <p>Godine: {{pacijent.age}}</p>
+        <p> {{ pacijent.email }}</p>
+        <p>Broj telefona: {{pacijent.phoneNumber}}</p>
+        <p>Potrošeno: {{ pacijent.totalSpent }} RSD</p>
 
-      <p [ngClass]="{'error': pacijent.debt > 0}"> Dugovanje: {{ pacijent.debt }} RSD </p>
-      <p>Propušteni pregledi: {{pacijent.missedAppointments}}</p>
-      <button (click)="sendWarning(pacijent.email,pacijent.name,pacijent.debt)" class="warning">Posalji
-        upozorenje</button>
-      <button (click)="deletePatient(pacijent.id)" class="delete">Obrisi </button>
+        <p [ngClass]="{'error': pacijent.debt > 0}"> Dugovanje: {{ pacijent.debt }} RSD </p>
+        <p>Propušteni pregledi: {{pacijent.missedAppointments}}</p>
+
+        <section class="buttons">
+          <button (click)="sendWarning(pacijent.email,pacijent.name,pacijent.debt)" class="warning">Posalji
+            upozorenje</button>
+          <button (click)="deletePatient(pacijent.id)" class="delete">Obrisi </button>
+        </section>
+      </div>
+
     </li>
   </ul>
 </div>

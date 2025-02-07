@@ -9,6 +9,7 @@ import { StripeService } from '../../services/stripe.service';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { StateService } from '../../services/state.service';
 
 @Component({
   selector: 'app-patient-profile',
@@ -54,7 +55,8 @@ export class PatientProfileComponent {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private stripeService: StripeService
+    private stripeService: StripeService,
+    private stateService: StateService
   ) {}
   ngOnInit() {
     this.email = localStorage.getItem('email');
@@ -74,11 +76,27 @@ export class PatientProfileComponent {
     });
   }
 
+
+  closePaymentForm() {
+    this.isPaymentFormVisible = false;
+    this.card.destroy();
+    this.cardMounted = false;
+    this.resetHiddenState();
+  }
+
+  setHiddenState() {
+    this.stateService.setHiddenState(true);  
+  }
+  resetHiddenState() {
+    this.stateService.setHiddenState(false);  
+  }
+
   handlePayment() {
     this.isPaymentFormVisible = true;
     this.isPaymentProcessing = false;
     this.showSchedule=false;
     this.showUnconfirmed=false;
+    this.setHiddenState();
     setTimeout(() => {
       this.loadStripeCardElement();
     }, 300);
@@ -119,7 +137,7 @@ export class PatientProfileComponent {
             this.isPaymentProcessing = false;
 
             if (result.error) {
-              Swal.fire('Greška', `Došlo je do greške: ${result.error.message}`, 'error');
+              Swal.fire('Greška', ` ${result.error.message}`, 'error');
             } else if (result.paymentIntent?.status === 'succeeded') {
               Swal.fire('', 'Plaćanje uspešno izvršeno!', 'success');
               this.reducePatientDebt(this.patient.id, this.paymentAmount);
@@ -127,6 +145,7 @@ export class PatientProfileComponent {
               this.card.destroy();
               this.cardMounted = false;
               this.isPaymentFormVisible = false;
+              this.resetHiddenState();
             }
           });
       })
@@ -134,6 +153,7 @@ export class PatientProfileComponent {
         console.error('Greška prilikom kreiranja Payment Intenta:', err);
         Swal.fire('Greška', 'Došlo je do greške prilikom plaćanja.', 'error');
         this.isPaymentProcessing = false;
+        this.resetHiddenState();
       });
 
 
@@ -159,8 +179,8 @@ export class PatientProfileComponent {
   }
 
   onAppointmentsUpdated(updatedIds: string[]) {
-    this.patient.istorijaPregleda = updatedIds;
-    console.log('Azurirana lista Id-ova', this.patient.istorijaPregleda);
+    this.patient.pregledi = updatedIds;
+    console.log('Azurirana lista Id-ova', this.patient.pregledi);
   }
   fetchPatientProfile() {
     this.http
@@ -247,9 +267,9 @@ export class PatientProfileComponent {
 
   onAppointmentScheduled(newAppointmentId: string): void {
     this.showSchedule = false;
-    this.patient.istorijaPregleda = [
+    this.patient.pregledi = [
       newAppointmentId,
-      ...this.patient.istorijaPregleda,
+      ...this.patient.pregledi,
     ];
     this.fetchPatientProfile();
   }
@@ -285,18 +305,18 @@ export class PatientProfileComponent {
 
   toggleEditEmail() {
     this.isEditing.email=!this.isEditing.email;
-    this.isEditing.adresa = false;
-    this.isEditing.telefon = false;
+    // this.isEditing.adresa = false;
+    // this.isEditing.telefon = false;
   }
   toggleEditNumber() {
     this.isEditing.telefon= !this.isEditing.telefon;
-    this.isEditing.adresa = false;
-    this.isEditing.email = false;
+    // this.isEditing.adresa = false;
+    // this.isEditing.email = false;
   }
   toggleEditAddress() {
     this.isEditing.adresa=!this.isEditing.adresa;
-    this.isEditing.email = false;
-    this.isEditing.telefon = false;
+    // this.isEditing.email = false;
+    // this.isEditing.telefon = false;
   }
 
   saveChanges(field: string) {

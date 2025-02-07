@@ -1,7 +1,6 @@
 using StomatoloskaOrdinacija.Models;
-using MongoDB.Bson;
 
-namespace Ambulanta.Services
+namespace StomatoloskaOrdinacija.Services
 {
     public interface IAdminService
     {

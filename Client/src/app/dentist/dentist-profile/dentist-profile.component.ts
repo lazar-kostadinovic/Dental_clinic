@@ -61,8 +61,8 @@ export class DentistProfileComponent {
     this.fetchDentistProfile();
   }
   onAppointmentsUpdated(updatedIds: string[]) {
-    this.dentist.predstojeciPregledi = updatedIds; 
-    //console.log('Roditelj dobio ažuriranu listu ID-ova:', this.dentist.predstojeciPregledi);
+    this.dentist.pregledi = updatedIds; 
+    //console.log('Roditelj dobio ažuriranu listu ID-ova:', this.dentist.pregledi);
   }
   onApointmentCanceled(): void {
     this.showAppointments=true;
@@ -71,7 +71,8 @@ export class DentistProfileComponent {
   }
   onAppointmentScheduled(newAppointmentId: string): void {
     this.showAppointmentForm = false; 
-    this.dentist.predstojeciPregledi = [newAppointmentId, ...this.dentist.predstojeciPregledi];
+    console.log([newAppointmentId, ...this.dentist.pregledi]);
+    this.dentist.pregledi = [newAppointmentId, ...this.dentist.pregledi];
     this.fetchDentistProfile();
   }
   onAppointmentTaken(){
@@ -323,18 +324,18 @@ export class DentistProfileComponent {
 
   toggleEditEmail() {
     this.isEditing.email=!this.isEditing.email;
-    this.isEditing.adresa=false;
-    this.isEditing.brojTelefona=false;
+    // this.isEditing.adresa=false;
+    // this.isEditing.brojTelefona=false;
   }
   toggleEditNumber() {
     this.isEditing.brojTelefona= !this.isEditing.brojTelefona;
-    this.isEditing.adresa=false;
-    this.isEditing.email=false;
+    // this.isEditing.adresa=false;
+    // this.isEditing.email=false;
   }
   toggleEditAddress() {
     this.isEditing.adresa=!this.isEditing.adresa;
-    this.isEditing.email=false;
-    this.isEditing.brojTelefona=false;
+    // this.isEditing.email=false;
+    // this.isEditing.brojTelefona=false;
   }
 
   saveChanges(field: string) {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { StomatologDTO } from '../models/stomatologDTO.model';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -50,10 +50,10 @@ export class ShowDentistComponent {
     'Estetska stomatologija',
   ];
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router,private cdr:ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    if(this.email){
+    if (this.email) {
       this.getPatientId();
     }
     this.loadStomatolozi();
@@ -63,52 +63,57 @@ export class ShowDentistComponent {
   }
 
   showReviews(idsKomentara: string[], idStomatologa: string): void {
-    if (this.selectedStomatologForComments === idStomatologa) {
-      this.selectedStomatologForComments = null;
-      this.komentariStomatologa = [];
-      this.selectedStomatolog = undefined;
-    } else {
-      this.selectedStomatologForComments = idStomatologa;
-      this.selectedStomatolog = this.stomatolozi.find(s => s.id === idStomatologa) || undefined;
-      this.komentariStomatologa = [];
-  
-      const komentarRequests = idsKomentara.map((id) =>
-        this.http.get<KomentarDTO>(
-          `http://localhost:5001/OcenaStomatologa/getDTO/${id}`
-        )
-      );
-  
-      if (komentarRequests.length > 0) {
-        forkJoin(komentarRequests).subscribe({
-          next: (komentari) => {
-            this.komentariStomatologa = komentari;
-  
-            komentari.forEach((komentar) => {
-              if (!this.imePacijenata[komentar.idPacijenta]) {
-                this.getPacijentName(komentar.idPacijenta);
-              }
-            });
-            this.getAverageRating(idStomatologa);
-          },
-          error: (error) => {
-            console.error('Greška pri učitavanju komentara:', error);
-          },
-        });
+ 
+      if (this.selectedStomatologForComments === idStomatologa) {
+        this.selectedStomatologForComments = null;
+        this.komentariStomatologa = [];
+        this.selectedStomatolog = undefined;
+      } else {
+        this.selectedStomatologForComments = idStomatologa;
+        this.selectedStomatolog =
+          this.stomatolozi.find((s) => s.id === idStomatologa) || undefined;
+        this.komentariStomatologa = [];
+
+        if (idsKomentara != null) {
+        const komentarRequests = idsKomentara.map((id) =>
+          this.http.get<KomentarDTO>(
+            `http://localhost:5001/OcenaStomatologa/getDTO/${id}`
+          )
+        );
+
+        if (komentarRequests!=null&&komentarRequests.length > 0) {
+          forkJoin(komentarRequests).subscribe({
+            next: (komentari) => {
+              this.komentariStomatologa = komentari;
+
+              komentari.forEach((komentar) => {
+                if (!this.imePacijenata[komentar.idPacijenta]) {
+                  this.getPacijentName(komentar.idPacijenta);
+                }
+              });
+              this.getAverageRating(idStomatologa);
+            },
+            error: (error) => {
+              console.error('Greška pri učitavanju komentara:', error);
+            },
+          });
+        }
       }
     }
   }
-  
 
-  getPatientId(){
-    this.http.get("http://localhost:5001/Pacijent/GetPacijentByEmail/" + this.email).subscribe({
-      next: (response: any) => {
-        this.patientId = response.id;
-        return response.id
-      },
-      error: (error) => {
-        console.error("Error:", error);
-      }
-    });
+  getPatientId() {
+    this.http
+      .get('http://localhost:5001/Pacijent/GetPacijentByEmail/' + this.email)
+      .subscribe({
+        next: (response: any) => {
+          this.patientId = response.id;
+          return response.id;
+        },
+        error: (error) => {
+          console.error('Error:', error);
+        },
+      });
   }
 
   loadMoreComments(): void {
@@ -128,22 +133,24 @@ export class ShowDentistComponent {
       idStomatologa: stomatologId,
     };
   
-    const apiUrl = `http://localhost:5001/OcenaStomatologa/${stomatologId}/${
-      this.patientId
-    }/${encodeURIComponent(this.newComment.komentar)}/${this.newComment.ocena}`;
+    const apiUrl = `http://localhost:5001/OcenaStomatologa/${stomatologId}/${this.patientId}/${encodeURIComponent(this.newComment.komentar)}/${this.newComment.ocena}`;
   
     this.http.post(apiUrl, {}).subscribe({
-      next: (response:any) => {
+      next: (response: any) => {
         console.log('Komentar dodat:', response);
-         Swal.fire('', 'Komentar uspešno dodat!', 'success');
+        Swal.fire('', 'Komentar uspešno dodat!', 'success');
+  
         this.komentariStomatologa.push(commentPayload);
-        this.loadMoreComments();
+  
+        this.getPacijentName(this.patientId!);
+        this.cdr.detectChanges();
         this.getAverageRating(stomatologId);
+  
         this.newComment = { komentar: '', ocena: 0 };
       },
       error: (error) => {
         console.error('Greška pri dodavanju komentara:', error);
-        Swal.fire('','Došlo je do greške prilikom dodavanja komentara.', 'warning');
+        Swal.fire('', 'Došlo je do greške prilikom dodavanja komentara.', 'warning');
       },
     });
   }
@@ -175,9 +182,7 @@ export class ShowDentistComponent {
     const apiUrl = 'http://localhost:5001/Stomatolog/getDTOs';
     this.http.get<StomatologDTO[]>(apiUrl).subscribe(
       (data) => {
-        this.stomatolozi = data.filter(
-          (stomatolog) => stomatolog.email !== 'admin@gmail.com'
-        );
+        this.stomatolozi = data;
       },
       (error) => {
         console.error('Greška prilikom učitavanja stomatologa:', error);
@@ -202,7 +207,7 @@ export class ShowDentistComponent {
     }
   }
 
-  getSpecijalizacijaLabel(specijalizacija: number,ime:string): string {
+  getSpecijalizacijaLabel(specijalizacija: number, ime: string): string {
     return this.specijalizacije[specijalizacija] || 'Nepoznato';
   }
 
@@ -225,7 +230,6 @@ export class ShowDentistComponent {
       });
   }
 
-  
   closeReviews() {
     this.selectedStomatologForComments = null;
     this.komentariStomatologa = [];

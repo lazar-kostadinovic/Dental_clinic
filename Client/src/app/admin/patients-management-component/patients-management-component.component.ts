@@ -83,7 +83,7 @@ export class PatientsManagementComponentComponent {
 
     Swal.fire({
       title: 'Da li ste sigurni?',
-      text: 'Da li ste sigurni da želite da obrišete ovog stomatologa?',
+      text: 'Da li ste sigurni da želite da obrišete ovog pacijenta?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -117,5 +117,8 @@ export class PatientsManagementComponentComponent {
           });
       }
     });
+  }
+  getImageUrl(imageName: string): string {
+    return `http://localhost:5001/assets/${imageName}`;
   }
 }

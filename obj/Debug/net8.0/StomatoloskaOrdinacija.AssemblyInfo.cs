@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StomatoloskaOrdinacija")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f8c7471ea4189a2974e7a4b4169a6014b07d6d2e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+45675f07ccb853827287a097253dd3469a39f229")]
 [assembly: System.Reflection.AssemblyProductAttribute("StomatoloskaOrdinacija")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StomatoloskaOrdinacija")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

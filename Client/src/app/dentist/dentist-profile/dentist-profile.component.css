@@ -1,85 +1,31 @@
-:host {
+.home-container {
+  font-family: Arial, sans-serif;
+  padding: 0px;
+  margin: 0 auto;
   display: flex;
-  width: 100%;
-  flex-grow: 1;
   transform: scale(0.85);
   transform-origin: top left;
-  height: 105%;
+  width: 150%;
 }
 
-.showAppointments {
-  display: flex;
-  width: 100%;
-  flex-grow: 1;
-}
 
 .profile-container {
-  background-color: #f9f9f9;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  text-align: left;
-  margin: 20px;
-  flex: 0 0 auto;
-}
-
-.profile-container h2 {
-  text-align: center;
-}
-
-.profile-container p {
-  font-size: 16px;
-  line-height: 1.5;
-  margin-bottom: 10px;
-}
-
-.profile-container h3 {
-  margin-top: 20px;
-}
-
-.loading {
-  text-align: center;
-  font-size: 18px;
-  padding: 20px;
-}
-
-.dentist-profile {
-  margin: 0 auto;
-}
-
-button {
-  padding: 10px 15px;
-  margin-top: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  text-align: center;
-  width: 230px;
-  display: inline-block
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  height: 100%;
 }
 
 .profile-image {
-  margin-bottom: 15px;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.dentist-image {
+.profile-image img {
+  cursor: pointer;
+  transition: border-color 0.3s ease;
   width: 150px;
   height: 150px;
   object-fit: cover;
@@ -87,12 +33,84 @@ button:disabled {
   border: 2px solid #ccc;
 }
 
+.profile-image img:hover {
+  border-color: #2980b9;
+}
+
+.profile-image button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.profile-image button:hover {
+  background-color: #2980b9;
+}
+
+.profile-container p {
+  margin: 10px 0;
+  color: #34495e;
+}
+
+.profile-container strong {
+  color: #2c3e50;
+}
+
+.custom-edit-button {
+  cursor: pointer;
+  margin-left: 10px;
+  color: #3498db;
+  transition: color 0.3s ease;
+}
+
+.custom-edit-button:hover {
+  color: #2980b9;
+}
+
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  height: 30px;
+}
+
+button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 5px 0;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+button.error {
+  background-color: #e74c3c;
+}
+
+button.error:hover {
+  background-color: #c0392b;
+}
+
 .day-off-form {
-  margin-top: 20px;
+  margin: 10px;
   padding: 15px;
-  /* border: 1px solid #ddd; */
   border-radius: 8px;
-  background-color: #fff;
+  background-color: white;
+  height: fit-content;
 }
 
 .day-off-form label {
@@ -101,61 +119,59 @@ button:disabled {
   display: block;
   color: #555;
 }
- input{
-  margin: 5px;
- }
 
-.day-off-form input[type="date"] {
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: calc(100% - 20px);
-  margin-bottom: 10px;
-}
-
-.day-off-form button {
-  margin-right: 5px;
-}
-
-
-.edit-icon {
-  cursor: pointer;
-  margin-left: 10px;
-  color: #007bff;
-}
-
-.edit-icon:hover {
-  color: #0056b3;
-}
-
-.custom-edit-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border: none;
-  border-radius: 50%;
-  background-color: #f0f0f0;
-  color: #555;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
-  margin-left: 8px;
+.payment-form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
 }
 
-.custom-edit-button:hover {
-  background-color: #e0e0e0;
-  color: #000;
+.payment-form label {
+  display: block;
+  margin-bottom: 10px;
+  color: #2c3e50;
 }
 
-.custom-edit-button:active {
-  background-color: #ccc;
+.payment-form input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
 }
 
-.custom-edit-button i {
-  font-style: normal;
-  font-size: 18px;
+.payment-form button {
+  background-color: #27ae60;
 }
+
+.payment-form button:hover {
+  background-color: #219653;
+}
+
+.payment-form button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+p strong {
+  color: #2c3e50;
+}
+
+p strong.error {
+  color: #e74c3c;
+}
+
+app-patient-appointments {
+  margin-top: 20px;
+}
+
+app-schedule-appointment {
+  margin-top: 20px;
+}
+.edit{
+  display: flex;
+}
+

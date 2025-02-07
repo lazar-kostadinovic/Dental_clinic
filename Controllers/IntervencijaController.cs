@@ -2,7 +2,6 @@ using System.Globalization;
 using StomatoloskaOrdinacija.Models;
 using StomatoloskaOrdinacija.Services;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using StomatoloskaOrdinacija.DTOs;
 using Microsoft.AspNetCore.Authorization;
 
@@ -10,17 +9,17 @@ namespace StomatoloskaOrdinacija.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class IntervencijaController(ITipIntervencijeService intervencijaService) : ControllerBase
+public class IntervencijaController(IIntervencijaService intervencijaService) : ControllerBase
 {
-    private readonly ITipIntervencijeService intervencijaService = intervencijaService;
+    private readonly IIntervencijaService intervencijaService = intervencijaService;
 
     [HttpGet]
-    public ActionResult<List<TipIntervencije>> Get()
+    public ActionResult<List<Intervencija>> Get()
     {
         return intervencijaService.Get();
     }
     [HttpGet("getDTOs")]
-    public ActionResult<TipIntervencijeDTO> GetStomatologDTOs()
+    public ActionResult<TipIntervencijeDTO> GetDTOs()
     {
         var intervencije = intervencijaService.Get();
 
@@ -40,31 +39,27 @@ public class IntervencijaController(ITipIntervencijeService intervencijaService)
     }
 
     [HttpGet("{id}")]
-    public ActionResult<TipIntervencije> Get(ObjectId id)
+    public ActionResult<Intervencija> Get(int id)
     {
         var intervencija = intervencijaService.Get(id);
 
         if (intervencija == null)
         {
-            return NotFound($"TipIntervencije with Id = {id} not found");
+            return NotFound($"Intervencija with Id = {id} not found");
         }
 
         return intervencija;
     }
 
     [HttpGet("getIntervencijaDTO/{id}")]
-    public ActionResult<TipIntervencijeDTO> GetIntervencijaDTO(string id)
+    public ActionResult<TipIntervencijeDTO> GetIntervencijaDTO(int id)
     {
-        if (!ObjectId.TryParse(id, out var objectId))
-        {
-            return BadRequest("Invalid ObjectId format.");
-        }
 
-        var intervencija = intervencijaService.Get(objectId);
+        var intervencija = intervencijaService.Get(id);
 
         if (intervencija == null)
         {
-            return NotFound($"TipIntervencije with Id = {id} not found");
+            return NotFound($"Intervencija with Id = {id} not found");
         }
 
         var intervencijaDTO = new TipIntervencijeDTO
@@ -77,7 +72,7 @@ public class IntervencijaController(ITipIntervencijeService intervencijaService)
     }
 
     [HttpPost]
-    public ActionResult<TipIntervencije> Post([FromBody] TipIntervencije intervencija)
+    public ActionResult<Intervencija> Post([FromBody] Intervencija intervencija)
     {
         intervencijaService.Create(intervencija);
 
@@ -87,13 +82,13 @@ public class IntervencijaController(ITipIntervencijeService intervencijaService)
 
 
     [HttpPut("{id}/{cena}")]
-    public ActionResult Put(ObjectId id, int cena)
+    public ActionResult Put(int id, int cena)
     {
         var intervencija = intervencijaService.Get(id);
 
         if (intervencija == null)
         {
-            return NotFound($"TipIntervencije with Id = {id} not found");
+            return NotFound($"Intervencija with Id = {id} not found");
         }
 
         intervencija.Cena = cena;
@@ -106,17 +101,17 @@ public class IntervencijaController(ITipIntervencijeService intervencijaService)
 
     [Authorize]
     [HttpDelete("{id}")]
-    public ActionResult Delete(ObjectId id)
+    public ActionResult Delete(int id)
     {
         var intervencija = intervencijaService.Get(id);
 
         if (intervencija == null)
         {
-            return NotFound($"TipIntervencije with Id = {id} not found");
+            return NotFound($"Intervencija with Id = {id} not found");
         }
 
         intervencijaService.Remove(id);
-        return Ok(new { message = $"TipIntervencije with Id = {id} deleted" });
+        return Ok(new { message = $"Intervencija with Id = {id} deleted" });
     }
 
 

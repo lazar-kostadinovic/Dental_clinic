@@ -1,21 +1,21 @@
 using StomatoloskaOrdinacija.Models;
-using MongoDB.Bson;
 
 namespace StomatoloskaOrdinacija.Services
 {
     public interface IPregledService
     {
         List<Pregled> Get();
-        Pregled Get(ObjectId id);
-        List<Pregled> GetByStomatologId(ObjectId stomatologId);
-        List<Pregled> GetByPacijentId(ObjectId pacijentId);
+        Pregled Get(int id);
+        List<Pregled> GetByStomatologId(int stomatologId);
+        List<Pregled> GetByPacijentId(int pacijentId);
         Pregled Create(Pregled pregled);
-        void Update(ObjectId id, Pregled pregled);
+        void Update(int id, Pregled pregled);
         void UpdatePregledStatuses();
-        void Remove(ObjectId id);
-        List<Pregled> GetStomatologAppointmentsInDateRange(ObjectId idStomatologa, DateTime startDate, DateTime endDate);
+        void Remove(int id);
+        List<Pregled> GetStomatologAppointmentsInDateRange(int idStomatologa, DateTime startDate, DateTime endDate);
         List<Pregled> GetAppointmentsInDateRange(DateTime startDate, DateTime endDate);
         List<Pregled> GetUnconfirmedAppointments();
+        List<PregledIntervencijaDTO> GetIntervencijeZaPregled(int pregledId);
 
     }
 }

@@ -9,6 +9,10 @@
   <a *ngIf="isLoggedIn()" routerLink="/home" (click)="logout()" class="navbar-link">Logout</a>
   <a *ngIf="!isLoggedIn()" routerLink="/register-patient" class="navbar-link">Registracija </a>
 </nav> -->
+
+<div [ngClass]="{'navbar-disabled': hidden}">
+   
+
 <div class="container-fluid bg-light ps-5 pe-0 d-none d-lg-block">
   <div class="row gx-0">
       <div class="col-md-6 text-center text-lg-start mb-2 mb-lg-0">
@@ -54,3 +58,5 @@
       <a *ngIf="isPatient" routerLink="/patient-schedule" class="btn btn-primary py-2 px-4 ms-3">Zakazi pregled</a>
   </div>
 </nav>
+    
+</div>

@@ -39,7 +39,7 @@
                 {{ intervencija.naziv }} - {{ intervencija.cena }} din x {{ intervencija.kolicina }}
               </li>
             </ul>
-            <p><strong>Ukupna cena:</strong> {{ pregled.ukupnaCena }} din</p>
+            <p><strong>Ukupna cena:</strong> {{ calculateTotalForAppointment(pregled)}} din</p>
           </div>
           <!-- <button (click)="deleteAppointment(pregled.id)" class="delete-button">Obriši pregled</button> -->
         </div>

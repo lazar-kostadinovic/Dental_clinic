@@ -1,81 +1,98 @@
-:host {
-  font-family: Arial, sans-serif;
-  /* background-color: #fafafa; */
-  display: flex;
-  justify-content: center;
-  margin: 20px;
-}
-
 .register-container {
-  width: 100%;
-  max-width: 300px;
-  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+  max-width: 400px;
+  margin: 20px auto;
   padding: 20px;
-  border: 1px solid #dbdbdb;
-  text-align: left;
-  border-radius: 5px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in-out;
 }
-
 
 .register-container h2 {
-  font-size: 18px;
-  color: #333;
-  margin-bottom: 20px;
+  color: #2c3e50;
   text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
 }
 
-.register-container input {
+.register-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.register-container input[type="text"],
+.register-container input[type="number"],
+.register-container input[type="email"],
+.register-container input[type="password"],
+.register-container select {
   width: 100%;
   padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #dbdbdb;
-  border-radius: 5px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   font-size: 14px;
+  transition: border-color 0.3s ease;
 }
 
-.register-container input::placeholder {
-  color: #aaa;
-  font-size: 14px;
-}
-
-.register-container .error-message {
-  color: red;
-  font-size: 12px;
-  margin-top: -10px;
-  margin-bottom: 10px;
-}
-
-.register-container .btn-submit {
-  background-color: #0095f6;
-  color: white;
+.register-container input[type="date"]{
+  width: 67%;
   padding: 10px;
-  border: none;
-  border-radius: 5px;
-  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   font-size: 14px;
+  transition: border-color 0.3s ease;
+  margin-left: 5px;
+}
+
+.register-container input[type="text"]:focus,
+.register-container input[type="number"]:focus,
+.register-container input[type="email"]:focus,
+.register-container input[type="password"]:focus,
+.register-container select:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.register-container select {
+  appearance: none;
+  background-color: white;
   cursor: pointer;
 }
 
+.register-container .btn-submit {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-size: 16px;
+}
+
 .register-container .btn-submit:hover {
-  background-color: #007bb5;
+  background-color: #2980b9;
+  transform: translateY(-2px);
 }
 
-.form-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 0px;
+.register-container .btn-submit:active {
+  transform: translateY(0);
 }
 
-.form-group label {
+.register-container .error {
+  color: #e74c3c;
   font-size: 14px;
+  margin-top: 5px;
 }
 
-.form-group input {
-  flex: 1;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

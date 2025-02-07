@@ -32,3 +32,8 @@ body {
   border-color: #00594c;
 } 
 
+.navbar-disabled {
+  pointer-events: none;
+  opacity: 0.5; 
+}
+

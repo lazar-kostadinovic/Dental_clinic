@@ -2,7 +2,6 @@ using StomatoloskaOrdinacija.Models;
 using StomatoloskaOrdinacija.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using Microsoft.AspNetCore.Components.Web;
 using StomatoloskaOrdinacija.DTOs;
 
@@ -23,7 +22,7 @@ public class OcenaStomatologaController(IOcenaStomatologaService ocenaStomatolog
     }
 
     [HttpGet("{id}")]
-    public ActionResult<OcenaStomatologa> Get(ObjectId id)
+    public ActionResult<OcenaStomatologa> Get(int id)
     {
         var ocena = ocenaStomatologaService.Get(id);
         if (ocena == null)
@@ -31,15 +30,9 @@ public class OcenaStomatologaController(IOcenaStomatologaService ocenaStomatolog
         return ocena;
     }
     [HttpGet("getDTO/{id}")]
-    public ActionResult<OcenaStomatologaDTO> Get(string id)
+    public ActionResult<OcenaStomatologaDTO> GetDTO(int id)
     {
-
-        if (!ObjectId.TryParse(id, out var objectId))
-        {
-            return BadRequest("Invalid ObjectId format.");
-        }
-
-        var ocena = ocenaStomatologaService.Get(objectId);
+        var ocena = ocenaStomatologaService.Get(id);
 
         if (ocena == null)
         {
@@ -59,7 +52,7 @@ public class OcenaStomatologaController(IOcenaStomatologaService ocenaStomatolog
     }
 
     [HttpGet("getAverage/{idStomatologa}")]
-    public ActionResult<double> GetAverage(ObjectId idStomatologa)
+    public ActionResult<double> GetAverage(int idStomatologa)
     {
         var ocene = ocenaStomatologaService.Get();
         var ukupno = 0;
@@ -69,8 +62,8 @@ public class OcenaStomatologaController(IOcenaStomatologaService ocenaStomatolog
         {
             if (ocena.IdStomatologa == idStomatologa)
             {
-                ukupno += ocena.Ocena;  
-                count++;  
+                ukupno += ocena.Ocena;
+                count++;
             }
         }
 
@@ -79,7 +72,7 @@ public class OcenaStomatologaController(IOcenaStomatologaService ocenaStomatolog
             return NotFound($"No reviews found for dentist with Id = {idStomatologa}");
         }
 
-       var prosek = Math.Round((double)ukupno / count,2); 
+        var prosek = Math.Round((double)ukupno / count, 2);
 
         return Ok(prosek);
     }
@@ -94,7 +87,7 @@ public class OcenaStomatologaController(IOcenaStomatologaService ocenaStomatolog
     }
 
     [HttpPost("{idStomatologa}/{idPacijenta}/{komentar}/{ocena}")]
-    public IActionResult AddReview(ObjectId idStomatologa, ObjectId idPacijenta, string komentar, int ocena)
+    public IActionResult AddReview(int idStomatologa, int idPacijenta, string komentar, int ocena)
     {
         var ocenaStomatologa = new OcenaStomatologa
         {
@@ -124,14 +117,12 @@ public class OcenaStomatologaController(IOcenaStomatologaService ocenaStomatolog
         }
 
         ocenaStomatologaService.Create(ocenaStomatologa);
-        stomatologService.GetAndAddReview(ocenaStomatologa.IdStomatologa, ocenaStomatologa.Id);
-        stomatologService.GetAndUpdate(ocenaStomatologa.IdStomatologa, ocenaStomatologa.Id);
 
         return CreatedAtAction(nameof(ocenaStomatologaService.Get), new { id = ocenaStomatologa.Id }, ocenaStomatologa);
     }
 
     [HttpPut("{id}/{komentar}/{ocena}")]
-    public ActionResult Put(ObjectId id, string komentar, int ocena)
+    public ActionResult Put(int id, string komentar, int ocena)
     {
         var review = ocenaStomatologaService.Get(id);
 
@@ -149,7 +140,7 @@ public class OcenaStomatologaController(IOcenaStomatologaService ocenaStomatolog
     }
 
     [HttpDelete("{id}")]
-    public ActionResult Delete(ObjectId id)
+    public ActionResult Delete(int id)
     {
         var ocena = ocenaStomatologaService.Get(id);
 

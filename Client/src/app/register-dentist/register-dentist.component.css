@@ -1,6 +1,5 @@
-:host {
+/* :host {
   font-family: Arial, sans-serif;
-  /* background-color: #fafafa; */
   display: flex;
   justify-content: center;
   margin: 20px;
@@ -39,7 +38,7 @@
   font-size: 14px;
 }
 
-.register-container .error-message {
+.register-container .error {
   color: red;
   font-size: 12px;
   margin-top: -10px;
@@ -59,4 +58,98 @@
 
 .register-container .btn-submit:hover {
   background-color: #007bb5;
+} */
+/* Osnovni stil za kontejner */
+.register-container {
+  font-family: Arial, sans-serif;
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.register-container h2 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+/* Stil za formu */
+.register-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.register-container input[type="text"],
+.register-container input[type="number"],
+.register-container input[type="email"],
+.register-container input[type="password"],
+.register-container select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.register-container input[type="text"]:focus,
+.register-container input[type="number"]:focus,
+.register-container input[type="email"]:focus,
+.register-container input[type="password"]:focus,
+.register-container select:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+/* Stil za select polje */
+.register-container select {
+  appearance: none;
+  background-color: white;
+  cursor: pointer;
+}
+
+/* Stil za dugme */
+.register-container .btn-submit {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-size: 16px;
+}
+
+.register-container .btn-submit:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.register-container .btn-submit:active {
+  transform: translateY(0);
+}
+
+/* Stil za poruke o greškama */
+.register-container .error {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* Animacija za fade-in efekat */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

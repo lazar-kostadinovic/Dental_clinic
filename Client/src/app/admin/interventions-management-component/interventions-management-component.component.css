@@ -1,109 +1,129 @@
 .home-container {
-  max-width: 1800px;
-  margin: 0 auto;
+  font-family: Arial, sans-serif;
   padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .row {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: left;
-  padding: 20px;
-  max-width: 1800px;
+  margin-bottom: 20px;
+  justify-content: center;
 }
 
 .appointment {
-  background-color: #ffffff;
+  background-color: white;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.3s;
-  width: calc(25% - 20px);
-  box-sizing: border-box;
-  text-align: center;
-}
-
-.appointment:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
-
-label {
+  flex: 1 1 calc(25% - 40px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 10px;
   align-items: center;
-  font-size: 16px;
-  color: #333;
-}
-
-.price-input {
-  width: 70%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
   text-align: center;
-  margin-bottom: 5px;
+  max-width: 400px;
+
 }
 
-button {
-  padding: 10px 15px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s, transform 0.2s;
+.appointment label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
-button:hover {
-  background-color: #0056b3;
-}
-
-button:active {
-  transform: scale(0.98);
+.appointment span {
+  font-size: 16px;
+  color: #2c3e50;
 }
 
 .custom-edit-button {
   cursor: pointer;
-  font-size: 20px;
   margin-left: 10px;
-  transition: color 0.3s;
-  color: #555;
+  color: #3498db;
+  transition: color 0.3s ease;
 }
 
 .custom-edit-button:hover {
-  color: #007bff;
+  color: #2980b9;
+}
+
+.price-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.price-input {
+  width: 100px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.confirm-icon {
+  cursor: pointer;
+  color: #27ae60;
+  transition: color 0.3s ease;
+}
+
+.confirm-icon:hover {
+  color: #219653;
+}
+
+.delete-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
 }
 
 .new-intervention-form {
-  margin-top: 20px;
-  padding: 20px;
-  background-color: #f9f9f9;
+  background-color: white;
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  justify-self: center;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .new-intervention-form input {
-  width: calc(50% - 10px);
+  width: 100%;
   padding: 10px;
-  margin: 10px 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   font-size: 14px;
-  box-sizing: border-box;
 }
 
-.new-intervention-form button {
-  margin-top: 10px;
+.new-intervention-form input:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.add-button {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-button:hover {
+  background-color: #219653;
 }

@@ -1,88 +1,148 @@
-:host{
-  align-self: center;
-  justify-content: center;
-  transform: translateX();
-}
 .home-container {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin: 16px ;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  font-family: Arial, sans-serif;
+  padding: 0px;
+  max-width: 800px;
+  margin: 0 auto;
+  border-radius: 12px;
+  padding: 10px;
 }
 
-.home-container h3 {
-  color: #333;
-  margin-bottom: 20px;
+.instructions {
+  background-color: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 25px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.instructions h2 {
+  color: #2c3e50;
   font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
 }
 
-button {
-  padding: 10px 15px;
-  margin: 5px;
-  margin-left: 0;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s, transform 0.2s;
+.instructions p {
+  color: #34495e;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  font-size: 16px;
 }
 
-button:hover {
-  background-color: #0056b3;
+.instructions p::before {
+  content: "•";
+  color: #3498db;
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
 }
 
-button:active {
-  transform: scale(0.98);
-}
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-strong {
-  color: #555;
-  font-size: 18px;
-  text-align: center; 
-}
-
-.appointment-form{
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  padding: 20px;
-  border-radius: 8px;
-  margin-top: 20px;
-  max-width: 400px;
+.appointment-form {
+  background-color: white;
+  padding: 25px;
+  border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: left;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
-.appointment-form h4 {
-  color: #333;
-  font-size: 18px;
-  margin-bottom: 10px;
+.appointment-form h3 {
+  color: #2c3e50;
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
 }
 
 .appointment-form label {
   display: block;
-  margin: 8px 0 4px;
+  margin-bottom: 10px;
+  color: #2c3e50;
   font-weight: bold;
-  color: #555;
+  font-size: 16px;
 }
 
-.appointment-form input, .appointment-form select, .appointment-form textarea {
+.appointment-form input[type="date"],
+.appointment-form select,
+.appointment-form textarea {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
   font-size: 14px;
-  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.appointment-form input[type="date"]:focus,
+.appointment-form select:focus,
+.appointment-form textarea:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.appointment-form textarea {
+  resize: vertical;
+  height: 80px;
+}
+
+/* Stil za dugmad u formi */
+.appointment-form .form-buttons {
+  display: flex; /* Koristimo Flexbox za raspored dugmadi */
+  gap: 10px; /* Razmak između dugmadi */
+  margin-top: 15px; /* Razmak iznad dugmadi */
+}
+
+.appointment-form .form-buttons button {
+  flex: 1; /* Dugmad će zauzimati jednaku širinu */
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-size: 16px;
+  text-align: center;
+}
+
+.appointment-form .form-buttons button[type="button"] {
+  background-color: #e74c3c;
+}
+
+.appointment-form .form-buttons button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.appointment-form .form-buttons button[type="button"]:hover {
+  background-color: #c0392b;
+}
+
+.appointment-form .lastButton {
+  background-color: #27ae60;
+  margin-top: 15px;
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.appointment-form .lastButton:hover {
+  background-color: #219653;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

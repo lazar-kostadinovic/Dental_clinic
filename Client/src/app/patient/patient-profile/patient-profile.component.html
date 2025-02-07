@@ -19,21 +19,21 @@
     <p><strong>Godine:</strong> {{ calculateAge(patient.datumRodjenja) }}</p>
 
     <p><strong>Email:</strong> {{ patient.email }}<i class="custom-edit-button" (click)="toggleEditEmail()">✎</i></p>
-    <div *ngIf="isEditing.email">
+    <div class="edit" *ngIf="isEditing.email">
       <input type="text" [(ngModel)]="updatedValues.email" placeholder="Unesite novi email" />
       <i class="custom-edit-button" (click)="saveChanges('email')">✔️</i>
     </div>
 
     <p><strong>Broj Telefona:</strong> {{ patient.brojTelefona }}<i class="custom-edit-button"
         (click)="toggleEditNumber()">✎</i></p>
-    <div *ngIf="isEditing.telefon">
+    <div class="edit" *ngIf="isEditing.telefon">
       <input type="text" [(ngModel)]="updatedValues.telefon" placeholder="Unesite novi broj telefona" />
       <i class="custom-edit-button" (click)="saveChanges('telefon')">✔️</i>
     </div>
 
     <p><strong>Adresa:</strong> {{ patient.adresa }}<i class="custom-edit-button" (click)="toggleEditAddress()">✎</i>
     </p>
-    <div *ngIf="isEditing.adresa">
+    <div class="edit" *ngIf="isEditing.adresa">
       <input type="text" [(ngModel)]="updatedValues.adresa" placeholder="Unesite novu adresu" />
       <i class="custom-edit-button" (click)="saveChanges('adresa')">✔️</i>
     </div>
@@ -49,25 +49,39 @@
     <p><strong>Vase dugovanje: {{patient.dugovanje}}</strong></p>
     <div *ngIf="patient.dugovanje > 0">
       <button class="error" (click)="handlePayment()">Izmiri dugovanje</button>
-    
+
     </div>
-    <p *ngIf="patient.dugovanje <= 0"><strong>Hvala Vam sto na vreme izmirujete Vasa dugovanja.</strong></p>
+    <p *ngIf="patient.dugovanje <= 0"><strong>Hvala Vam sto izmirujete Vasa dugovanja.</strong></p>
     <button *ngIf="patient.dugovanje==0" (click)="deleteAccount()" class="error">Obrisi profil</button>
   </div>
-  <div *ngIf="isPaymentFormVisible" class="payment-form">
+  <!-- <div *ngIf="isPaymentFormVisible" class="payment-form">
     <label for="paymentAmount">Unesite iznos za plaćanje:</label>
     <input type="number" id="paymentAmount" [(ngModel)]="paymentAmount" min="1" [max]="patient.dugovanje"
       placeholder="Unesite iznos" />
     <div id="card-element"></div>
     <button (click)="payNow()" [disabled]="isPaymentProcessing">Plati</button>
+  </div> -->
+
+  <div *ngIf="isPaymentFormVisible" class="payment-modal-overlay">
+    <div class="payment-modal">
+      <div class="payment-form">
+        <label for="paymentAmount">Unesite iznos za plaćanje:</label>
+        <input type="number" id="paymentAmount" [(ngModel)]="paymentAmount" min="1" [max]="patient.dugovanje"
+          placeholder="Unesite iznos" />
+        <div id="card-element"></div>
+        <button (click)="payNow()" [disabled]="isPaymentProcessing">Plati</button>
+        <button (click)="closePaymentForm()">Zatvori</button>
+      </div>
+    </div>
   </div>
-  <div *ngIf="!showSchedule&&!isPaymentFormVisible">
-    <app-patient-appointments *ngIf="patient" [appointmentIds]="patient.istorijaPregleda"
+
+  <div *ngIf="!showSchedule">
+    <app-patient-appointments *ngIf="patient" [appointmentIds]="patient.pregledi"
       [showUnconfirmed]="showUnconfirmed"
       (appointmentsUpdated)="onAppointmentsUpdated($event)"></app-patient-appointments>
   </div>
   <div *ngIf="showSchedule">
     <app-schedule-appointment (appointmentScheduled)="onAppointmentScheduled($event)"></app-schedule-appointment>
   </div>
-  
+
 </div>

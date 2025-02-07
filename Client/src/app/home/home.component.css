@@ -66,3 +66,16 @@ h1, h5 {
   height: 100%;
   object-fit: cover;
 }
+.btn-primary {
+  background-color: #3498db; /* Boja pozadine */
+  color: white; /* Boja teksta */
+  border: none; /* Uklanjanje ivice */
+  padding: 10px 20px; /* Udoban razmak */
+  border-radius: 8px; /* Zaobljeni uglovi */
+  cursor: pointer; /* Promena kursora na ruku */
+  transition: background-color 0.3s ease; /* Glatka tranzicija na hover */
+}
+
+.btn-primary:hover {
+  background-color: #2980b9; /* Tamnija nijansa za hover efekat */
+}

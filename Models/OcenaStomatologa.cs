@@ -1,26 +1,28 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace StomatoloskaOrdinacija.Models
 {
-    [BsonIgnoreExtraElements]
+
     public class OcenaStomatologa
     {
-        [BsonId]
-        public ObjectId Id { get; set; }
-        [BsonElement("IdStomatologa")]
-        public ObjectId IdStomatologa { get; set; }
-        [BsonElement("IdPacijenta")]
-        public ObjectId IdPacijenta { get; set; }
-        [BsonElement("Datum")]
+        [Key]
+        public int Id { get; set; }
+        public int IdStomatologa { get; set; }
+        public int IdPacijenta { get; set; }
         public DateTime Datum { get; set; }
-        [BsonElement("Komentar")]
         public string Komentar { get; set; }
-        [BsonElement("Ocena")]
         public int Ocena { get; set; }
 
+        [ForeignKey("IdStomatologa")]
+        public Stomatolog Stomatolog { get; set; }
+
+        [ForeignKey("IdPacijenta")]
+        public Pacijent Pacijent { get; set; }
     }
 }
+
 
 
 

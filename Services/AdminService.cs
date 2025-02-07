@@ -1,32 +1,31 @@
-using MongoDB.Driver;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using StomatoloskaOrdinacija;
 using StomatoloskaOrdinacija.Models;
-using MongoDB.Bson;
 using StomatoloskaOrdinacija.Services;
 
 namespace Ambulanta.Services
 {
     public class AdminService : IAdminService
     {
-        private readonly IMongoCollection<Admin> _admin;
-        
+        private readonly OrdinacijaDbContext _context;
         private readonly string _pepper;
         private readonly int _iteration;
 
-        public AdminService(IOrdinacijaDatabaseSettings settings, IMongoClient mongoClient, IConfiguration config)
+        public AdminService(OrdinacijaDbContext context, IConfiguration config)
         {
-            var database = mongoClient.GetDatabase(settings.DatabaseName);
-            _admin = database.GetCollection<Admin>(settings.AdminCollectionName);
+            _context = context;
             _pepper = config["PasswordHasher:Pepper"];
             _iteration = config.GetValue<int>("PasswordHasher:Iteration");
-          
         }
 
         public async Task<Admin> GetAdminByEmailAsync(string email)
         {
-            return await _admin.Find(admin => admin.Email == email).FirstOrDefaultAsync();
+            return await _context.Admin.FirstOrDefaultAsync(admin => admin.Email == email);
         }
 
-          public async Task<bool> Register(RegistrationModelAdmin resource)
+        public async Task<bool> Register(RegistrationModelAdmin resource)
         {
             var admin = new Admin
             {
@@ -35,10 +34,11 @@ namespace Ambulanta.Services
                 PasswordSalt = PasswordHasher.GenerateSalt(),
             };
             admin.Password = PasswordHasher.ComputeHash(resource.Password, admin.PasswordSalt, _pepper, _iteration);
-            _admin.InsertOne(admin);
-
+            
+            await _context.Admin.AddAsync(admin);
+            await _context.SaveChangesAsync();
+            
             return true;
         }
-
     }
 }

@@ -1,83 +1,79 @@
 .appointment-form {
+  width: 800px;
+  margin: 10px auto;
+  margin-left: 10px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Dodaj responsivnost za manje ekrane */
+@media (max-width: 1000px) {
+  .appointment-form {
     width: 100%;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    
   }
-  
-  .appointment-form h4 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  .appointment-form label {
-    font-size: 14px;
-    color: #555;
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .appointment-form input,
-  .appointment-form select,
-  .appointment-form textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-  }
-  
-  .appointment-form textarea {
-    resize: vertical;
-  }
-  
-  button {
-    padding: 10px 15px;
-    margin-top: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    margin-right: 5px;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  button:active {
-    transform: scale(0.98);
-  }
-  
-  .appointment-form .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .appointment-form .error {
-    color: red;
-    font-size: 12px;
-    margin-top: -10px;
-    margin-bottom: 10px;
-  }
-  
-  input[type='date'].disabled-day {
-    background-color: #ffe6e6;
-    color: #ff0000;
-    border: 1px solid #ff0000;
-  }
-  
-  .day-off {
-    background-color: red;
-    color: white;
-    border-radius: 50%;
-  }
-  
+}
+
+.appointment-form h3 {
+  color: #2c3e50;
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+}
+
+.appointment-form label {
+  font-size: 14px;
+  color: #555;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.appointment-form input,
+.appointment-form select,
+.appointment-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.appointment-form textarea {
+  resize: vertical;
+  height: 80px;
+}
+
+
+.appointment-form .form-group {
+  margin-bottom: 15px;
+}
+
+.appointment-form .error {
+  color: red;
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+
+input[type='date'].disabled-day {
+  background-color: #ffe6e6;
+  color: #ff0000;
+  border: 1px solid #ff0000;
+}
+
+.day-off {
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+}
+
 button:disabled {
   background-color: #ccc;
   color: #666;
@@ -93,13 +89,45 @@ button:disabled {
 }
 
 .debt {
-  margin-top: 10px; /* Prostor između textarea i upozorenja */
-  padding: 10px; /* Unutrašnji razmak za bolje čitljivost */
-  background-color: #ffe4e1; /* Svetlo crvena pozadina za vizuelno isticanje */
-  color: #d32f2f; /* Tamnocrvena boja teksta za upozorenje */
-  border: 1px solid #d32f2f; /* Obrub u istoj boji kao tekst */
-  border-radius: 5px; /* Zaobljeni uglovi */
-  font-weight: bold; /* Podebljan tekst */
-  font-size: 0.9rem; /* Veličina teksta */
-  text-align: center; /* Poravnanje teksta na sredinu */
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #ffe4e1;
+  color: #d32f2f;
+  border: 1px solid #d32f2f;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.appointment-form .form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.appointment-form .form-buttons button {
+  flex: 1;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-size: 16px;
+  text-align: center;
+}
+
+.appointment-form .form-buttons button[type="button"] {
+  background-color: #e74c3c;
+}
+
+.appointment-form .form-buttons button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.appointment-form .form-buttons button[type="button"]:hover {
+  background-color: #c0392b;
 }

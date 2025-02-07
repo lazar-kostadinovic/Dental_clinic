@@ -1,73 +1,100 @@
-:host{
-  margin: 10px;
-}
 .login-container {
-    width: 300px;
-    background-color: #f9f9f9;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .login-container h2 {
-    text-align: center;
-  }
-  
-  .login-container label {
-    display: block;
-    margin-top: 10px;
-  }
-  
-  .login-container input {
-    /* width: %; */
-    padding: 8px;
-    height: 40px;
-    width: 240px;
-    margin-top: 5px;
-    box-sizing: border-box;
-  }
-  
-  .login-container button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .login-container button:hover {
-    background-color: #0056b3;
-  }
-  
-  .register-prompt {
-    text-align: center;
-    margin-top: 15px;
-  }
-  
-  .register-prompt a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  .register-prompt a:hover {
-    text-decoration: underline;
-  }
-  
-  .error {
-    color: red;
-    font-size: 12px;
-    margin-top: 5px;
-  }
+  font-family: Arial, sans-serif;
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in-out;
+}
 
-  .register-prompt a {
-    pointer-events: auto;
-    text-decoration: underline;
-    color: blue;
-    cursor: pointer;
+.login-container h2 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.login-container label {
+  color: #2c3e50;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.login-container input[type="email"],
+.login-container input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.login-container input[type="email"]:focus,
+.login-container input[type="password"]:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.login-container button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-size: 16px;
+}
+
+.login-container button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.login-container button:active {
+  transform: translateY(0);
+}
+
+.login-container .error {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.login-container .register-prompt {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.login-container .register-prompt a {
+  color: #3498db;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.login-container .register-prompt a:hover {
+  color: #2980b9;
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

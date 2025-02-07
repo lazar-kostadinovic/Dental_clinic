@@ -2,7 +2,6 @@ using StomatoloskaOrdinacija.Models;
 using StomatoloskaOrdinacija.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using Ambulanta.Services;
 
 

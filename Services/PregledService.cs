@@ -1,96 +1,130 @@
-using MongoDB.Driver;
 using StomatoloskaOrdinacija.Models;
-using MongoDB.Bson;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace StomatoloskaOrdinacija.Services
 {
     public class PregledService : IPregledService
     {
-        private readonly IMongoCollection<Pregled> _pregledi;
+        private readonly OrdinacijaDbContext _context;
 
-        public PregledService(IOrdinacijaDatabaseSettings settings, IMongoClient mongoClient)
+
+        public PregledService(OrdinacijaDbContext context)
         {
-            var database = mongoClient.GetDatabase(settings.DatabaseName);
-            _pregledi = database.GetCollection<Pregled>(settings.PregledCollectionName);
+            _context = context;
         }
-
 
         public Pregled Create(Pregled pregled)
         {
-            _pregledi.InsertOne(pregled);
+            _context.Pregledi.Add(pregled);
+            _context.SaveChanges();
             return pregled;
         }
 
         public List<Pregled> Get()
         {
-            return _pregledi.Find(pregled => true).ToList();
+            return _context.Pregledi.ToList();
         }
 
-        public Pregled Get(ObjectId id)
+        public Pregled Get(int id)
         {
-            return _pregledi.Find(pregled => pregled.Id == id).FirstOrDefault();
+            return _context.Pregledi.FirstOrDefault(p => p.Id == id);
         }
 
-        public List<Pregled> GetByStomatologId(ObjectId stomatologId)
+        public List<Pregled> GetByStomatologId(int stomatologId)
         {
-            var filter = Builders<Pregled>.Filter.Eq(p => p.IdStomatologa, stomatologId);
-            return _pregledi.Find(filter).ToList();
+            return _context.Pregledi.Where(p => p.IdStomatologa == stomatologId).ToList();
         }
 
-          public List<Pregled> GetByPacijentId(ObjectId pacijentId)
+        public List<Pregled> GetByPacijentId(int pacijentId)
         {
-            var filter = Builders<Pregled>.Filter.Eq(p => p.IdPacijenta, pacijentId);
-            return _pregledi.Find(filter).ToList();
+            return _context.Pregledi.Where(p => p.IdPacijenta == pacijentId).ToList();
         }
 
-        public void Remove(ObjectId id)
+        public void Remove(int id)
         {
-            _pregledi.DeleteOne(pregled => pregled.Id == id);
+            var pregled = _context.Pregledi.FirstOrDefault(p => p.Id == id);
+            if (pregled != null)
+            {
+                _context.Pregledi.Remove(pregled);
+                _context.SaveChanges();
+            }
         }
 
-        public void Update(ObjectId id, Pregled pregled)
+        public void Update(int id, Pregled pregled)
         {
-            _pregledi.ReplaceOne(pregled => pregled.Id == id, pregled);
+            var existingPregled = _context.Pregledi.FirstOrDefault(p => p.Id == id);
+            if (existingPregled != null)
+            {
+                existingPregled.Datum = pregled.Datum;
+                existingPregled.Opis = pregled.Opis;
+                existingPregled.Naplacen = pregled.Naplacen;
+                existingPregled.Status = pregled.Status;
+                existingPregled.PregledIntervencije = pregled.PregledIntervencije;
+                existingPregled.UkupnaCena = pregled.UkupnaCena;
+                existingPregled.IdStomatologa = pregled.IdStomatologa;
+                existingPregled.EmailPacijenta = pregled.EmailPacijenta;
+                _context.SaveChanges();
+            }
         }
 
         public void UpdatePregledStatuses()
         {
-            var filter = Builders<Pregled>.Filter.And(
-                Builders<Pregled>.Filter.Lt(p => p.Datum, DateTime.UtcNow),
-                Builders<Pregled>.Filter.Eq(p => p.Status, StatusPregleda.Predstojeci)
-            );
-
-            var update = Builders<Pregled>.Update.Set(p => p.Status, StatusPregleda.Prosli);
-
-            _pregledi.UpdateMany(filter, update);
+            var pregledi = _context.Pregledi.Where(p => p.Datum < DateTime.UtcNow && p.Status == StatusPregleda.Predstojeci).ToList();
+            foreach (var pregled in pregledi)
+            {
+                pregled.Status = StatusPregleda.Prosli;
+            }
+            _context.SaveChanges();
         }
 
-
-        public List<Pregled> GetStomatologAppointmentsInDateRange(ObjectId idStomatologa, DateTime startDate, DateTime endDate)
+        public List<Pregled> GetStomatologAppointmentsInDateRange(int idStomatologa, DateTime startDate, DateTime endDate)
         {
-            var filter = Builders<Pregled>.Filter.And(
-               Builders<Pregled>.Filter.Eq(p => p.IdStomatologa, idStomatologa),
-               Builders<Pregled>.Filter.Gte(p => p.Datum, startDate),
-               Builders<Pregled>.Filter.Lte(p => p.Datum, endDate)
-           );
-
-            return _pregledi.Find(filter).ToList();
+            return _context.Pregledi.Where(p => p.IdStomatologa == idStomatologa && p.Datum >= startDate && p.Datum <= endDate).ToList();
         }
 
         public List<Pregled> GetAppointmentsInDateRange(DateTime startDate, DateTime endDate)
         {
-            var filter = Builders<Pregled>.Filter.And(
-                Builders<Pregled>.Filter.Gte(p => p.Datum, startDate),
-                Builders<Pregled>.Filter.Lte(p => p.Datum, endDate)
-            );
-
-            return _pregledi.Find(filter).ToList();
+            return _context.Pregledi.Where(p => p.Datum >= startDate && p.Datum <= endDate).ToList();
         }
 
         public List<Pregled> GetUnconfirmedAppointments()
         {
-            var filter = Builders<Pregled>.Filter.Eq(p => p.IdStomatologa, null);
-            return _pregledi.Find(filter).ToList();
+            return _context.Pregledi.Where(p => p.IdStomatologa == null).ToList();
+        }
+
+        // public List<Intervencija> GetIntervencijeZaPregled(int pregledId)
+        // {
+        //     var pregledIntervencije = _context.PreglediIntervencije
+        //         .Where(pi => pi.PregledId == pregledId)
+        //         .ToList();
+
+        //     var intervencijeIds = pregledIntervencije
+        //         .Select(pi => pi.IntervencijaId)
+        //         .ToList();
+
+        //     var intervencije = _context.Intervencije
+        //         .Where(i => intervencijeIds.Contains(i.Id))
+        //         .ToList();
+
+        //     return intervencije;
+        // }
+        public List<PregledIntervencijaDTO> GetIntervencijeZaPregled(int pregledId)
+        {
+            var intervencijeZaPregled = _context.PreglediIntervencije
+                .Where(pi => pi.PregledId == pregledId)
+                .Select(pi => new PregledIntervencijaDTO
+                {
+                    Id = pi.Intervencija.Id,
+                    Naziv = pi.Intervencija.Naziv,
+                    Cena = pi.Intervencija.Cena,
+                    Kolicina = pi.Kolicina
+                })
+                .ToList();
+
+            return intervencijeZaPregled;
         }
 
     }

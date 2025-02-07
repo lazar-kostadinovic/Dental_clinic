@@ -1,49 +1,62 @@
-using MongoDB.Driver;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using StomatoloskaOrdinacija.Models;
-using MongoDB.Bson;
 
 namespace StomatoloskaOrdinacija.Services
 {
     public class OcenaStomatologaService : IOcenaStomatologaService
     {
-        private readonly IMongoCollection<OcenaStomatologa> _ocene;
+        private readonly OrdinacijaDbContext _context;
 
-        public OcenaStomatologaService(IOrdinacijaDatabaseSettings settings, IMongoClient mongoClient)
+        public OcenaStomatologaService(OrdinacijaDbContext context)
         {
-            var database = mongoClient.GetDatabase(settings.DatabaseName);
-            _ocene = database.GetCollection<OcenaStomatologa>(settings.OcenaStomatologaCollectionName);
+            _context = context;
         }
-
 
         public OcenaStomatologa Create(OcenaStomatologa ocena)
         {
-            _ocene.InsertOne(ocena);
+            _context.OceneStomatologa.Add(ocena);
+            _context.SaveChanges();
             return ocena;
         }
 
         public List<OcenaStomatologa> Get()
         {
-            return _ocene.Find(ocena => true).ToList();
+            return _context.OceneStomatologa.ToList();
         }
 
-        public OcenaStomatologa Get(ObjectId id)
+        public OcenaStomatologa Get(int id)
         {
-            return _ocene.Find(ocena => ocena.Id == id).FirstOrDefault();
+            return _context.OceneStomatologa.Find(id);
         }
 
-        public void Remove(ObjectId id)
+        public void Remove(int id)
         {
-            _ocene.DeleteOne(ocena => ocena.Id == id);
+            var ocena = _context.OceneStomatologa.Find(id);
+            if (ocena != null)
+            {
+                _context.OceneStomatologa.Remove(ocena);
+                _context.SaveChanges();
+            }
         }
 
-        public void Update(ObjectId id, OcenaStomatologa novaOcena)
+        public void Update(int id, OcenaStomatologa novaOcena)
         {
-            _ocene.ReplaceOne(ocena => ocena.Id == id, novaOcena);
+            var existingOcena = _context.OceneStomatologa.Find(id);
+            if (existingOcena != null)
+            {
+                _context.Entry(existingOcena).CurrentValues.SetValues(novaOcena);
+                _context.SaveChanges();
+            }
         }
 
-        public List<OcenaStomatologa> GetReviews(ObjectId idStomatologa)
+        public List<OcenaStomatologa> GetReviews(int idStomatologa)
         {
-            return _ocene.Find(ocena => ocena.IdStomatologa == idStomatologa).ToList();
+            return _context.OceneStomatologa
+                .Where(ocena => ocena.IdStomatologa == idStomatologa)
+                .ToList();
         }
     }
 }

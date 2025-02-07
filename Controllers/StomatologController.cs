@@ -2,7 +2,6 @@ using StomatoloskaOrdinacija.Models;
 using StomatoloskaOrdinacija.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using StomatoloskaOrdinacija.DTOs;
 
 namespace StomatoloskaOrdinacija.Controllers;
@@ -45,8 +44,10 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
             PrvaSmena = stomatolog.PrvaSmena,
             Specijalizacija = stomatolog.Specijalizacija,
             BrojPregleda = stomatolog.BrojPregleda,
-            PredstojeciPregledi = stomatolog.PredstojeciPregledi.Select(p => p.ToString()).ToList(),
-            KomentariStomatologa = stomatolog.KomentariStomatologa.Select(k => k.ToString()).ToList()
+            // Pregledi = stomatolog.Pregledi.Select(p => p.ToString()).ToList(),
+            // KomentariStomatologa = stomatolog.KomentariStomatologa.Select(k => k.ToString()).ToList()
+            Pregledi = stomatologService.GetPreglediIdsForStomatolog(stomatolog.Id),
+            KomentariStomatologa = stomatologService.GetOceneIdsForStomatolog(stomatolog.Id),
         }).ToList();
 
         return Ok(stomatoloziDTO);
@@ -54,7 +55,7 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
 
     [AllowAnonymous]
     [HttpGet("{id}")]
-    public ActionResult<Stomatolog> Get(ObjectId id)
+    public ActionResult<Stomatolog> Get(int id)
     {
         var stomatolog = stomatologService.Get(id);
 
@@ -70,7 +71,7 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
     [HttpGet("getStomatologDTO/{id}")]
     public ActionResult<StomatologDTO> GetStomatologById(string id)
     {
-        if (!ObjectId.TryParse(id, out var objectId))
+        if (!int.TryParse(id, out var objectId))
         {
             return BadRequest("Invalid ObjectId format.");
         }
@@ -93,8 +94,10 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
             BrojTelefona = stomatolog.BrojTelefona,
             Role = stomatolog.Role,
             Specijalizacija = stomatolog.Specijalizacija,
-            PredstojeciPregledi = stomatolog.PredstojeciPregledi.Select(p => p.ToString()).ToList(),
-            KomentariStomatologa = stomatolog.KomentariStomatologa.Select(k => k.ToString()).ToList()
+            // Pregledi = stomatolog.Pregledi.Select(p => p.ToString()).ToList(),
+            // KomentariStomatologa = stomatolog.KomentariStomatologa.Select(k => k.ToString()).ToList()
+            Pregledi = stomatologService.GetPreglediIdsForStomatolog(stomatolog.Id),
+            KomentariStomatologa = stomatologService.GetOceneIdsForStomatolog(stomatolog.Id),
         };
 
         return stomatologDTO;
@@ -123,8 +126,11 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
             PrvaSmena = stomatolog.PrvaSmena,
             BrojPregleda = stomatolog.BrojPregleda,
             Specijalizacija = stomatolog.Specijalizacija,
-            KomentariStomatologa = stomatolog.KomentariStomatologa.Select(id => id.ToString()).ToList(),
-            PredstojeciPregledi = stomatolog.PredstojeciPregledi.Select(id => id.ToString()).ToList(),
+            // KomentariStomatologa = stomatolog.KomentariStomatologa.Select(id => id.ToString()).ToList(),
+            // Pregledi = stomatolog.Pregledi.Select(id => id.ToString()).ToList(),
+            Pregledi = stomatologService.GetPreglediIdsForStomatolog(stomatolog.Id),
+            KomentariStomatologa = stomatologService.GetOceneIdsForStomatolog(stomatolog.Id),
+
         };
 
         return Ok(stomatologDTO);
@@ -162,7 +168,7 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
     }
 
     [HttpPut("changeEmail/{id}/{newEmail}")]
-    public ActionResult ChangeEmail(ObjectId id, string newEmail)
+    public ActionResult ChangeEmail(int id, string newEmail)
     {
         var stomatolog = stomatologService.Get(id);
         if (stomatolog == null)
@@ -178,7 +184,7 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
     }
 
     [HttpPut("changeAddress/{id}/{adresa}")]
-    public ActionResult ChangeAddress(ObjectId id, string adresa)
+    public ActionResult ChangeAddress(int id, string adresa)
     {
         var stomatolog = stomatologService.Get(id);
         if (stomatolog == null)
@@ -194,7 +200,7 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
     }
 
     [HttpPut("changeNumber/{id}/{brojTelefona}")]
-    public ActionResult ChangeNumber(ObjectId id, string brojTelefona)
+    public ActionResult ChangeNumber(int id, string brojTelefona)
     {
         var stomatolog = stomatologService.Get(id);
         if (stomatolog == null)
@@ -211,14 +217,14 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
 
     [AllowAnonymous]
     [HttpPost("uploadSlika/{id}")]
-    public IActionResult UploadSlika(string id, IFormFile file)
+    public IActionResult UploadSlika(int id, IFormFile file)
     {
         if (file == null || file.Length == 0)
         {
             return BadRequest("File is empty.");
         }
 
-        var dentist = stomatologService.Get(new ObjectId(id));
+        var dentist = stomatologService.Get(id);
         if (dentist == null)
         {
             return NotFound($"Pacijent with Id = {id} not found.");
@@ -239,7 +245,7 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
     }
 
     [HttpDelete("{id}")]
-    public ActionResult Delete(ObjectId id)
+    public ActionResult Delete(int id)
     {
         var stomatolog = stomatologService.Get(id);
 
@@ -252,18 +258,7 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
 
         foreach (var pregled in pregledi)
         {
-            var patientId = pregled.IdPacijenta;
-
-            if (!pacijentService.RemoveAppointment(patientId, pregled.Id))
-            {
-                return NotFound(new { message = $"Failed to remove appointment with Id = {pregled.Id} from patient with Id = {patientId}" });
-            }
-
-            if (!stomatologService.RemoveAppointment(id, pregled.Id))
-            {
-                return NotFound(new { message = $"Failed to remove appointment with Id = {pregled.Id} from stomatolog with Id = {id}" });
-            }
-
+           
             pregledService.Remove(pregled.Id);
         }
 
@@ -278,7 +273,7 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
     {
         try
         {
-         var stomatolog = await stomatologService.GetStomatologByEmailAsync(resource.Email);
+            var stomatolog = await stomatologService.GetStomatologByEmailAsync(resource.Email);
             var pacijent = await pacijentService.GetPacijentByEmailAsync(resource.Email);
 
             if (stomatolog != null)
@@ -287,7 +282,7 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
             }
             else if (pacijent != null)
             {
-                   return BadRequest($"Pacijent sa ovom e-mail adresom vec postoji.");
+                return BadRequest($"Pacijent sa ovom e-mail adresom vec postoji.");
             }
 
             var response = await stomatologService.Register(resource);
@@ -300,7 +295,7 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
     }
 
     [HttpPost("addDayOff/{idStomatologa}/{datum}")]
-    public IActionResult AddDayOff(ObjectId idStomatologa, DateTime datum)
+    public IActionResult AddDayOff(int idStomatologa, DateTime datum)
     {
         try
         {
@@ -331,7 +326,7 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
     }
 
     [HttpPost("addDaysOff/{idStomatologa}/{pocetniDatum}/{krajnjiDatum}")]
-    public IActionResult AddDaysOff(ObjectId idStomatologa, DateTime pocetniDatum, DateTime krajnjiDatum)
+    public IActionResult AddDaysOff(int idStomatologa, DateTime pocetniDatum, DateTime krajnjiDatum)
     {
         try
         {
@@ -376,7 +371,7 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
 
     [AllowAnonymous]
     [HttpGet("GetAllDaysOff/{idStomatologa}")]
-    public IActionResult GetAllDaysOff(ObjectId idStomatologa)
+    public IActionResult GetAllDaysOff(int idStomatologa)
     {
         try
         {
@@ -401,16 +396,13 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
 
     [AllowAnonymous]
     [HttpPut("changeShift/{idStomatologa}")]
-    public IActionResult ChangeShift(string idStomatologa)
+    public IActionResult ChangeShift(int idStomatologa)
     {
-        if (!ObjectId.TryParse(idStomatologa, out var objectId))
-        {
-            return BadRequest("Invalid ObjectId format.");
-        }
+
 
         try
         {
-            var stomatolog = stomatologService.Get(objectId);
+            var stomatolog = stomatologService.Get(idStomatologa);
 
             if (stomatolog == null)
             {
@@ -418,7 +410,7 @@ public class StomatologController(IStomatologService stomatologService, IPacijen
             }
             stomatolog.PrvaSmena = !stomatolog.PrvaSmena;
 
-            stomatologService.Update(objectId, stomatolog);
+            stomatologService.Update(idStomatologa, stomatolog);
             // var changed = stomatologService.ChangeShift(objectId);
 
             // if (!changed)

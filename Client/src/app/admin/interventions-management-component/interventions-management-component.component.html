@@ -13,12 +13,12 @@
                         (click)="saveChanges(intervencija.id, intervencija.cena)">✔️</i>
                 </div>
             </label>
-            <button (click)="deleteIntervention(intervencija.id)">Obrisi</button>
+            <button (click)="deleteIntervention(intervencija.id)" class="delete-button">Obriši</button>
         </div>
     </div>
     <div class="new-intervention-form">
         <input type="text" [(ngModel)]="newIntervention.naziv" placeholder="Naziv intervencije" />
         <input type="number" [(ngModel)]="newIntervention.cena" placeholder="Cena" />
-        <button (click)="addNewIntervention()">Dodaj novu intervenciju</button>
+        <button (click)="addNewIntervention()" class="add-button">Dodaj novu intervenciju</button>
     </div>
 </div>

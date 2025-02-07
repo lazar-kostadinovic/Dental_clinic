@@ -16,8 +16,10 @@ namespace StomatoloskaOrdinacija.DTOs
         public int UkupanBrojPregleda { get; set; }
         public UserRole Role { get; set; }
         public Specijalizacija Specijalizacija { get; set; }
-        public List<string> PredstojeciPregledi { get; set; }
-        public List<string> KomentariStomatologa { get; set; }
+        public List<int> Pregledi { get; set; } = new List<int>();
+        public List<Pregled> PreglediObj { get; set; }
+        public List<int> KomentariStomatologa { get; set; } = new List<int>();
+        public List<OcenaStomatologa> KomentariStomatologObj { get; set; }
         public List<DateTime> SlobodniDani { get; set; }
     }
 }

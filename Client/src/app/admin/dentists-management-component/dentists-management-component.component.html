@@ -1,96 +1,3 @@
-<!-- <div class="dentist-management-container">
-  <div class="dentist-details" *ngIf="activeDentist">
-    <button (click)="resetActiveDentist()" class="back-button">Nazad na listu stomatologa</button>
-    <div class="first-div ">
-      <div>
-        <h2>{{ activeDentist.ime }} {{ activeDentist.prezime }}</h2>
-        <img [src]="getImageUrl(activeDentist.slika)" alt="Profilna slika" class="dentist-image" />
-        <div>
-          Specijalizacija: {{ getSpecijalizacijaLabel(activeDentist.specijalizacija) }} <br>
-          Adresa: {{ activeDentist.adresa }}<br />
-          Email: {{ activeDentist.email }}<br />
-          Telefon: {{ activeDentist.brojTelefona }}<br />
-          Smena: {{getDentistShift(activeDentist.prvaSmena)}}<br />
-          Broj odradjenih pregleda ove godine: {{activeDentist.brojPregleda}}
-        </div>
-      </div>
-      <div *ngIf="showDayOff[activeDentist.id]" class="add-day-off">
-        <h3>Dodaj neradne dane</h3>
-        <label for="datum-start">Početni datum:</label>
-        <input type="date" id="datum-start" [(ngModel)]="selectedDateStart[activeDentist.id]" [min]="getTodayDate()" />
-
-        <label for="datum-end">Krajnji datum:</label>
-        <input type="date" id="datum-end" [(ngModel)]="selectedDateEnd[activeDentist.id]"
-          [min]="selectedDateStart[activeDentist.id]" />
-
-        <button (click)="submitDayOff(activeDentist.id)">Dodaj neradne dane</button>
-      </div>
-    </div>
-    <div *ngIf="showDayOff[activeDentist.id]" class="day-off-list">
-      <h3>Neradni dani:</h3>
-      <ul class="days-off-list">
-        <li *ngFor="let day of daysOffMap[activeDentist.id]" class="day-off-item">{{ day }}</li>
-      </ul>
-      <div class="day-off-summary">
-        <p>Ukupan broj neradnih dana u ovoj godini: {{ countCurrentYearDaysOff(activeDentist.id) }}</p>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="dentist-details">
-  <div class="dentist-list">
-    <h3>Naši stomatolozi</h3>
-  
-    <div>
-      <h4 (click)="toggleShift('prvaSmena')">
-        Prva smena:
-        <span [class]="showPrvaSmena ? 'arrow-down' : 'arrow-left'">⮝</span>
-      </h4>
-      <ul *ngIf="showPrvaSmena">
-        <li *ngFor="let stomatolog of stomatoloziPrvaSmena">
-          <strong>{{ stomatolog.ime }} {{ stomatolog.prezime }}</strong>
-          <br />
-          <img [src]="getImageUrl(stomatolog.slika)" alt="Profilna slika" class="dentist-image" />
-          Specijalizacija: {{ getSpecijalizacijaLabel(stomatolog.specijalizacija) }} <br />
-          Adresa: {{ stomatolog.adresa }}<br />
-          Email: {{ stomatolog.email }}<br />
-          Telefon: {{ stomatolog.brojTelefona }}<br />
-          Smena: Prva<br />
-          Broj odradjenih pregleda ove godine: {{ stomatolog.brojPregleda }}
-          <button (click)="fetchAllDaysOff(stomatolog.id)">Prikaži sve neradne dane</button>
-          <button (click)="changeShift(stomatolog.id)">Promeni smenu</button>
-          <button (click)="deleteDentist(stomatolog.id)" class="delete">Obriši</button>
-        </li>
-      </ul>
-    </div>
-
-    <div>
-      <h4 (click)="toggleShift('drugaSmena')">
-        Druga smena:
-        <span [class]="showDrugaSmena ? 'arrow-down' : 'arrow-left'">⮝</span>
-      </h4>
-      <ul *ngIf="showDrugaSmena">
-        <li *ngFor="let stomatolog of stomatoloziDrugaSmena">
-          <strong>{{ stomatolog.ime }} {{ stomatolog.prezime }}</strong>
-          <br />
-          <img [src]="getImageUrl(stomatolog.slika)" alt="Profilna slika" class="dentist-image" />
-          Specijalizacija: {{ getSpecijalizacijaLabel(stomatolog.specijalizacija) }} <br />
-          Adresa: {{ stomatolog.adresa }}<br />
-          Email: {{ stomatolog.email }}<br />
-          Telefon: {{ stomatolog.brojTelefona }}<br />
-          Smena: Druga<br />
-          Broj odradjenih pregleda ove godine: {{ stomatolog.brojPregleda }}
-          <button (click)="fetchAllDaysOff(stomatolog.id)">Prikaži sve neradne dane</button>
-          <button (click)="changeShift(stomatolog.id)">Promeni smenu</button>
-          <button (click)="deleteDentist(stomatolog.id)" class="delete">Obriši</button>
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
-  
-</div> -->
 <div class="dentist-management-container">
   <div class="day-off" *ngIf="activeDentist">
     <button (click)="resetActiveDentist()" class="back-button">Sakrij neradne dane</button>
@@ -123,19 +30,18 @@
   </div>
 
   <div class="dentist-details">
-
+ <div class="header">
+  <h3>Naši stomatolozi</h3>
+ </div>
     <div class="dentist-list">
-      <div class="header">
-
-    
-      <button (click)="navigateToRegisterDentist()">Dodaj novog stomatologa</button>
-      <h3>Naši stomatolozi</h3>
-    </div>
+      <div class="header-btn">
+        <button (click)="navigateToRegisterDentist()">Dodaj novog stomatologa</button>
+      </div>
 
       <div>
         <h4 (click)="toggleShift('prvaSmena')">
           Prva smena:
-          <span [class]="showPrvaSmena ? 'arrow-down' : 'arrow-left'">⮝</span>
+          <span [ngClass]="showPrvaSmena ? 'arrow-down' : 'arrow-left'">⮝</span>
         </h4>
         <ul *ngIf="showPrvaSmena">
           <li *ngFor="let stomatolog of stomatoloziPrvaSmena">
@@ -148,9 +54,13 @@
             Telefon: {{ stomatolog.brojTelefona }}<br />
             Smena: Prva<br />
             Broj odradjenih pregleda ove godine: {{ stomatolog.brojPregleda }}
-            <button (click)="fetchAllDaysOff(stomatolog.id)">Prikaži sve neradne dane</button>
-            <button (click)="changeShift(stomatolog.id)">Promeni smenu</button>
-            <button (click)="deleteDentist(stomatolog.id)" class="delete">Obriši</button>
+            <div class="buttons">
+
+
+              <button (click)="fetchAllDaysOff(stomatolog.id)">Prikaži sve neradne dane</button>
+              <button (click)="changeShift(stomatolog.id)">Promeni smenu</button>
+              <button (click)="deleteDentist(stomatolog.id)" class="delete">Obriši</button>
+            </div>
           </li>
         </ul>
       </div>
@@ -158,7 +68,7 @@
       <div>
         <h4 (click)="toggleShift('drugaSmena')">
           Druga smena:
-          <span [class]="showDrugaSmena ? 'arrow-down' : 'arrow-left'">⮝</span>
+          <span [ngClass]="showDrugaSmena ? 'arrow-down' : 'arrow-left'">⮝</span>
         </h4>
         <ul *ngIf="showDrugaSmena">
           <li *ngFor="let stomatolog of stomatoloziDrugaSmena">
@@ -171,9 +81,11 @@
             Telefon: {{ stomatolog.brojTelefona }}<br />
             Smena: Druga<br />
             Broj odradjenih pregleda ove godine: {{ stomatolog.brojPregleda }}
+            <div class="buttons">
             <button (click)="fetchAllDaysOff(stomatolog.id)">Prikaži sve neradne dane</button>
             <button (click)="changeShift(stomatolog.id)">Promeni smenu</button>
             <button (click)="deleteDentist(stomatolog.id)" class="delete">Obriši</button>
+            </div>
           </li>
         </ul>
       </div>

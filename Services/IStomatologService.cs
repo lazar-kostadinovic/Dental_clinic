@@ -1,24 +1,27 @@
 using StomatoloskaOrdinacija.Models;
-using MongoDB.Bson;
 
 namespace StomatoloskaOrdinacija.Services
 {
     public interface IStomatologService
     {
         List<Stomatolog> Get();
-        Stomatolog Get(ObjectId? id);
+        Stomatolog Get(int? id);
         Task<Stomatolog> GetStomatologByEmailAsync(string email);
         List<Stomatolog> GetBySpecijalizacija(Specijalizacija specijalizacija);
-        Stomatolog GetAndUpdate(ObjectId? stomatologId, ObjectId pregledId);
-        Stomatolog GetAndAddReview(ObjectId stomatologId, ObjectId pregledId);
+        Stomatolog GetAndUpdate(int? stomatologId, int pregledId);
+        Stomatolog GetAndAddReview(int stomatologId, int pregledId);
         Stomatolog Create(Stomatolog pacijent);
-        void Update(ObjectId id, Stomatolog stomatolog);
-        void Remove(ObjectId id);
-        bool RemoveAppointment(ObjectId? stomatologId, ObjectId appointmentId);
+        void Update(int id, Stomatolog stomatolog);
+        void Remove(int id);
+        bool RemoveAppointment(int stomatologId, int appointmentId);
         Task<bool> Register(RegistrationModelStomatolog resource);
-        bool SetDayOff(ObjectId stomatologId, DateTime day);
-        bool ChangeShift(ObjectId stomatologId);
-        bool SetDaysOff(ObjectId stomatologId, List<DateTime> daysOff);
+        bool SetDayOff(int stomatologId, DateTime day);
+        bool ChangeShift(int stomatologId);
+        bool SetDaysOff(int stomatologId, List<DateTime> daysOff);
+        List<Pregled> GetPreglediForStomatolog(int stomatologId);
+        List<int> GetPreglediIdsForStomatolog(int stomatologId);
+        List<OcenaStomatologa> GetOceneForStomatolog(int stomatologId);
+        List<int> GetOceneIdsForStomatolog(int stomatologId);
 
     }
 }

@@ -9,7 +9,7 @@ import { UnconfirmedAppointmentsComponent } from './unconfirmed-appointments/unc
 @Component({
   selector: 'app-patient-appointments',
   standalone: true,
-  imports: [CommonModule, FormsModule,UnconfirmedAppointmentsComponent],
+  imports: [CommonModule, FormsModule, UnconfirmedAppointmentsComponent],
   templateUrl: './patient-appointments.component.html',
   styleUrl: './patient-appointments.component.css',
 })
@@ -34,62 +34,71 @@ export class PatientAppointmentsComponent implements OnInit {
   ngOnInit() {
     this.fetchPatientHistory();
   }
-  
+
   formatDate(utcDate: Date): string {
     return this.dateService.formatDate(utcDate);
   }
-  
+
   fetchPatientHistory() {
-    //console.log('fecujem');
-    const pregledRequests = this.appointmentIds.map((id) =>
-      this.http
-        .get<PregledDTO>(`http://localhost:5001/Pregled/getPregledDTO/${id}`)
-        .pipe(
-          switchMap((pregled) =>
-            iif(
-              () => !!pregled.idStomatologa,
-              this.http
-                .get<{ ime: string; prezime: string }>(
-                  `http://localhost:5001/Stomatolog/getStomatologDTO/${pregled.idStomatologa}`
-                )
-                .pipe(
-                  map((stomatolog) => ({
-                    ...pregled,
-                    imeStomatologa: `${stomatolog.ime} ${stomatolog.prezime}`,
-                  }))
-                ),
-              of({ ...pregled, imeStomatologa: 'Nepoznat stomatolog' })
+    if (this.appointmentIds != null) {
+      const pregledRequests = this.appointmentIds.map((id) =>
+        this.http
+          .get<PregledDTO>(`http://localhost:5001/Pregled/getPregledDTO/${id}`)
+          .pipe(
+            switchMap((pregled) =>
+              iif(
+                () => !!pregled.idStomatologa,
+                this.http
+                  .get<{ ime: string; prezime: string }>(
+                    `http://localhost:5001/Stomatolog/getStomatologDTO/${pregled.idStomatologa}`
+                  )
+                  .pipe(
+                    map((stomatolog) => ({
+                      ...pregled,
+                      imeStomatologa: `${stomatolog.ime} ${stomatolog.prezime}`,
+                    }))
+                  ),
+                of({ ...pregled, imeStomatologa: 'Nepoznat stomatolog' })
+              )
             )
           )
-        )
-    );
+      );
 
-    if (pregledRequests.length > 0) {
-      //console.log(pregledRequests);
-      forkJoin(pregledRequests).subscribe({
-        next: (pregledi) => {
-          this.pregledList = this.sortPregledi(pregledi);
-          this.unconfirmedAppointments = pregledi.filter(
-            (pregled) => !pregled.idStomatologa
-          );
-          //console.log(this.unconfirmedAppointments);
-        },
-        error: (error) => {
-          console.error('Error fetching pregledi or stomatologs:', error);
-        },
-      });
+      if (pregledRequests.length > 0) {
+        //console.log(pregledRequests);
+        forkJoin(pregledRequests).subscribe({
+          next: (pregledi) => {
+            this.pregledList = this.sortPregledi(pregledi);
+            this.unconfirmedAppointments = pregledi.filter(
+              (pregled) => !pregled.idStomatologa
+            );
+            //console.log(this.unconfirmedAppointments);
+          },
+          error: (error) => {
+            console.error('Error fetching pregledi or stomatologs:', error);
+          },
+        });
+      }
     }
   }
   sortPregledi(pregledi: PregledDTO[]): PregledDTO[] {
     const upcoming = pregledi
       .filter((p) => p.status === 0)
-      .sort((a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime());
+      .sort(
+        (a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime()
+      );
 
     const past = pregledi
       .filter((p) => p.status === 1)
-      .sort((a, b) => new Date(b.datum).getTime() - new Date(a.datum).getTime());
+      .sort(
+        (a, b) => new Date(b.datum).getTime() - new Date(a.datum).getTime()
+      );
 
     return [...upcoming, ...past];
+  }
+
+  calculateTotalForAppointment(pregled: PregledDTO): number {
+    return pregled.intervencije.reduce((total, intervencija) => total + (intervencija.cena * intervencija.kolicina), 0);
   }
 
   deleteAppointment(id: string) {
