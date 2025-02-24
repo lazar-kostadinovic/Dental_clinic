@@ -1,7 +1,10 @@
+<div class="appointments-container">
+
+
 <div *ngIf="unconfirmedAppointments.length > 0" class="row">
   <h3>Nepotvrđeni pregledi</h3>
   <ng-container *ngFor="let pregled of unconfirmedAppointments">
-      <div class="unconfirmed">
+      <div class="appointment">
 
           <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
           <p><strong>Opis:</strong> {{ pregled.opis }}</p>
@@ -11,4 +14,5 @@
 </div>
 <div *ngIf="unconfirmedAppointments.length == 0" class="row">
   <h3>Svi pregledi su preuzeti od strane nekog stomatologa.</h3>
+</div>
 </div>

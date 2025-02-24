@@ -111,7 +111,7 @@
     </h3>
 
 
-    <p *ngIf="!hasUpcomingAppointments && showUpcomingAppointments">Ovaj pacijent nema zakazanih pregleda kod vas</p>
+    <p *ngIf="!hasUpcomingAppointments && showUpcomingAppointments">Nemate zakazanih pregleda.</p>
 
     <div class="row" *ngIf="hasUpcomingAppointments && showUpcomingAppointments">
       <ng-container *ngFor="let pregled of filteredAppointmentList">

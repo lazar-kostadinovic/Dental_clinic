@@ -19,7 +19,7 @@ namespace StomatoloskaOrdinacija.Controllers
             {
                 var options = new PaymentIntentCreateOptions
                 {
-                    Amount = (long)(request.Amount * 100),
+                    Amount = (long)(request.Amount*100 ),
                     Currency = request.Currency,
                     PaymentMethodTypes = new List<string> { "card" }
                 };
@@ -39,6 +39,6 @@ namespace StomatoloskaOrdinacija.Controllers
     public class PaymentIntentRequest
     {
         public decimal Amount { get; set; }
-        public string Currency { get; set; } = "usd";
+        public string Currency { get; set; } = "rsd";
     }
 }

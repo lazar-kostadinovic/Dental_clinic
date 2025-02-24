@@ -150,7 +150,7 @@ namespace StomatoloskaOrdinacija.Services
             return pacijent;
         }
 
-         public List<Pregled> GetPreglediForPacijent(int pacijentid)
+        public List<Pregled> GetPreglediForPacijent(int pacijentid)
         {
             var pregledi = _context.Pregledi
                 .Where(p => p.IdPacijenta == pacijentid)
@@ -163,14 +163,20 @@ namespace StomatoloskaOrdinacija.Services
 
             return pregledi;
         }
+
+        public List<Pregled> GetUnconfirmedAppointmentsForPatient(int pacijentId)
+        {
+            var pregledi = _context.Pregledi.Where(p => p.IdPacijenta == pacijentId && p.IdStomatologa == null).ToList();
+            return pregledi;
+        }
         public List<int> GetPreglediIdsForPacijent(int pacijentid)
         {
             var pregledIds = _context.Pregledi
-                .Where(p => p.IdPacijenta == pacijentid)
-                .Select(p => p.Id) 
+                .Where(p => p.IdPacijenta == pacijentid&&p.IdStomatologa!=null)
+                .Select(p => p.Id)
                 .ToList();
 
-          return pregledIds.Count > 0 ? pregledIds : null;
+            return pregledIds.Count > 0 ? pregledIds : null;
         }
 
     }

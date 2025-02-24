@@ -54,6 +54,7 @@ export class NavbarComponent {
   }
 
   logout() {
+    sessionStorage.removeItem('alreadyNavigated');
     this.isAdmin=false;
     this.isPatient=false;
     localStorage.removeItem('token');

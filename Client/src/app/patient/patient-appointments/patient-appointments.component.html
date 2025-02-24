@@ -1,58 +1,56 @@
 <div class="appointments-container">
-  <div *ngIf="showUnconfirmed">
-    <app-unconfirmed-appointments [unconfirmedAppointments]="unconfirmedAppointments"></app-unconfirmed-appointments>
-  </div>
-  <div *ngIf="!showUnconfirmed">
-    <h3>Predstojeći pregledi</h3>
-    <div class="row">
-      <ng-container *ngFor="let pregled of pregledList">
-        <div *ngIf="!pregled">Nemate zakazanih pregleda</div>
-        <div *ngIf="pregled.status === 0 && !unconfirmedAppointments.includes(pregled)" class="appointment">
-          <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
-          <p><strong>Opis:</strong> {{ pregled.opis }}<i class="custom-edit-button"
-              (click)="openUpdateForm(pregled.id, pregled.status)">✎</i></p>
-          <p><strong>Stomatolog:</strong> {{ pregled.imeStomatologa }}</p>
-          <button (click)="cancelAppointment(pregled.id)">Otkaži pregled</button>
-        </div>
-      </ng-container>
-      <div *ngIf="isUpdateFormVisible0" class="update-form-container">
-        <h3>Ažuriraj Pregled</h3>
-        <form (ngSubmit)="updatePregled()">
-          <label for="opis">Opis:</label>
-          <textarea id="opis" [(ngModel)]="updateForm.opis" name="opis" required></textarea>
-          <button type="submit" class="save-button">Sačuvaj</button>
-          <button type="button" (click)="isUpdateFormVisible0 = false" class="cancel-button">Otkaži</button>
-        </form>
-      </div>
-    </div>
-    <h3>Prošli pregledi</h3>
-    <div class="row">
-      <ng-container *ngFor="let pregled of pregledList">
-        <div *ngIf="pregled.status === 1 && !unconfirmedAppointments.includes(pregled)" class="appointment">
-          <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
-          <p><strong>Opis:</strong> {{ pregled.opis }}</p>
-          <p><strong>Stomatolog:</strong> {{ pregled.imeStomatologa }}</p>
-          <div *ngIf="pregled.naplacen">
-            <p><strong>Intervencije:</strong></p>
-            <ul>
-              <li *ngFor="let intervencija of pregled.intervencije">
-                {{ intervencija.naziv }} - {{ intervencija.cena }} din x {{ intervencija.kolicina }}
-              </li>
-            </ul>
-            <p><strong>Ukupna cena:</strong> {{ calculateTotalForAppointment(pregled)}} din</p>
+    <div>
+      <h3>Predstojeći pregledi</h3>
+      <div class="row">
+        <ng-container *ngFor="let pregled of pregledList">
+          <div *ngIf="!pregled">Nemate zakazanih pregleda</div>
+          <div *ngIf="pregled.status === 0" class="appointment">
+            <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
+            <p><strong>Opis:</strong> {{ pregled.opis }}<i class="custom-edit-button"
+                (click)="openUpdateForm(pregled.id, pregled.status)">✎</i></p>
+            <p><strong>Stomatolog:</strong> {{ pregled.imeStomatologa }}</p>
+            <button (click)="cancelAppointment(pregled.id)">Otkaži pregled</button>
           </div>
-          <!-- <button (click)="deleteAppointment(pregled.id)" class="delete-button">Obriši pregled</button> -->
+        </ng-container>
+        <div *ngIf="isUpdateFormVisible0" class="update-form-container">
+          <h3>Ažuriraj Pregled</h3>
+          <form (ngSubmit)="updatePregled()">
+            <label for="opis">Opis:</label>
+            <textarea id="opis" [(ngModel)]="updateForm.opis" name="opis" required></textarea>
+            <button type="submit" class="save-button">Sačuvaj</button>
+            <button type="button" (click)="isUpdateFormVisible0 = false" class="cancel-button">Otkaži</button>
+          </form>
         </div>
-      </ng-container>
-      <div *ngIf="isUpdateFormVisible1" class="update-form-container">
-        <h3>Ažuriraj Pregled</h3>
-        <form (ngSubmit)="updatePregled()">
-          <label for="opis">Opis:</label>
-          <textarea id="opis" [(ngModel)]="updateForm.opis" name="opis" required></textarea>
-          <button type="submit" class="save-button">Sačuvaj</button>
-          <button type="button" (click)="isUpdateFormVisible1 = false" class="cancel-button">Otkaži</button>
-        </form>
+      </div>
+      <h3>Prošli pregledi</h3>
+      <div class="row">
+        <ng-container *ngFor="let pregled of pregledList">
+          <div *ngIf="pregled.status === 1" class="appointment">
+            <p><strong>Datum:</strong> {{ formatDate(pregled.datum) }}</p>
+            <p><strong>Opis:</strong> {{ pregled.opis }}</p>
+            <p><strong>Stomatolog:</strong> {{ pregled.imeStomatologa }}</p>
+            <div *ngIf="pregled.naplacen">
+              <p><strong>Intervencije:</strong></p>
+              <ul>
+                <li *ngFor="let intervencija of pregled.intervencije">
+                  {{ intervencija.naziv }} - {{ intervencija.cena }} din x {{ intervencija.kolicina }}
+                </li>
+              </ul>
+              <p><strong>Ukupna cena:</strong> {{ calculateTotalForAppointment(pregled)}} din</p>
+            </div>
+            <!-- <button (click)="deleteAppointment(pregled.id)" class="delete-button">Obriši pregled</button> -->
+          </div>
+        </ng-container>
+        <div *ngIf="isUpdateFormVisible1" class="update-form-container">
+          <h3>Ažuriraj Pregled</h3>
+          <form (ngSubmit)="updatePregled()">
+            <label for="opis">Opis:</label>
+            <textarea id="opis" [(ngModel)]="updateForm.opis" name="opis" required></textarea>
+            <button type="submit" class="save-button">Sačuvaj</button>
+            <button type="button" (click)="isUpdateFormVisible1 = false" class="cancel-button">Otkaži</button>
+          </form>
+        </div>
       </div>
     </div>
+    <div>
   </div>
-</div>

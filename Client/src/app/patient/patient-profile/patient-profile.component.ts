@@ -1,41 +1,46 @@
-import { Component, ElementRef, ViewChild, viewChild } from '@angular/core';
+import {
+  AfterContentInit,
+  Component,
+  ElementRef,
+  ViewChild,
+  viewChild,
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { PacijentDTO } from '../../models/pacijentDTO.model';
 import { ScheduleAppointmentComponent } from '../schedule-appointment/schedule-appointment.component';
 import { PatientAppointmentsComponent } from '../patient-appointments/patient-appointments.component';
-import { Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  Router,
+  RouterLink,
+  RouterOutlet,
+} from '@angular/router';
 import { StripeService } from '../../services/stripe.service';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { StateService } from '../../services/state.service';
+import { timeout } from 'rxjs';
+import { NavigationStateService } from '../../services/navigation.service';
 
 @Component({
   selector: 'app-patient-profile',
   standalone: true,
-  imports: [
-    CommonModule,
-    PatientAppointmentsComponent,
-    ScheduleAppointmentComponent,
-    PatientAppointmentsComponent,
-    FormsModule,
-  ],
+  imports: [CommonModule, FormsModule, RouterLink, RouterOutlet],
   templateUrl: './patient-profile.component.html',
   styleUrls: ['./patient-profile.component.css'],
 })
 export class PatientProfileComponent {
   patient!: PacijentDTO;
   email: string | null = null;
-
-  showUnconfirmed = false;
-  showSchedule = false;
   isPaymentFormVisible = false;
   isPaymentProcessing = false;
   stripe!: Stripe;
   card: any = null;
   cardMounted = false;
   paymentAmount: number = 0;
+  count: number = 0;
 
   isEditing = {
     email: false,
@@ -49,19 +54,34 @@ export class PatientProfileComponent {
     adresa: '',
   };
 
-  @ViewChild(PatientAppointmentsComponent) patientAppointmentsComponent?: PatientAppointmentsComponent;
+  @ViewChild(PatientAppointmentsComponent)
+  patientAppointmentsComponent?: PatientAppointmentsComponent;
   @ViewChild('fileInput') fileInput!: ElementRef;
 
   constructor(
     private http: HttpClient,
     private router: Router,
     private stripeService: StripeService,
-    private stateService: StateService
+    private stateService: StateService,
+    private route: ActivatedRoute,
+    private navigationState: NavigationStateService
   ) {}
+
   ngOnInit() {
     this.email = localStorage.getItem('email');
     console.log(this.email);
     this.fetchPatientProfile();
+    const alreadyNavigated = sessionStorage.getItem('alreadyNavigated');
+
+    if (!alreadyNavigated) {
+      setTimeout(() => {
+        this.router.navigate(['appointments'], {
+          relativeTo: this.route,
+          queryParams: { appointmentIds: this.patient.pregledi },
+        });
+        sessionStorage.setItem('alreadyNavigated', 'true');
+      }, 200);
+    }
   }
 
   ngAfterViewInit() {
@@ -76,7 +96,6 @@ export class PatientProfileComponent {
     });
   }
 
-
   closePaymentForm() {
     this.isPaymentFormVisible = false;
     this.card.destroy();
@@ -85,17 +104,15 @@ export class PatientProfileComponent {
   }
 
   setHiddenState() {
-    this.stateService.setHiddenState(true);  
+    this.stateService.setHiddenState(true);
   }
   resetHiddenState() {
-    this.stateService.setHiddenState(false);  
+    this.stateService.setHiddenState(false);
   }
 
   handlePayment() {
     this.isPaymentFormVisible = true;
     this.isPaymentProcessing = false;
-    this.showSchedule=false;
-    this.showUnconfirmed=false;
     this.setHiddenState();
     setTimeout(() => {
       this.loadStripeCardElement();
@@ -103,10 +120,6 @@ export class PatientProfileComponent {
   }
 
   loadStripeCardElement() {
-    // if (!this.stripe || this.cardMounted) {
-    //   return;
-    // }
-
     const elements = this.stripe.elements();
     this.card = elements.create('card');
     this.card.mount('#card-element');
@@ -155,8 +168,6 @@ export class PatientProfileComponent {
         this.isPaymentProcessing = false;
         this.resetHiddenState();
       });
-
-
   }
 
   reducePatientDebt(patientId: string, amount: number) {
@@ -173,8 +184,12 @@ export class PatientProfileComponent {
         },
         error: (err) => {
           console.error('Greška prilikom smanjenja dugovanja:', err);
-          Swal.fire('Greška', 'Došlo je do greške prilikom ažuriranja dugovanja.', 'error');
-          },
+          Swal.fire(
+            'Greška',
+            'Došlo je do greške prilikom ažuriranja dugovanja.',
+            'error'
+          );
+        },
       });
   }
 
@@ -196,33 +211,6 @@ export class PatientProfileComponent {
         },
       });
   }
-
-  toggleUnconfirmed() {
-    this.showUnconfirmed=true;
-    this.showSchedule = false;
-    this.isPaymentFormVisible=false;
-    this.fetchPatientProfile();
-  }
-
-  toggleSchedule() {
-    this.showSchedule = true;
-    this.showUnconfirmed = false;
-    this.isPaymentFormVisible=false;
-    this.fetchPatientProfile();
-  }
-
-  toggleAppointments() {
-    this.showSchedule = false;
-    this.showUnconfirmed = false;
-    this.isPaymentFormVisible=false;
-    this.fetchPatientProfile();
-  }
-
-  // showButtons() {
-  //   if (!this.showSchedule && !this.showUnconfirmed) {
-  //     return true;
-  //   } else return false;
-  // }
 
   triggerFileInput(): void {
     this.fileInput.nativeElement.click();
@@ -266,11 +254,7 @@ export class PatientProfileComponent {
   // }
 
   onAppointmentScheduled(newAppointmentId: string): void {
-    this.showSchedule = false;
-    this.patient.pregledi = [
-      newAppointmentId,
-      ...this.patient.pregledi,
-    ];
+    this.patient.pregledi = [newAppointmentId, ...this.patient.pregledi];
     this.fetchPatientProfile();
   }
 
@@ -293,7 +277,11 @@ export class PatientProfileComponent {
             },
             error: (error) => {
               console.error('Greška prilikom brisanja profila:', error);
-              Swal.fire('Greška', 'Došlo je do greške prilikom brisanja profila.', 'error');
+              Swal.fire(
+                'Greška',
+                'Došlo je do greške prilikom brisanja profila.',
+                'error'
+              );
             },
           });
         localStorage.removeItem('token');
@@ -304,17 +292,17 @@ export class PatientProfileComponent {
   }
 
   toggleEditEmail() {
-    this.isEditing.email=!this.isEditing.email;
+    this.isEditing.email = !this.isEditing.email;
     // this.isEditing.adresa = false;
     // this.isEditing.telefon = false;
   }
   toggleEditNumber() {
-    this.isEditing.telefon= !this.isEditing.telefon;
+    this.isEditing.telefon = !this.isEditing.telefon;
     // this.isEditing.adresa = false;
     // this.isEditing.email = false;
   }
   toggleEditAddress() {
-    this.isEditing.adresa=!this.isEditing.adresa;
+    this.isEditing.adresa = !this.isEditing.adresa;
     // this.isEditing.email = false;
     // this.isEditing.telefon = false;
   }
@@ -342,7 +330,7 @@ export class PatientProfileComponent {
       next: () => {
         (this.patient as any)[field] = this.updatedValues[field];
         this.isEditing[field] = false;
-        Swal.fire("",`${field} uspešno ažuriran!`,"success");
+        Swal.fire('', `${field} uspešno ažuriran!`, 'success');
         if (field === 'email') {
           localStorage.setItem('email', this.updatedValues.email);
         }

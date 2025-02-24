@@ -37,16 +37,17 @@
       <input type="text" [(ngModel)]="updatedValues.adresa" placeholder="Unesite novu adresu" />
       <i class="custom-edit-button" (click)="saveChanges('adresa')">✔️</i>
     </div>
+    <button [routerLink]="['appointments']"
+      [queryParams]="{ appointmentIds: patient.pregledi }">
+      Prikazi preglede
+    </button><br>
+    <button [routerLink]="['unconfirmed-appointments']" [queryParams]="{ patientId: patient.id }">
+      Prikazi nepotvrdjene preglede
+    </button><br>
 
-    <!-- <button *ngIf="!showButtons()" (click)="toggleAppointments()">Prikazi preglede</button><br>
-    <button *ngIf="showButtons()"  (click)="toggleUnconfirmed()">Prikazi nepotvrdjene preglede</button> <br>
-    <button *ngIf="showButtons()"  (click)="toggleSchedule()">Zakazi pregled</button> <br> -->
+    <button routerLink="schedule-appointment">Zakazi pregled</button> <br>
 
-    <button (click)="toggleAppointments()">Prikazi preglede</button><br>
-    <button (click)="toggleUnconfirmed()">Prikazi nepotvrdjene preglede</button> <br>
-    <button (click)="toggleSchedule()">Zakazi pregled</button> <br>
-
-    <p><strong>Vase dugovanje: {{patient.dugovanje}}</strong></p>
+    <p><strong>Vase dugovanje: {{patient.dugovanje}} RSD</strong></p>
     <div *ngIf="patient.dugovanje > 0">
       <button class="error" (click)="handlePayment()">Izmiri dugovanje</button>
 
@@ -54,13 +55,6 @@
     <p *ngIf="patient.dugovanje <= 0"><strong>Hvala Vam sto izmirujete Vasa dugovanja.</strong></p>
     <button *ngIf="patient.dugovanje==0" (click)="deleteAccount()" class="error">Obrisi profil</button>
   </div>
-  <!-- <div *ngIf="isPaymentFormVisible" class="payment-form">
-    <label for="paymentAmount">Unesite iznos za plaćanje:</label>
-    <input type="number" id="paymentAmount" [(ngModel)]="paymentAmount" min="1" [max]="patient.dugovanje"
-      placeholder="Unesite iznos" />
-    <div id="card-element"></div>
-    <button (click)="payNow()" [disabled]="isPaymentProcessing">Plati</button>
-  </div> -->
 
   <div *ngIf="isPaymentFormVisible" class="payment-modal-overlay">
     <div class="payment-modal">
@@ -74,14 +68,5 @@
       </div>
     </div>
   </div>
-
-  <div *ngIf="!showSchedule">
-    <app-patient-appointments *ngIf="patient" [appointmentIds]="patient.pregledi"
-      [showUnconfirmed]="showUnconfirmed"
-      (appointmentsUpdated)="onAppointmentsUpdated($event)"></app-patient-appointments>
-  </div>
-  <div *ngIf="showSchedule">
-    <app-schedule-appointment (appointmentScheduled)="onAppointmentScheduled($event)"></app-schedule-appointment>
-  </div>
-
+  <router-outlet></router-outlet>
 </div>

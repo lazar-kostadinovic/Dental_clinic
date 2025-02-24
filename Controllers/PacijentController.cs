@@ -68,6 +68,13 @@ public class PacijentController(IPacijentService pacijentService, IStomatologSer
         };
         return pacijentDTO;
     }
+
+    [HttpGet("getUnconfirmedAppointments/{pacijentId}")]
+    public List<Pregled> GetUnconfirmedAppointmentsForPatient(int pacijentId)
+    {
+        var pregledi = pacijentService.GetUnconfirmedAppointmentsForPatient(pacijentId);
+        return pregledi;
+    }
     [HttpGet("basic")]
     public IActionResult GetBasicPatientInfo()
     {

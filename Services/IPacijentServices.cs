@@ -17,5 +17,6 @@ namespace StomatoloskaOrdinacija.Services
         Task<string> GetEmailByIdAsync(int id);
         List<Pregled> GetPreglediForPacijent(int pacijentid);
         List<int> GetPreglediIdsForPacijent(int pacijentid);
+        List<Pregled> GetUnconfirmedAppointmentsForPatient(int pacijentId);
     }
 }

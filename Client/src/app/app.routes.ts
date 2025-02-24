@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './login/login.component'; 
+import { LoginComponent } from './login/login.component';
 import { PatientProfileComponent } from './patient/patient-profile/patient-profile.component';
 import { RegisterDentistComponent } from './register-dentist/register-dentist.component';
 import { RegisterPatientComponent } from './register-patient/register-patient.component';
@@ -13,28 +13,55 @@ import { ContactComponent } from './contact/contact.component';
 import { ScheduleAppointmentComponent } from './patient/schedule-appointment/schedule-appointment.component';
 import { DentistScheduleComponent } from './dentist/dentist-profile/dentist-schedule/dentist-schedule.component';
 import { ShowDentistComponent } from './show-dentist/show-dentist.component';
+import { PatientAppointmentsComponent } from './patient/patient-appointments/patient-appointments.component';
+import { UnconfirmedAppointmentsComponent } from './patient/unconfirmed-appointments/unconfirmed-appointments.component';
 
 export const routes: Routes = [
-  { path: 'home', component: HomeComponent},
-  { path: 'contact', component: ContactComponent},
-  { path: 'show-dentist', component: ShowDentistComponent},
+  { path: 'home', component: HomeComponent },
+  { path: 'contact', component: ContactComponent },
+  { path: 'show-dentist', component: ShowDentistComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register-dentist', component: RegisterDentistComponent },
-  { path: 'register-patient', component: RegisterPatientComponent},
-  { path: 'patient-profile', component: PatientProfileComponent },
+  { path: 'register-patient', component: RegisterPatientComponent },
+  {
+    path: 'patient-profile',
+    component: PatientProfileComponent,
+    children: [
+      {
+        path: 'appointments',
+        component: PatientAppointmentsComponent,
+      },
+      {
+        path: 'unconfirmed-appointments',
+        component: UnconfirmedAppointmentsComponent,
+      },
+      {
+        path: 'schedule-appointment',
+        component: ScheduleAppointmentComponent,
+      },
+    ],
+  },
   { path: 'dentist-profile', component: DentistProfileComponent },
   { path: 'dentist-schedule', component: DentistScheduleComponent },
   { path: 'patient-schedule', component: ScheduleAppointmentComponent },
-  { path: 'dentist-management', component: DentistsManagementComponentComponent},
-  { path: 'patient-management', component: PatientsManagementComponentComponent},
-  { path: 'interventions-management', component: InterventionsManagementComponentComponent},
+  {
+    path: 'dentist-management',
+    component: DentistsManagementComponentComponent,
+  },
+  {
+    path: 'patient-management',
+    component: PatientsManagementComponentComponent,
+  },
+  {
+    path: 'interventions-management',
+    component: InterventionsManagementComponentComponent,
+  },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: '**', redirectTo: '/home' }
+  { path: '**', redirectTo: '/home' },
 ];
-
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
