@@ -77,7 +77,7 @@ export class PatientProfileComponent {
       setTimeout(() => {
         this.router.navigate(['appointments'], {
           relativeTo: this.route,
-          queryParams: { appointmentIds: this.patient.pregledi },
+          queryParams: { patientId: this.patient.id },
         });
         sessionStorage.setItem('alreadyNavigated', 'true');
       }, 200);

@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, input } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { PacijentDTO } from '../../../models/pacijentDTO.model';
+import { PacijentDTO } from '../../models/pacijentDTO.model';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -14,7 +14,7 @@ import Swal from 'sweetalert2';
 })
 export class DentistScheduleComponent {
   @Input() dentistId!: string;
-  @Input() patients: Array<{
+   patients: Array<{
     id: string;
     name: string;
     email: string;
@@ -45,7 +45,9 @@ export class DentistScheduleComponent {
     now.setDate(now.getDate());
     this.tomorrow = now.toISOString().split('T')[0];
     this.fetchAllDaysOff();
+    this.fetchPatients();
     console.log(new Date().getTime());
+    console.log(this.patients);
   }
 
   fetchAllDaysOff(): void {
@@ -78,6 +80,18 @@ export class DentistScheduleComponent {
 
   isDayDisabled(date: string): boolean {
     return this.daysOff.includes(date);
+  }
+
+  fetchPatients() {
+    this.http.get<{id: string; name: string; email: string; totalSpent: number; debt:number}[]>(`http://localhost:5001/Pacijent/basic`)
+      .subscribe({
+        next: (patientList) => {
+          this.patients = patientList;
+        },
+        error: (error) => {
+          console.error('Error fetching patients:', error);
+        }
+      });
   }
 
   loadAvailableTimeSlots(dentistId: string, date: string): void {

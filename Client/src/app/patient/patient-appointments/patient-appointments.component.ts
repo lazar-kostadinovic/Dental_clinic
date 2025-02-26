@@ -5,8 +5,9 @@ import { map, switchMap, forkJoin, iif, of } from 'rxjs';
 import { PregledDTO } from '../../models/pregledDTO.model';
 import { FormsModule } from '@angular/forms';
 import { DateService } from '../../shared/date.service';
-import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-patient-appointments',
   standalone: true,
@@ -15,8 +16,9 @@ import Swal from 'sweetalert2';
   styleUrl: './patient-appointments.component.css',
 })
 export class PatientAppointmentsComponent implements OnInit {
-  @Input() appointmentIds: string[] = [];
-  @Output() appointmentsUpdated = new EventEmitter<string[]>();
+  @Input() patientId!: string;
+  // @Output() appointmentsUpdated = new EventEmitter<string[]>();
+  appointmentIds: string[] = [];
   pregledList: PregledDTO[] = [];
   updateForm = {
     opis: '',
@@ -27,17 +29,29 @@ export class PatientAppointmentsComponent implements OnInit {
   selectedPregledStatus: number | null = null;
   today = new Date().toISOString().slice(0, 16);
 
-  constructor(private http: HttpClient, private dateService: DateService,private route:ActivatedRoute) {}
+  constructor(
+    private http: HttpClient,
+    private dateService: DateService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.appointmentIds = params['appointmentIds'] ? params['appointmentIds'] : [];
-    });
-    this.fetchPatientHistory();
+    this.fetchPatientAppointmentsIds();
   }
 
   formatDate(utcDate: Date): string {
     return this.dateService.formatDate(utcDate);
+  }
+
+  fetchPatientAppointmentsIds() {
+    this.http
+      .get(`http://localhost:5001/Pacijent/getDTO/${this.patientId}`)
+      .subscribe({
+        next: (data: any) => {
+          this.appointmentIds = data.pregledi;
+          this.fetchPatientHistory();
+        },
+      });
   }
 
   fetchPatientHistory() {
@@ -72,7 +86,7 @@ export class PatientAppointmentsComponent implements OnInit {
             this.pregledList = this.sortPregledi(pregledi);
           },
           error: (error) => {
-            console.error('Error fetching pregledi or stomatologs:', error);
+            console.error('Error fetching appointments or dentists:', error);
           },
         });
       }
@@ -95,7 +109,11 @@ export class PatientAppointmentsComponent implements OnInit {
   }
 
   calculateTotalForAppointment(pregled: PregledDTO): number {
-    return pregled.intervencije.reduce((total, intervencija) => total + (intervencija.cena * intervencija.kolicina), 0);
+    return pregled.intervencije.reduce(
+      (total, intervencija) =>
+        total + intervencija.cena * intervencija.kolicina,
+      0
+    );
   }
 
   deleteAppointment(id: string) {
@@ -116,7 +134,7 @@ export class PatientAppointmentsComponent implements OnInit {
           this.appointmentIds = this.appointmentIds.filter(
             (appId) => appId !== id
           );
-          this.appointmentsUpdated.emit(this.appointmentIds);
+          // this.appointmentsUpdated.emit(this.appointmentIds);
           alert('Pregled je uspešno obrisan.');
         },
         error: (error) => {
@@ -143,7 +161,7 @@ export class PatientAppointmentsComponent implements OnInit {
           this.appointmentIds = this.appointmentIds.filter(
             (appId) => appId !== id
           );
-          this.appointmentsUpdated.emit(this.appointmentIds);
+          // this.appointmentsUpdated.emit(this.appointmentIds);
           Swal.fire({
             icon: 'success',
             title: '',
@@ -154,9 +172,8 @@ export class PatientAppointmentsComponent implements OnInit {
           console.error('Greška pri brisanju pregleda:', error);
         },
       });
-      this.fetchPatientHistory();
+    this.fetchPatientHistory();
   }
-  
 
   openUpdateForm(id: string, status: number): void {
     const pregled = this.pregledList.find((p) => p.id === id);

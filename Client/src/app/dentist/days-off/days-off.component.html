@@ -1,0 +1,13 @@
+<div  class="day-off-form">
+
+    <div *ngIf="daysOff.length > 0" class="day-off-list">
+      <h3>Iskorišćeni neradni dani u tekućoj godini:</h3>
+      <ul>
+        <li *ngFor="let day of daysOff">{{ day }}</li>
+      </ul>
+      <div class="day-off-summary">
+        <p>Ukupan broj neradnih dana u ovoj godini: {{ countCurrentYearDaysOff() }}</p>
+      </div>
+    </div>
+
+  </div>

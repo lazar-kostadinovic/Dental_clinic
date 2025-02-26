@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { PregledDTO } from '../../../models/pregledDTO.model';
+import { PregledDTO } from '../../models/pregledDTO.model';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { forkJoin, map, switchMap } from 'rxjs';
-import { DateService } from '../../../shared/date.service';
+import { forkJoin, map, switchMap, timeout } from 'rxjs';
+import { DateService } from '../../shared/date.service';
 import { FormsModule } from '@angular/forms';
-import { IntervencijaDTO } from '../../../models/intervencijaDTO';
-import { PacijentDTO } from '../../../models/pacijentDTO.model';
+import { IntervencijaDTO } from '../../models/intervencijaDTO';
+import { PacijentDTO } from '../../models/pacijentDTO.model';
 import Swal from 'sweetalert2';
-import { StomatologDTO } from '../../../models/stomatologDTO.model';
+import { StomatologDTO } from '../../models/stomatologDTO.model';
 
 @Component({
   selector: 'app-dentist-appointment',
@@ -18,10 +18,10 @@ import { StomatologDTO } from '../../../models/stomatologDTO.model';
   styleUrl: './dentist-appointment.component.css',
 })
 export class DentistAppointmentComponent {
-  @Input() appointmentIds: string[] = [];
   @Input() dentistId!: string;
-  @Output() appointmentsUpdated = new EventEmitter<string[]>();
-  @Output() appointmentCharged = new EventEmitter<void>();
+  // @Output() appointmentsUpdated = new EventEmitter<string[]>();
+  // @Output() appointmentCharged = new EventEmitter<void>();
+  appointmentIds: string[] = [];
   dentistPhoneNumber?: string;
   dentistName?: string;
   appointmentList: PregledDTO[] = [];
@@ -53,17 +53,17 @@ export class DentistAppointmentComponent {
   constructor(private http: HttpClient, private dateService: DateService) {}
 
   ngOnInit() {
-    this.fetchPatientHistory();
-    this.fetchAllPatients();
+    this.getDentistInfo();
   }
 
   getDentistInfo(){
     this.http.get(`http://localhost:5001/Stomatolog/getStomatologDTO/${this.dentistId}`).subscribe({
       next:(stom:any)=>{
-
         this.dentistPhoneNumber=stom.brojTelefona;
         this.dentistName=stom.ime+' '+stom.prezime;
-        console.log(this.dentistName);
+        this.appointmentIds = stom.pregledi;
+        this.fetchPatientHistory();
+        this.fetchAllPatients();
       }
     })
   }
@@ -74,8 +74,7 @@ export class DentistAppointmentComponent {
 
   fetchPatientHistory() {
     if(this.appointmentIds!=null)
-    {
-      
+    {  
     const pregledRequests = this.appointmentIds.map((id) =>
       this.http
         .get<PregledDTO>(`http://localhost:5001/Pregled/getPregledDTO/${id}`)
@@ -246,9 +245,9 @@ export class DentistAppointmentComponent {
             (appId) => appId !== id
           );
           this.filterAppointmentsByPatient();
-          this.appointmentsUpdated.emit(this.appointmentIds);
           this.filterAppointmentsForToday();
           this.incrementMissedAppointments(patientId);
+          // this.appointmentsUpdated.emit(this.appointmentIds);
           Swal.fire('', 'Pregled je obrisan a pacijentu dodat izostanak sa pregleda.', 'success');
         },
         error: (error) => {
@@ -297,7 +296,7 @@ export class DentistAppointmentComponent {
             (appId) => appId !== id
           );
           this.filterAppointmentsByPatient();
-          this.appointmentsUpdated.emit(this.appointmentIds);
+          // this.appointmentsUpdated.emit(this.appointmentIds);
 
           const emailPayload = {
             toEmail: 'kostadinovicl999@gmail.com',
@@ -403,7 +402,7 @@ export class DentistAppointmentComponent {
         this.showCharge = false;
         Swal.fire('Uspeh', 'Pregled je uspešno naplaćen.', 'success');
         this.fetchPatientHistory();
-        this.appointmentCharged.emit();
+        // this.appointmentCharged.emit();
       },
       error: (error) => {
         console.error('Greška pri naplati pregleda:', error);

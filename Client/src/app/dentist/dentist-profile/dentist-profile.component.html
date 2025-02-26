@@ -1,91 +1,95 @@
 <div class="home-container">
+  <div class="profile-container">
+    <h2>Profil stomatologa</h2>
+    <div class="profile-image" *ngIf="dentist">
+      <div *ngIf="dentist.slika">
+        <img (click)="triggerFileInput()" [src]="getImageUrl(dentist.slika)" alt="Profilna slika"
+          class="dentist-image" />
+      </div>
+      <div *ngIf="!dentist.slika">
+        <p>Nema dostupne slike.</p>
+        <button (click)="triggerFileInput()">Dodaj sliku</button>
+      </div>
+      <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" style="display: none" />
+    </div>
+    <div *ngIf="dentist">
+      <p><strong>Ime:</strong> {{ dentist.ime }}</p>
+      <p><strong>Prezime:</strong> {{ dentist.prezime }}</p> <!-- ✔️ ✅ ☑️ ✓ -->
+      <p><strong>Email:</strong> {{ dentist.email }}<i class="custom-edit-button" (click)="toggleEditEmail()">✎</i></p>
+      <div class="edit" *ngIf="isEditing.email">
+        <input type="text" [(ngModel)]="updatedValues.email" placeholder="Unesite novi email" />
+        <i class="custom-edit-button" (click)="saveChanges('email')">✔️</i>
+      </div>
+
+      <p><strong>Broj Telefona:</strong> {{ dentist.brojTelefona }}<i class="custom-edit-button"
+          (click)="toggleEditNumber()">✎</i></p>
+      <div class="edit" *ngIf="isEditing.brojTelefona">
+        <input type="text" [(ngModel)]="updatedValues.brojTelefona" placeholder="Unesite novi broj telefona" />
+        <i class="custom-edit-button" (click)="saveChanges('brojTelefona')">✔️</i>
+      </div>
+
+      <p><strong>Adresa:</strong> {{ dentist.adresa }}<i class="custom-edit-button" (click)="toggleEditAddress()">✎</i>
+      </p>
+      <div class="edit" *ngIf="isEditing.adresa">
+        <input type="text" [(ngModel)]="updatedValues.adresa" placeholder="Unesite novu adresu" />
+        <i class="custom-edit-button" (click)="saveChanges('adresa')">✔️</i>
+      </div>
+      <p><strong>Trenutna smena:</strong> {{ getDentistShift(dentist.prvaSmena)}}</p>
+      <p *ngIf="dentist">Broj obavljenih pregleda ove godine: {{dentist.brojPregleda}}</p>
+    </div>
 
 
-<div class="profile-container">
-  <h2>Profil stomatologa</h2>
-  <div class="profile-image" *ngIf="dentist">
-    <div *ngIf="dentist.slika">
-      <img (click)="triggerFileInput()" [src]="getImageUrl(dentist.slika)" alt="Profilna slika" class="dentist-image" />
-      <!-- <i class="custom-edit-button" (click)="triggerFileInput()">✎</i> -->
-    </div>
-    <div *ngIf="!dentist.slika">
-      <p>Nema dostupne slike.</p>
-      <button (click)="triggerFileInput()">Dodaj sliku</button>
-    </div>
-    <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" style="display: none" />
-  </div>
-  <div *ngIf="dentist">
-    <p><strong>Ime:</strong> {{ dentist.ime }}</p>
-    <p><strong>Prezime:</strong> {{ dentist.prezime }}</p> <!-- ✔️ ✅ ☑️ ✓ -->
-    <p><strong>Email:</strong> {{ dentist.email }}<i class="custom-edit-button" (click)="toggleEditEmail()">✎</i></p>
-    <div class="edit" *ngIf="isEditing.email">
-      <input type="text" [(ngModel)]="updatedValues.email" placeholder="Unesite novi email" />
-      <i class="custom-edit-button" (click)="saveChanges('email')">✔️</i>
-    </div>
 
-    <p><strong>Broj Telefona:</strong> {{ dentist.brojTelefona }}<i class="custom-edit-button"
-        (click)="toggleEditNumber()">✎</i></p>
-    <div class="edit" *ngIf="isEditing.brojTelefona">
-      <input type="text" [(ngModel)]="updatedValues.brojTelefona" placeholder="Unesite novi broj telefona" />
-      <i class="custom-edit-button" (click)="saveChanges('brojTelefona')">✔️</i>
-    </div>
-
-    <p><strong>Adresa:</strong> {{ dentist.adresa }}<i class="custom-edit-button" (click)="toggleEditAddress()">✎</i>
-    </p>
-    <div class="edit" *ngIf="isEditing.adresa">
-      <input type="text" [(ngModel)]="updatedValues.adresa" placeholder="Unesite novu adresu" />
-      <i class="custom-edit-button" (click)="saveChanges('adresa')">✔️</i>
-    </div>
-    <p><strong>Trenutna smena:</strong> {{ getDentistShift(dentist.prvaSmena)}}</p>
-    <p *ngIf="dentist">Broj obavljenih pregleda ove godine: {{dentist.brojPregleda}}</p>
-  </div>
-  <!-- <button *ngIf="!showButtons()" (click)="toggleAppointmentsHistory()">Prikazi preglede</button><br/>
-  <button *ngIf="showButtons()" (click)="toggleAppointmentForm()">Zakazi pregled</button><br/>
-  <button *ngIf="showButtons()" (click)="toggleUnconfirmedAppointments()">Prikazi nepotvrdjene preglede</button><br/>
-  <button *ngIf="showButtons()" (click)="toggleDayOffForm()">Prikazi neradne dane</button> <br/> 
-  <button *ngIf="showButtons()" (click)="changeShift(dentist.id)">Promeni smenu</button> -->
-
-  <button (click)="toggleAppointmentsHistory()">Prikazi preglede</button><br />
+    <!-- <button (click)="toggleAppointmentsHistory()">Prikazi preglede</button><br />
   <button (click)="toggleUnconfirmedAppointments()">Prikazi nepotvrdjene preglede</button><br />
-  <button (click)="toggleAppointmentForm()">Zakazi pregled</button><br />
-  <button (click)="toggleDayOffForm()">Prikazi neradne dane</button><br />
+  <button routerLink="" (click)="toggleAppointmentForm()">Zakazi pregled</button><br />
+  <button (click)="toggleDayOffForm()">Prikazi neradne dane</button><br /> 
+  <button (click)="changeShift(dentist.id)">Promeni smenu</button> -->
+    <section *ngIf="dentist">
+      <button [routerLink]="['appointments']" [queryParams]="{dentistId:dentist.id }">Prikazi preglede</button><br />
+      <button [routerLink]="['unconfirmed-appointments']"
+        [queryParams]="{dentistId:dentist.id, dentistName:dentist.ime+ dentist.prezime}">Prikazi nepotvrdjene
+        preglede</button><br />
+      <button [routerLink]="['schedule-appointment']" [queryParams]="{dentistId:dentist.id}">Zakazi
+        pregled</button><br />
+      <button [routerLink]="['days-off']" [queryParams]="{dentistId:dentist.id}">Prikazi neradne dane</button><br />
+    </section>
+    <!-- <button (click)="toggleAppointmentsHistory()">Prikaži preglede</button> -->
 
-
-
-  <!-- <button (click)="toggleAppointmentsHistory()">Prikaži preglede</button> -->
-
-</div>
-<div *ngIf="showDayOffForm" class="day-off-form">
-  <!-- <label for="datum">Datum:</label> -->
-  <!-- <input type="date" id="datum" [(ngModel)]="selectedDate" /> -->
-  <!-- <button (click)="submitDayOff()">Dodaj neradan dan</button> -->
-  <!-- <button (click)="toggleDayOffForm()">Odustani</button> -->
-  <!-- <button (click)="fetchAllDaysOff()">Prikaži sve neradne dane</button> -->
-  <div *ngIf="daysOff.length > 0" class="day-off-list">
-    <h3>Iskorišćeni neradni dani u tekućoj godini:</h3>
-    <ul>
-      <li *ngFor="let day of daysOff">{{ day }}</li>
-    </ul>
-    <div class="day-off-summary">
-      <p>Ukupan broj neradnih dana u ovoj godini: {{ countCurrentYearDaysOff() }}</p>
+  </div>
+  <!-- <div *ngIf="showDayOffForm" class="day-off-form">
+    <label for="datum">Datum:</label>
+    <input type="date" id="datum" [(ngModel)]="selectedDate" />
+    <button (click)="submitDayOff()">Dodaj neradan dan</button>
+    <button (click)="toggleDayOffForm()">Odustani</button>
+    <button (click)="fetchAllDaysOff()">Prikaži sve neradne dane</button>
+    <div *ngIf="daysOff.length > 0" class="day-off-list">
+      <h3>Iskorišćeni neradni dani u tekućoj godini:</h3>
+      <ul>
+        <li *ngFor="let day of daysOff">{{ day }}</li>
+      </ul>
+      <div class="day-off-summary">
+        <p>Ukupan broj neradnih dana u ovoj godini: {{ countCurrentYearDaysOff() }}</p>
+      </div>
     </div>
+
+  </div> -->
+  <!-- 
+  <div *ngIf="showAppointmentForm">
+    <app-dentist-schedule [dentistId]="dentist.id" [patients]="patients"
+      (appointmentScheduled)="onAppointmentScheduled($event)"
+      (appointmentCanceled)="onApointmentCanceled()"></app-dentist-schedule>
   </div>
 
-</div>
+  <div *ngIf="showUnconfirmedAppointments">
+    <app-unconfirmed-appointments [dentistId]="dentist.id" [dentistName]="dentist.ime+' '+dentist.prezime"
+      (appointmentTaken)="onAppointmentTaken()"></app-unconfirmed-appointments>
+  </div>
 
-<div *ngIf="showAppointmentForm">
-  <app-dentist-schedule [dentistId]="dentist.id" [patients]="patients"
-    (appointmentScheduled)="onAppointmentScheduled($event)"
-    (appointmentCanceled)="onApointmentCanceled()"></app-dentist-schedule>
-</div>
-
-<div *ngIf="showUnconfirmedAppointments">
-  <app-unconfirmed-appointments [dentistId]="dentist.id" [dentistName]="dentist.ime+' '+dentist.prezime"
-    (appointmentTaken)="onAppointmentTaken()"></app-unconfirmed-appointments>
-</div>
-
-<div *ngIf="showAppointments" class="showAppointments">
-  <app-dentist-appointment *ngIf="dentist" [appointmentIds]="dentist.pregledi" [dentistId]="dentist.id"
-    (appointmentsUpdated)="onAppointmentsUpdated($event)" (appointmentCharged)="onAppointmentCharged()"></app-dentist-appointment>
-</div>
+  <div *ngIf="showAppointments" class="showAppointments">
+    <app-dentist-appointment *ngIf="dentist" [appointmentIds]="dentist.pregledi" [dentistId]="dentist.id"
+      (appointmentsUpdated)="onAppointmentsUpdated($event)"
+      (appointmentCharged)="onAppointmentCharged()"></app-dentist-appointment>
+  </div> -->
+  <router-outlet></router-outlet>
 </div>

@@ -11,10 +11,13 @@ import { PatientsManagementComponentComponent } from './admin/patients-managemen
 import { InterventionsManagementComponentComponent } from './admin/interventions-management-component/interventions-management-component.component';
 import { ContactComponent } from './contact/contact.component';
 import { ScheduleAppointmentComponent } from './patient/schedule-appointment/schedule-appointment.component';
-import { DentistScheduleComponent } from './dentist/dentist-profile/dentist-schedule/dentist-schedule.component';
+import { DentistScheduleComponent } from './dentist/dentist-schedule/dentist-schedule.component';
 import { ShowDentistComponent } from './show-dentist/show-dentist.component';
 import { PatientAppointmentsComponent } from './patient/patient-appointments/patient-appointments.component';
+import { DentistAppointmentComponent } from './dentist/dentist-appointment/dentist-appointment.component';
+import { UnconfirmedAppointmentsDentistComponent } from './dentist/unconfirmed-appointments-dentist/unconfirmed-appointments-dentist.component';
 import { UnconfirmedAppointmentsComponent } from './patient/unconfirmed-appointments/unconfirmed-appointments.component';
+import { DaysOffComponent } from './dentist/days-off/days-off.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -41,7 +44,28 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: 'dentist-profile', component: DentistProfileComponent },
+  {
+    path: 'dentist-profile',
+    component: DentistProfileComponent,
+    children: [
+      {
+        path: 'appointments',
+        component: DentistAppointmentComponent,
+      },
+      {
+        path: 'unconfirmed-appointments',
+        component: UnconfirmedAppointmentsDentistComponent,
+      },
+      {
+        path: 'schedule-appointment',
+        component: DentistScheduleComponent,
+      },
+      {
+        path: 'days-off',
+        component: DaysOffComponent,
+      },
+    ],
+  },
   { path: 'dentist-schedule', component: DentistScheduleComponent },
   { path: 'patient-schedule', component: ScheduleAppointmentComponent },
   {

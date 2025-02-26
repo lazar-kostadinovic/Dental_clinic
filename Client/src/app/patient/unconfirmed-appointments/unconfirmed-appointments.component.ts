@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, input, Input, OnInit } from '@angular/core';
 import { DateService } from '../../shared/date.service';
 import { HttpClient } from '@angular/common/http';
 import { PregledDTO } from '../../models/pregledDTO.model';
@@ -14,26 +14,34 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './unconfirmed-appointments.component.css',
 })
 export class UnconfirmedAppointmentsComponent {
-  @Input() patientId?: string;
-  unconfirmedAppointments!: PregledDTO[];
-
-  constructor(private dateService: DateService, private http: HttpClient,private route:ActivatedRoute) {}
+  @Input() patientId!: string;
+  // patientId = input<string>();
+  unconfirmedAppointments?: PregledDTO[];
+  constructor(
+    private dateService: DateService,
+    private http: HttpClient,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params=>{
-      this.patientId = params['patientId'];
-    })
+    // this.route.queryParams.subscribe((params) => {
+    //   this.patientId = params['patientId'];
+    // });
     console.log(this.patientId);
     this.getUnconfirmedAppointments();
     this.sortUnconfirmedAppointments();
   }
 
-  getUnconfirmedAppointments(){
-    this.http.get(`http://localhost:5001/Pacijent/getUnconfirmedAppointments/${this.patientId}`).subscribe({
-      next: (data:any)=>{
-        this.unconfirmedAppointments=data;
-      }
-    })
+  getUnconfirmedAppointments() {
+    this.http
+      .get(
+        `http://localhost:5001/Pacijent/getUnconfirmedAppointments/${this.patientId}`
+      )
+      .subscribe({
+        next: (data: any) => {
+          this.unconfirmedAppointments = data;
+        },
+      });
   }
   formatDate(utcDate: Date): string {
     return this.dateService.formatDate(utcDate);
@@ -56,9 +64,10 @@ export class UnconfirmedAppointmentsComponent {
             title: '',
             text: 'Pregled je uspešno otkazan!',
           });
-          this.unconfirmedAppointments = this.unconfirmedAppointments.filter(
-            (appointmet) => appointmet.id != id
-          );
+          if (this.unconfirmedAppointments) {
+            this.unconfirmedAppointments = this.unconfirmedAppointments.filter(
+              (appointmet) => appointmet.id != id   );  
+          }
         },
         error: (error) => {
           console.error('Greška pri brisanju pregleda:', error);
@@ -67,8 +76,10 @@ export class UnconfirmedAppointmentsComponent {
   }
 
   sortUnconfirmedAppointments() {
-    this.unconfirmedAppointments.sort(
-      (a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime()
-    );
+    if (this.unconfirmedAppointments) {
+      this.unconfirmedAppointments.sort(
+        (a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime()
+      );
+    }
   }
 }

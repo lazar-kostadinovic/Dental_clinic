@@ -7,13 +7,13 @@ import { forkJoin, map, switchMap } from 'rxjs';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-unconfirmed-appointments',
+  selector: 'app-unconfirmed-appointments-dentist',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './unconfirmed-appointments.component.html',
-  styleUrl: './unconfirmed-appointments.component.css',
+  templateUrl: './unconfirmed-appointments-dentist.component.html',
+  styleUrl: './unconfirmed-appointments-dentist.component.css',
 })
-export class UnconfirmedAppointmentsComponent {
+export class UnconfirmedAppointmentsDentistComponent {
   unconfirmed = false;
   unconfirmedAppointments: PregledDTO[] = [];
   @Input() dentistId!: string;

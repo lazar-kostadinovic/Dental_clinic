@@ -37,8 +37,7 @@
       <input type="text" [(ngModel)]="updatedValues.adresa" placeholder="Unesite novu adresu" />
       <i class="custom-edit-button" (click)="saveChanges('adresa')">✔️</i>
     </div>
-    <button [routerLink]="['appointments']"
-      [queryParams]="{ appointmentIds: patient.pregledi }">
+    <button [routerLink]="['appointments']" [queryParams]="{ patientId : patient.id}">
       Prikazi preglede
     </button><br>
     <button [routerLink]="['unconfirmed-appointments']" [queryParams]="{ patientId: patient.id }">
