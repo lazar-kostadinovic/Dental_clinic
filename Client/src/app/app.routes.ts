@@ -18,6 +18,9 @@ import { DentistAppointmentComponent } from './dentist/dentist-appointment/denti
 import { UnconfirmedAppointmentsDentistComponent } from './dentist/unconfirmed-appointments-dentist/unconfirmed-appointments-dentist.component';
 import { UnconfirmedAppointmentsComponent } from './patient/unconfirmed-appointments/unconfirmed-appointments.component';
 import { DaysOffComponent } from './dentist/days-off/days-off.component';
+import { AdminGuard } from './admin.guard';
+import { DentistGuard } from './dentist.guard';
+import { PatientGuard } from './patient.guard';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -29,56 +32,67 @@ export const routes: Routes = [
   {
     path: 'patient-profile',
     component: PatientProfileComponent,
+    canActivate: [PatientGuard],
     children: [
       {
         path: 'appointments',
         component: PatientAppointmentsComponent,
+        canActivate: [PatientGuard],
       },
       {
         path: 'unconfirmed-appointments',
         component: UnconfirmedAppointmentsComponent,
+        canActivate: [PatientGuard],
       },
       {
         path: 'schedule-appointment',
         component: ScheduleAppointmentComponent,
+        canActivate: [PatientGuard],
       },
     ],
   },
+  { path: 'patient-schedule', component: ScheduleAppointmentComponent },
   {
     path: 'dentist-profile',
     component: DentistProfileComponent,
+    canActivate: [DentistGuard],
     children: [
       {
         path: 'appointments',
         component: DentistAppointmentComponent,
+        canActivate: [DentistGuard],
       },
       {
         path: 'unconfirmed-appointments',
         component: UnconfirmedAppointmentsDentistComponent,
+        canActivate: [DentistGuard],
       },
       {
         path: 'schedule-appointment',
         component: DentistScheduleComponent,
+        canActivate: [DentistGuard],
       },
       {
         path: 'days-off',
         component: DaysOffComponent,
+        canActivate: [DentistGuard],
       },
     ],
   },
-  { path: 'dentist-schedule', component: DentistScheduleComponent },
-  { path: 'patient-schedule', component: ScheduleAppointmentComponent },
   {
     path: 'dentist-management',
     component: DentistsManagementComponentComponent,
+    canActivate: [AdminGuard],
   },
   {
     path: 'patient-management',
     component: PatientsManagementComponentComponent,
+    canActivate: [AdminGuard],
   },
   {
     path: 'interventions-management',
     component: InterventionsManagementComponentComponent,
+    canActivate: [AdminGuard],
   },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/home' },

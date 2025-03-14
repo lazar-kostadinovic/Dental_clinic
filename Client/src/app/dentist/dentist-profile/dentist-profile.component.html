@@ -48,7 +48,7 @@
     <section *ngIf="dentist">
       <button [routerLink]="['appointments']" [queryParams]="{dentistId:dentist.id }">Prikazi preglede</button><br />
       <button [routerLink]="['unconfirmed-appointments']"
-        [queryParams]="{dentistId:dentist.id, dentistName:dentist.ime+ dentist.prezime}">Prikazi nepotvrdjene
+        [queryParams]="{dentistId:dentist.id, dentistName:dentist.ime +' '+ dentist.prezime}">Prikazi nepotvrdjene
         preglede</button><br />
       <button [routerLink]="['schedule-appointment']" [queryParams]="{dentistId:dentist.id}">Zakazi
         pregled</button><br />

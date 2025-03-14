@@ -26,7 +26,7 @@ namespace StomatoloskaOrdinacija.Controllers
                 await _emailService.SendEmailAsync(
                     request.ToEmail,
                     "Pregled otkazan",
-                    $"Poštovani {request.PatientName},<br><br>Vaš pregled zakazan za {request.AppointmentDate} je otkazan.<br>За више информација обратите се стоматологу {request.DentistName} на број {request.DentistPhoneNumber}<br><br>S poštovanjem,<br>Vaša ordinacija"
+                    $"Poštovani {request.PatientName},<br><br>Vaš pregled zakazan za {request.AppointmentDate} je otkazan.<br>Za više informacija obratite se stomatologu {request.DentistName} na broj {request.DentistPhoneNumber}<br><br>S poštovanjem,<br>Vaša ordinacija"
                 );
                 return Ok(new { message = "Email sent successfully." });
             }

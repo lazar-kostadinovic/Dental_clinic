@@ -62,6 +62,7 @@ export class DentistAppointmentComponent {
         this.dentistPhoneNumber=stom.brojTelefona;
         this.dentistName=stom.ime+' '+stom.prezime;
         this.appointmentIds = stom.pregledi;
+        console.log(this.dentistName)
         this.fetchPatientHistory();
         this.fetchAllPatients();
       }
