@@ -91,7 +91,8 @@ export class UnconfirmedAppointmentsDentistComponent {
           );
 
           this.sendAppointmentTakenEmail({
-            toEmail: 'kostadinovicl999@gmail.com',
+            // toEmail: 'kostadinovicl999@gmail.com',
+            toEmail: 'vasastomatoloskaordinacija@gmail.com',
             patientName: confirmedAppointment.imePacijenta,
             appointmentDate: confirmedAppointment.datum,
             dentistName: this.dentistName,

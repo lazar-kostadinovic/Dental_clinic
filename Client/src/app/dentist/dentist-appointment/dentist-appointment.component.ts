@@ -300,7 +300,8 @@ export class DentistAppointmentComponent {
           // this.appointmentsUpdated.emit(this.appointmentIds);
 
           const emailPayload = {
-            toEmail: 'kostadinovicl999@gmail.com',
+            // toEmail: 'kostadinovicl999@gmail.com',
+            toEmail: 'vasastomatoloskaordinacija@gmail.com',
             patientName: pregled.imePacijenta,
             appointmentDate: this.formatDate(pregled.datum),
             dentistPhoneNumber: this.dentistPhoneNumber,

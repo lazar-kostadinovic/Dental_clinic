@@ -15,7 +15,7 @@
     <label for="datum">📆 Datum:</label>
     <input id="datum" type="date" [(ngModel)]="newAppointment.datum" name="datum" required
       [ngClass]="{ 'disabled-day': isDayDisabled(newAppointment.datum) }"
-      (change)="loadAvailableTimeSlots(dentistId, newAppointment.datum)" />
+      (change)="loadAvailableTimeSlots(dentistId, newAppointment.datum)" [min]=tomorrow/>
 
 
       <label for="vreme">⏰ Vreme:</label>

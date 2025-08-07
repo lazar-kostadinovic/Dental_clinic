@@ -80,7 +80,7 @@
   transform: translateY(0);
 }
 
-.register-container .error {
+.register-container .error-message {
   color: #e74c3c;
   font-size: 14px;
   margin-top: 5px;

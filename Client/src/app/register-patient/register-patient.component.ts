@@ -35,20 +35,20 @@ export class RegisterPatientComponent {
     const payload = {
       ...this.registrationModel,
       email: this.registrationModel.email.toLowerCase(),
-      brojTelefona: this.registrationModel.brojTelefona.toString(),
+      brojTelefona: '0'+this.registrationModel.brojTelefona.toString(),
     };
     this.http.post('http://localhost:5001/Pacijent/register', payload).subscribe({
       next: (response) => {
         Swal.fire({
           title: 'Registracija uspešna!',
-          text: 'Da li želite da nastavite na početnu stranicu?',
+          text: 'Da li želite da nastavite na stranicu za prijavljivanje?',
           icon: 'success',
           showCancelButton: true,
           confirmButtonText: 'Da, nastavi',
           cancelButtonText: 'Ne, ostani ovde'
         }).then((result) => {
           if (result.isConfirmed) {
-            this.router.navigate(['/home']);
+            this.router.navigate(['/login']);
           }
         });
       },
